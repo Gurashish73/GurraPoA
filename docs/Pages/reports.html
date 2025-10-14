@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | PM-AJAY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar { background-color: #ffffff; }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1); }
+        .dark .sidebar, .dark .card { background-color: #1c1b1a; }
+        .dark .card { border: 1px solid #374151; box-shadow: none; }
+        .dark .card:hover { background-color: #2c2b2a; }
+        .modal-root { transition: opacity 0.3s ease; }
+        .modal-container { transition: transform 0.3s ease, opacity 0.3s ease; }
+        .table-row-clickable { cursor: pointer; transition: background-color 0.2s; }
+        .table-row-clickable:hover { background-color: #f7f7f7; }
+        .dark .table-row-clickable:hover { background-color: #2c2b2a; }
+    </style>
+</head>
+<body class="flex min-h-screen bg-[#fdfaf6] dark:bg-black">
+    <aside class="sidebar w-64 flex-shrink-0 border-r border-slate-200 dark:border-gray-700 flex flex-col">
+        <div class="p-6">
+             <h1 class="text-2xl font-bold text-slate-800 dark:text-gray-100 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 mr-2 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.874 6 7.5 6h5c.626 0 .988-.27 1.256-.579A6.012 6.012 0 0115.668 8.027c.21.34.332.732.332 1.155a3.999 3.999 0 01-4 4c-1.933 0-3.5-1.567-3.5-3.5a3.999 3.999 0 011.006-2.622c.23-.352.484-.65.744-.897C10.5 6.27 10.246 6 10 6h-.5a.5.5 0 00-.5.5v1.5a.5.5 0 00.5.5h.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5h-2a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h.5a.5.5 0 00.5-.5V8.5a.5.5 0 00-.5-.5h-2a.5.5 0 00-.5.5v1.5a.5.5 0 00.5.5H8a.5.5 0 00.5-.5V9.5a3.5 3.5 0 00-3.5-3.5c-.538 0-1.03.123-1.468.342z" clip-rule="evenodd" />
+                </svg>
+                PM-AJAY
+            </h1>
+        </div>
+        <nav class="flex-1 px-4 py-2">
+            <a href="central.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a>
+            <a href="reports.html" class="flex items-center px-4 py-2.5 text-slate-700 bg-indigo-50 dark:bg-gray-700 dark:text-gray-100 rounded-lg font-semibold"><i data-lucide="bar-chart-3" class="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400"></i>Reports</a>
+            <a href="projects-alert.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium"><i data-lucide="bell" class="w-5 h-5 mr-3"></i>Alerts</a>
+            <a href="beneficiaries.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium"><i data-lucide="users" class="w-5 h-5 mr-3"></i>Beneficiaries</a>
+            <a href="#" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium"><i data-lucide="settings" class="w-5 h-5 mr-3"></i>Settings</a>
+        </nav>
+        <div class="p-4 mt-auto">
+            <a href="#" class="flex items-center px-4 py-4 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg font-medium"><i data-lucide="log-out" class="w-5 h-5 mr-3"></i>Sign Out</a>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 lg:p-8 overflow-y-auto">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-800 dark:text-gray-100">Reports Hub</h2>
+                <p class="text-slate-500 dark:text-gray-400 mt-1">Generate, manage, and download all system reports.</p>
+            </div>
+            <div class="flex items-center mt-4 sm:mt-0">
+                 <button id="generate-report-btn" class="bg-indigo-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-indigo-700 flex items-center"><i data-lucide="plus" class="w-5 h-5 mr-2"></i>Generate New Report</button>
+                 <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700 ml-4">
+                    <i data-lucide="sun" id="theme-toggle-light-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i>
+                    <i data-lucide="moon" id="theme-toggle-dark-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400 hidden"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="card p-5"><div class="flex justify-between items-start"><h3 class="text-slate-500 dark:text-gray-400 font-medium">Total Reports</h3><div class="p-2 bg-blue-100 dark:bg-blue-500/10 rounded-md"><i data-lucide="files" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i></div></div><p id="total-reports-stat" class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">30</p></div>
+            <div class="card p-5"><div class="flex justify-between items-start"><h3 class="text-slate-500 dark:text-gray-400 font-medium">Generated (This Month)</h3><div class="p-2 bg-green-100 dark:bg-green-500/10 rounded-md"><i data-lucide="check-circle" class="w-5 h-5 text-green-600 dark:text-green-400"></i></div></div><p id="generated-reports-stat" class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">12</p></div>
+            <div class="card p-5"><div class="flex justify-between items-start"><h3 class="text-slate-500 dark:text-gray-400 font-medium">Pending Generation</h3><div class="p-2 bg-yellow-100 dark:bg-yellow-500/10 rounded-md"><i data-lucide="loader" class="w-5 h-5 text-yellow-600 dark:text-yellow-400"></i></div></div><p id="pending-reports-stat" class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">3</p></div>
+            <div class="card p-5"><div class="flex justify-between items-start"><h3 class="text-slate-500 dark:text-gray-400 font-medium">Generation Failed</h3><div class="p-2 bg-red-100 dark:bg-red-500/10 rounded-md"><i data-lucide="x-circle" class="w-5 h-5 text-red-600 dark:text-red-400"></i></div></div><p id="failed-reports-stat" class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">1</p></div>
+        </div>
+
+        <div class="card mt-6 p-5">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+                <div class="relative w-full md:w-1/3">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                    <input id="search-input" type="text" placeholder="Search reports..." class="w-full pl-10 pr-4 py-2 border border-slate-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="flex items-center gap-4 w-full md:w-auto">
+                    <select id="status-filter" class="border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="all">All Statuses</option>
+                        <option value="Generated">Generated</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Failed">Failed</option>
+                        <option value="Archived">Archived</option>
+                    </select>
+                    <select id="date-filter" class="border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="all">All Time</option>
+                        <option value="7">Last 7 Days</option>
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800">
+                        <tr>
+                            <th class="px-6 py-3">Report Name</th>
+                            <th class="px-6 py-3">Type</th>
+                            <th id="date-sort-header" class="px-6 py-3 cursor-pointer flex items-center">Generated On <i data-lucide="arrow-down" class="w-4 h-4 ml-1"></i></th>
+                            <th class="px-6 py-3">Generated By</th>
+                            <th class="px-6 py-3">Status</th>
+                            <th class="px-6 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reports-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="generate-report-modal" class="modal-root fixed inset-0 z-50 flex items-center justify-center hidden opacity-0"><div class="modal-overlay absolute inset-0 bg-black/50"></div><div class="modal-container relative bg-white dark:bg-[#1c1b1a] rounded-lg shadow-xl w-full max-w-lg m-4 transform scale-95 opacity-0"><div class="flex items-center justify-between p-4 border-b dark:border-gray-700"><h3 class="text-xl font-semibold text-slate-800 dark:text-gray-100">Generate New Report</h3><button class="close-modal-btn text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button></div><div class="p-6 space-y-4"><form><div><label class="block text-sm font-medium text-slate-700 dark:text-gray-300">Report Name</label><input type="text" class="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g., Q3 Financial Summary"></div><div><label class="block text-sm font-medium text-slate-700 dark:text-gray-300">Report Type</label><select class="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"><option>Financial</option><option>Compliance</option><option>Performance</option><option>Audit</option></select></div><div><label class="block text-sm font-medium text-slate-700 dark:text-gray-300">Date Range</label><select class="mt-1 block w-full px-3 py-2 border border-slate-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"><option>Last 30 Days</option><option>Last Quarter</option><option>Last Year</option><option>All Time</option></select></div><div><label class="block text-sm font-medium text-slate-700 dark:text-gray-300">Format</label><div class="mt-2 flex gap-4"><label class="inline-flex items-center"><input type="radio" name="format" class="text-indigo-600 form-radio focus:ring-indigo-500" checked> <span class="ml-2 dark:text-gray-300">PDF</span></label><label class="inline-flex items-center"><input type="radio" name="format" class="text-indigo-600 form-radio focus:ring-indigo-500"> <span class="ml-2 dark:text-gray-300">CSV</span></label><label class="inline-flex items-center"><input type="radio" name="format" class="text-indigo-600 form-radio focus:ring-indigo-500"> <span class="ml-2 dark:text-gray-300">XLS</span></label></div></div></form></div><div class="flex items-center justify-end p-4 space-x-2 border-t dark:border-gray-700"><button class="close-modal-btn bg-slate-200 dark:bg-gray-600 text-slate-800 dark:text-gray-200 font-semibold py-2 px-4 rounded-lg hover:bg-slate-300 dark:hover:bg-gray-500">Cancel</button><button class="close-modal-btn bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-indigo-700">Generate</button></div></div></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const appState = {
+            isDark: false,
+            reports: [],
+            filters: { status: 'all', date: 'all', search: '' },
+            sort: { by: 'generatedOn', order: 'desc' }
+        };
+
+        // --- MOCK DATA GENERATORS ---
+        const generateFinancialData = (report) => `Date,Transaction ID,Amount (INR),Status\n` + Array.from({length: 20}, (_, i) => { const d = new Date(report.generatedOn.getTime() - i * 24 * 36e5); return `${d.toLocaleDateString()},${(Math.random()*1e9).toString(36).slice(2)},${(Math.random()*50000+1000).toFixed(2)},Completed`; }).join('\n');
+        const generateComplianceData = (report) => `Compliance Audit Report\n\nReport Name: ${report.name}\nGenerated On: ${report.generatedOn.toLocaleString()}\n\nSection,Status,Notes\nState-Level Compliance,PASS,All states submitted on time.\nDistrict-Level Disbursement,PASS,98% disbursements within SLA.\nData Integrity Check,WARNING,25 minor data mismatches found.\nSecurity Protocols,PASS,No breaches detected.`;
+        const generatePerformanceData = (report) => `State,Metric,Value,YoY Change\nMaharashtra,Avg. Disbursement Time,25 days,-10%\nUttar Pradesh,Beneficiaries Covered,1.2M,+15%\nKerala,Fund Utilization,98%,+2%\nBihar,Pending Applications,8,520,-5%`;
+        const generateAuditData = (report) => `Audit Log Report\n\nGenerated On: ${report.generatedOn.toLocaleString()}\n\nTimestamp,User,Action,Details\n${new Date(Date.now()-36e5).toLocaleString()},Mr. R. Verma,LOGIN,Successful login from IP 192.168.1.5\n${new Date(Date.now()-72e5).toLocaleString()},System,REPORT_GENERATED,${report.name}\n${new Date(Date.now()-108e5).toLocaleString()},Dr. A. Sharma,APPROVAL,Approved batch #B75-23`;
+        const generateSecurityData = (report) => `Security Anomaly Report\n\nGenerated On: ${report.generatedOn.toLocaleString()}\n\nSeverity,Type,Details\nHIGH,Unusual Login,Login from new country for user 'auditor01'\nMEDIUM,Data Access,User 'clerk05' attempted to export masked data\nCRITICAL,SQL Injection Attempt,Blocked attempt from IP 203.0.113.55`;
+
+        function generateMockData() {
+            const reportTemplates = [
+                { name: "Q3 Financial Summary", type: "Financial", generator: generateFinancialData },
+                { name: "Monthly Compliance Audit", type: "Compliance", generator: generateComplianceData },
+                { name: "State Performance Metrics", type: "Performance", generator: generatePerformanceData },
+                { name: "Beneficiary Disbursement Log", type: "Financial", generator: generateFinancialData },
+                { name: "Anomaly Detection Summary", type: "Security", generator: generateSecurityData },
+                { name: "Annual Financial Statement", type: "Financial", generator: generateFinancialData },
+                { name: "Quarterly Incentive Tracker", type: "Performance", generator: generatePerformanceData },
+                { name: "State Delay Analysis", type: "Performance", generator: generatePerformanceData },
+                { name: "National Impact Score Breakdown", type: "Performance", generator: generatePerformanceData },
+                { name: "User Activity Log", type: "Audit", generator: generateAuditData }
+            ];
+            const statuses = ["Generated", "Pending", "Failed", "Archived", "Generated", "Generated", "Pending"];
+            const users = ["Dr. A. Sharma", "Mr. R. Verma", "Ms. S. Singh", "System", "Mr. P. Kumar", "Dr. A. Sharma", "System"];
+            const data = [];
+            for (let i = 0; i < 30; i++) {
+                const template = reportTemplates[i % reportTemplates.length];
+                data.push({
+                    id: i + 1,
+                    name: `${template.name} #${Math.floor(i / 10) + 1}`,
+                    type: template.type,
+                    generatedOn: new Date(Date.now() - Math.floor(Math.random() * 120) * 24 * 60 * 60 * 1000),
+                    generatedBy: users[i % users.length],
+                    status: statuses[i % statuses.length],
+                    generator: template.generator
+                });
+            }
+            appState.reports = data;
+        }
+
+        // --- RENDER & FILTER ---
+        function renderTable() {
+            const tableBody = document.getElementById('reports-table-body');
+            const { status, date, search } = appState.filters;
+
+            let filteredReports = appState.reports.filter(report => {
+                const statusMatch = status === 'all' || report.status === status;
+                const searchMatch = search === '' || report.name.toLowerCase().includes(search.toLowerCase()) || report.generatedBy.toLowerCase().includes(search.toLowerCase());
+                let dateMatch = true;
+                if (date !== 'all') { const days = parseInt(date); const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000); dateMatch = report.generatedOn > cutoff; }
+                return statusMatch && searchMatch && dateMatch;
+            });
+
+            filteredReports.sort((a, b) => appState.sort.order === 'asc' ? a.generatedOn - b.generatedOn : b.generatedOn - a.generatedOn);
+
+            tableBody.innerHTML = '';
+            if (filteredReports.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-500 dark:text-gray-400">No reports found.</td></tr>`;
+            } else {
+                 filteredReports.forEach(report => {
+                    const statusConfig = { 'Generated': { bg: 'bg-green-100 dark:bg-green-500/10', text: 'text-green-800 dark:text-green-300' }, 'Pending': { bg: 'bg-yellow-100 dark:bg-yellow-500/10', text: 'text-yellow-800 dark:text-yellow-300' }, 'Failed': { bg: 'bg-red-100 dark:bg-red-500/10', text: 'text-red-800 dark:text-red-300' }, 'Archived': { bg: 'bg-slate-100 dark:bg-gray-700', text: 'text-slate-600 dark:text-gray-400' } }[report.status];
+                    const row = tableBody.insertRow();
+                    row.className = 'bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700';
+                    row.dataset.reportId = report.id;
+                    row.innerHTML = `<td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">${report.name}</td><td class="px-6 py-4 text-slate-600 dark:text-gray-300">${report.type}</td><td class="px-6 py-4 text-slate-600 dark:text-gray-300">${report.generatedOn.toLocaleDateString()}</td><td class="px-6 py-4 text-slate-600 dark:text-gray-300">${report.generatedBy}</td><td class="px-6 py-4"><span class="px-2 py-1 text-xs font-semibold rounded-full ${statusConfig.bg} ${statusConfig.text}">${report.status}</span></td><td class="px-6 py-4 text-center"><div class="relative inline-block text-left"><button class="download-btn inline-flex items-center justify-center w-full rounded-md border border-slate-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-sm font-medium text-slate-700 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Download <i data-lucide="chevron-down" class="w-4 h-4 ml-2 -mr-1"></i></button><div class="download-menu origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-10"><div class="py-1" role="menu"><a href="#" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700" role="menuitem">PDF</a><a href="#" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700" role="menuitem">CSV</a><a href="#" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700" role="menuitem">XLS</a></div></div></div></td>`;
+                });
+            }
+            lucide.createIcons();
+            updateStats(filteredReports);
+        }
+        
+        function updateStats(filteredReports) {
+            document.getElementById('total-reports-stat').textContent = filteredReports.length;
+            const now = new Date(); const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+            document.getElementById('generated-reports-stat').textContent = filteredReports.filter(r => r.status === 'Generated' && r.generatedOn > oneMonthAgo).length;
+            document.getElementById('pending-reports-stat').textContent = filteredReports.filter(r => r.status === 'Pending').length;
+            document.getElementById('failed-reports-stat').textContent = filteredReports.filter(r => r.status === 'Failed').length;
+        }
+        
+        function downloadFile(filename, content, mimeType = 'text/plain;charset=utf-8') {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // --- MODAL & THEME MANAGEMENT ---
+        const openModal = (modalEl) => { modalEl.classList.remove('hidden'); setTimeout(() => { modalEl.classList.remove('opacity-0'); modalEl.querySelector('.modal-container').classList.remove('scale-95', 'opacity-0'); }, 10); };
+        const closeModal = (modalEl) => { modalEl.classList.add('opacity-0'); modalEl.querySelector('.modal-container').classList.add('scale-95', 'opacity-0'); setTimeout(() => { modalEl.classList.add('hidden'); }, 300); };
+        const setTheme = (isDark) => {
+            appState.isDark = isDark;
+            document.documentElement.classList.toggle('dark', isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-toggle-light-icon').classList.toggle('hidden', isDark);
+            document.getElementById('theme-toggle-dark-icon').classList.toggle('hidden', !isDark);
+        };
+
+        // --- EVENT BINDING ---
+        document.getElementById('theme-toggle').addEventListener('click', () => setTheme(!document.documentElement.classList.contains('dark')));
+        document.getElementById('search-input').addEventListener('input', (e) => { appState.filters.search = e.target.value; renderTable(); });
+        document.getElementById('status-filter').addEventListener('change', (e) => { appState.filters.status = e.target.value; renderTable(); });
+        document.getElementById('date-filter').addEventListener('change', (e) => { appState.filters.date = e.target.value; renderTable(); });
+
+        const generateModal = document.getElementById('generate-report-modal');
+        document.getElementById('generate-report-btn').addEventListener('click', () => openModal(generateModal));
+        generateModal.addEventListener('click', e => { if (e.target.matches('.modal-overlay, .close-modal-btn, .close-modal-btn *')) closeModal(generateModal); });
+        
+        document.getElementById('reports-table-body').addEventListener('click', e => {
+            const button = e.target.closest('.download-btn');
+            if (button) {
+                document.querySelectorAll('.download-menu').forEach(div => { if (div !== button.nextElementSibling) div.classList.add('hidden'); });
+                button.nextElementSibling.classList.toggle('hidden');
+            } else if (e.target.closest('.download-menu a')) {
+                e.preventDefault();
+                const link = e.target.closest('.download-menu a');
+                const row = e.target.closest('tr');
+                const reportId = parseInt(row.dataset.reportId);
+                const report = appState.reports.find(r => r.id === reportId);
+                const format = link.textContent.toLowerCase();
+                
+                if (report && report.generator) {
+                    const content = report.generator(report);
+                    const filename = `${report.name.replace(/ /g, '_')}.${format === 'xls' ? 'csv' : format}`; // Use CSV for XLS mock
+                    const mimeType = format === 'pdf' ? 'text/plain;charset=utf-8' : 'text/csv;charset=utf-8';
+                    downloadFile(filename, content, mimeType);
+                }
+                link.closest('.download-menu').classList.add('hidden');
+            }
+        });
+
+        window.addEventListener('click', e => { if (!e.target.closest('.download-btn')) { document.querySelectorAll('.download-menu').forEach(div => div.classList.add('hidden')); }});
+        
+        document.getElementById('date-sort-header').addEventListener('click', () => {
+            appState.sort.order = appState.sort.order === 'asc' ? 'desc' : 'asc';
+            const icon = document.querySelector('#date-sort-header i');
+            icon.setAttribute('data-lucide', appState.sort.order === 'asc' ? 'arrow-up' : 'arrow-down');
+            lucide.createIcons();
+            renderTable();
+        });
+        
+        // --- INITIALIZATION ---
+        const initialIsDark = localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        setTheme(initialIsDark);
+        generateMockData();
+        renderTable();
+        lucide.createIcons();
+    });
+    </script>
+</body>
+</html>

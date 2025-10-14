@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance | CSS Governance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configure Tailwind to use the 'dark' class for dark mode
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar {
+            background-color: #ffffff;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        /* Dark mode specific card styles */
+        .dark .card {
+            background-color: #1c1b1a;
+            border: 1px solid #374151; /* gray-700 */
+            box-shadow: none;
+        }
+        .dark .card:hover {
+            background-color: #2c2b2a;
+        }
+        /* Style for table row hover */
+        tbody tr:hover {
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .dark tbody tr:hover {
+            background-color: #374151; /* gray-700 */
+        }
+        .state-row {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-[#fdfaf6] dark:bg-black">
+    <aside class="sidebar w-64 flex-shrink-0 border-r border-slate-200 dark:border-gray-700 flex flex-col dark:bg-[#1c1b1a]">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold text-slate-800 dark:text-gray-100 flex items-center">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7 mr-2 text-indigo-600"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path><path d="M12 3v2"></path><path d="M12 19v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M3 12h2"></path><path d="M19 12h2"></path><path d="m4.93 19.07 1.41-1.41"></path><path d="m17.66 6.34 1.41-1.41"></path></svg>
+                CSS Governance
+            </h1>
+        </div>
+        <nav class="flex-1 px-4 py-2">
+            <a href="state.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg font-medium">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                Dashboard
+            </a>
+            <a href="financials.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="landmark" class="w-5 h-5 mr-3"></i>
+                Financials
+            </a>
+            <a href="performance.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="bar-chart-3" class="w-5 h-5 mr-3"></i>
+                Performance
+            </a>
+            <a href="compliance.html" class="flex items-center px-4 py-2.5 text-slate-700 bg-indigo-50 dark:bg-white dark:text-slate-900 rounded-lg mt-1 font-semibold">
+                <i data-lucide="shield-check" class="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-600"></i>
+                Compliance
+            </a>
+             <a href="reports.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="file-spreadsheet" class="w-5 h-5 mr-3"></i>
+                Reports
+            </a>
+        </nav>
+        <div class="p-4 mt-auto">
+            <a href="#" class="flex items-center px-4 py-4 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-4 font-medium">
+                <i data-lucide="log-out" class="w-5 h-5 mr-3"></i>
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 lg:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-800 dark:text-gray-100">Compliance Dashboard</h2>
+                <p class="text-slate-500 dark:text-gray-400 mt-1">Monitoring legal mandates, V&MC activity, and API health.</p>
+            </div>
+            <div class="flex items-center mt-4 sm:mt-0">
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700">
+                        <i data-lucide="bell" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i>
+                    </button>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700">
+                        <i data-lucide="sun" id="theme-toggle-light-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i>
+                        <i data-lucide="moon" id="theme-toggle-dark-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400 hidden"></i>
+                    </button>
+                </div>
+                <div class="flex items-center ml-6">
+                    <img src="https://placehold.co/40x40/E2E8F0/475569?text=PS" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="ml-3">
+                        <p class="font-semibold text-slate-800 dark:text-gray-100">Ms. Priya Singh</p>
+                        <p class="text-sm text-slate-500 dark:text-gray-400">Secretary, Social Welfare</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="card p-5">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">V&MC Meeting Compliance</h3>
+                    <div class="p-2 bg-yellow-100 dark:bg-yellow-500/10 rounded-md"><i data-lucide="gavel" class="w-5 h-5 text-yellow-600 dark:text-yellow-400"></i></div>
+                </div>
+                <p id="vmc-compliance-rate" class="text-4xl font-bold text-yellow-600 dark:text-yellow-500 mt-2">...%</p>
+                <p id="vmc-non-compliant-districts" class="text-sm text-slate-500 dark:text-gray-400 mt-1">Calculating...</p>
+            </div>
+             <div class="card p-5">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">API Health Status</h3>
+                    <div class="p-2 bg-green-100 dark:bg-green-500/10 rounded-md"><i data-lucide="server" class="w-5 h-5 text-green-600 dark:text-green-400"></i></div>
+                </div>
+                <p id="api-overall-status" class="text-3xl font-bold text-green-600 dark:text-green-500 mt-2 pt-1">Checking...</p>
+                <p id="api-status-message" class="text-sm text-slate-500 dark:text-gray-400 mt-1">Please wait...</p>
+            </div>
+            <div class="card p-5">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Conviction Rate (PoA)</h3>
+                    <div class="p-2 bg-indigo-100 dark:bg-indigo-500/10 rounded-md"><i data-lucide="scale" class="w-5 h-5 text-indigo-600 dark:text-indigo-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">32.4%</p>
+                <p class="text-sm text-green-600 flex items-center mt-1"><i data-lucide="arrow-up" class="w-4 h-4 mr-1"></i><span>0.8%</span> <span class="text-slate-500 dark:text-gray-400 ml-1">vs last year</span></p>
+            </div>
+            <div class="card p-5">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Cases with Relief Delay</h3>
+                    <div class="p-2 bg-red-100 dark:bg-red-500/10 rounded-md"><i data-lucide="alert-circle" class="w-5 h-5 text-red-600 dark:text-red-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-red-600 dark:text-red-500 mt-2">1,245</p>
+                 <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">Violated statutory timelines</p>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="card p-5">
+                <div class="flex justify-between items-center mb-4">
+                     <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">Vigilance & Monitoring Committee (V&MC) Status</h3>
+                     <button id="download-csv" class="flex items-center bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-indigo-200 dark:hover:bg-indigo-500/30">
+                        <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                        Download CSV
+                    </button>
+                </div>
+                 <div class="overflow-y-auto h-96">
+                     <table class="w-full text-left text-sm" id="vmc-table">
+                         <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800 sticky top-0">
+                             <tr>
+                                 <th class="px-4 py-2">State / District</th>
+                                 <th class="px-4 py-2">Last Meeting</th>
+                                 <th class="px-4 py-2">Next Due</th>
+                                 <th class="px-4 py-2">Status</th>
+                             </tr>
+                         </thead>
+                         <tbody id="vmc-table-body">
+                            <!-- JS will populate this -->
+                         </tbody>
+                     </table>
+                 </div>
+            </div>
+            
+            <div class="card p-5">
+                 <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100 mb-4">Inter-Agency API Health Check</h3>
+                 <div class="space-y-6">
+                     <div class="api-status">
+                         <div class="flex justify-between items-center mb-1">
+                             <span class="font-semibold text-slate-700 dark:text-gray-200 flex items-center"><i data-lucide="shield" class="w-4 h-4 mr-2 text-blue-500"></i>CCTNS</span>
+                             <span id="cctns-uptime" class="text-sm font-medium text-green-600 dark:text-green-500">...</span>
+                         </div>
+                         <div class="flex justify-between text-xs text-slate-500 dark:text-gray-400">
+                            <span id="cctns-stats">...</span>
+                            <span id="cctns-response">...</span>
+                         </div>
+                         <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-1.5 mt-2"><div id="cctns-bar" class="bg-green-500 h-1.5 rounded-full" style="width: 0%;"></div></div>
+                     </div>
+                     <div class="api-status">
+                         <div class="flex justify-between items-center mb-1">
+                             <span class="font-semibold text-slate-700 dark:text-gray-200 flex items-center"><i data-lucide="landmark" class="w-4 h-4 mr-2 text-orange-500"></i>e-Courts</span>
+                             <span id="ecourts-uptime" class="text-sm font-medium text-green-600 dark:text-green-500">...</span>
+                         </div>
+                          <div class="flex justify-between text-xs text-slate-500 dark:text-gray-400">
+                             <span id="ecourts-stats">...</span>
+                             <span id="ecourts-response">...</span>
+                          </div>
+                         <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-1.5 mt-2"><div id="ecourts-bar" class="bg-green-500 h-1.5 rounded-full" style="width: 0%;"></div></div>
+                     </div>
+                      <div class="api-status">
+                         <div class="flex justify-between items-center mb-1">
+                             <span class="font-semibold text-slate-700 dark:text-gray-200 flex items-center"><i data-lucide="banknote" class="w-4 h-4 mr-2 text-emerald-500"></i>PFMS</span>
+                             <span id="pfms-uptime" class="text-sm font-medium text-green-600 dark:text-green-500">...</span>
+                         </div>
+                          <div class="flex justify-between text-xs text-slate-500 dark:text-gray-400">
+                             <span id="pfms-stats">...</span>
+                             <span id="pfms-response">...</span>
+                          </div>
+                         <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-1.5 mt-2"><div id="pfms-bar" class="bg-green-500 h-1.5 rounded-full" style="width: 0%;"></div></div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+
+        <div class="card p-5">
+             <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">Policy Analysis Tool</h3>
+             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 my-4">
+                 <select id="atrocity-type-filter" class="w-full text-sm border-slate-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300">
+                     <option value="All">All Atrocity Types</option>
+                     <option value="Social Boycott">Social boycott</option>
+                     <option value="Forced Labour">Forced labour</option>
+                     <option value="Insult">Insulting a member</option>
+                     <option value="Land Alienation">Land Alienation</option>
+                     <option value="Other">Other</option>
+                 </select>
+                 <select id="demographic-filter" class="w-full text-sm border-slate-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300">
+                     <option value="All">All Victim Demographics</option>
+                     <option value="Female, 18-30">Female, 18-30</option>
+                     <option value="Male, 60+">Male, 60+</option>
+                     <option value="Minor">Minor</option>
+                 </select>
+                 <select id="status-filter" class="w-full text-sm border-slate-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300">
+                     <option value="All">All Case Statuses</option>
+                     <option value="Conviction">Conviction</option>
+                     <option value="Acquittal">Acquittal</option>
+                 </select>
+                 <button id="apply-filters-btn" class="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 dark:hover:bg-indigo-500 flex items-center justify-center">
+                     <i data-lucide="filter" class="w-4 h-4 mr-2"></i>Apply Filters
+                 </button>
+            </div>
+            <div style="height: 350px;">
+                <canvas id="policyAnalysisChart"></canvas>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            lucide.createIcons();
+
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            let charts = {};
+
+            // --- API HEALTH CHECK ---
+            const API_KEY = ''; // <-- PASTE YOUR API KEY HERE
+
+            function updateApiStatusUI(apiName, data) {
+                const uptime = ((data.success / (data.success + data.fail)) * 100).toFixed(2);
+                const avgResponse = data.avgResponse;
+
+                document.getElementById(`${apiName}-uptime`).textContent = `${uptime}% Uptime`;
+                document.getElementById(`${apiName}-stats`).textContent = `Success: ${data.success.toLocaleString()} | Fail: ${data.fail.toLocaleString()}`;
+                const responseEl = document.getElementById(`${apiName}-response`);
+                responseEl.textContent = `Avg. Response: ${avgResponse}ms`;
+                
+                responseEl.classList.remove('text-yellow-600', 'dark:text-yellow-500', 'text-red-600', 'dark:text-red-500');
+                if (avgResponse > 200) {
+                    responseEl.classList.add('text-yellow-600', 'dark:text-yellow-500');
+                }
+
+                document.getElementById(`${apiName}-bar`).style.width = `${uptime}%`;
+                
+                return { uptime, avgResponse };
+            }
+
+            async function fetchApiHealth() {
+                try {
+                    let apiData;
+                    if (API_KEY) {
+                        console.log("API key found. In a real app, this would fetch live data.");
+                         apiData = {
+                            cctns: { success: 1203450, fail: 240, avgResponse: 35 },
+                            ecourts: { success: 890123, fail: 1335, avgResponse: 210 },
+                            pfms: { success: 2501890, fail: 0, avgResponse: 55 }
+                        };
+                    } else {
+                        console.log("No API key found. Using mock data.");
+                        apiData = {
+                            cctns: { success: 1203450, fail: 240, avgResponse: 35 },
+                            ecourts: { success: 890123, fail: 1335, avgResponse: 210 },
+                            pfms: { success: 2501890, fail: 0, avgResponse: 55 }
+                        };
+                    }
+
+                    const ecourts_res = updateApiStatusUI('ecourts', apiData.ecourts);
+                    updateApiStatusUI('cctns', apiData.cctns);
+                    updateApiStatusUI('pfms', apiData.pfms);
+                    
+                    const overallStatusEl = document.getElementById('api-overall-status');
+                    const statusMessageEl = document.getElementById('api-status-message');
+                    
+                    if (ecourts_res.avgResponse > 200) {
+                        overallStatusEl.textContent = 'High Latency';
+                        overallStatusEl.className = 'text-3xl font-bold text-yellow-600 dark:text-yellow-500 mt-2 pt-1';
+                        statusMessageEl.textContent = 'e-Courts API is showing high latency.';
+                    } else {
+                        overallStatusEl.textContent = 'All Systems Normal';
+                        overallStatusEl.className = 'text-3xl font-bold text-green-600 dark:text-green-500 mt-2 pt-1';
+                        statusMessageEl.textContent = 'All APIs are responding normally.';
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch or display API health data:", error);
+                    document.getElementById('api-overall-status').textContent = 'Error';
+                    document.getElementById('api-overall-status').classList.add('text-red-500');
+                    document.getElementById('api-status-message').textContent = 'Could not load API health data.';
+                }
+            }
+
+            fetchApiHealth();
+
+
+            // --- V&MC DATA GENERATION AND TABLE POPULATION ---
+            const states = [
+                "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana",
+                "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+                "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+                "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+            ];
+            const vmcDataStructured = {};
+            const today = new Date('2025-10-13T23:35:00');
+            const ninetyDays = 90 * 24 * 60 * 60 * 1000;
+            states.forEach(state => {
+                const stateLastMeeting = new Date(today.getTime() - Math.random() * 180 * 24 * 60 * 60 * 1000);
+                const stateNextDue = new Date(stateLastMeeting.getTime() + 180 * 24 * 60 * 60 * 1000);
+                let stateStatus;
+                if (stateNextDue < today) stateStatus = 'DELAYED';
+                else if (stateNextDue.getTime() - today.getTime() < (30 * 24 * 60 * 60 * 1000)) stateStatus = 'Upcoming';
+                else stateStatus = 'Compliant';
+                vmcDataStructured[state] = { level: 'State', lastMeeting: stateLastMeeting, nextDue: stateNextDue, status: stateStatus, districts: [] };
+                for (let i = 1; i <= 4; i++) {
+                    const lastMeeting = new Date(today.getTime() - Math.random() * 90 * 24 * 60 * 60 * 1000);
+                    const nextDue = new Date(lastMeeting.getTime() + ninetyDays);
+                    let status;
+                    if (nextDue < today) status = 'DELAYED';
+                    else if (nextDue.getTime() - today.getTime() < (30 * 24 * 60 * 60 * 1000)) status = 'Upcoming';
+                    else status = 'Compliant';
+                    vmcDataStructured[state].districts.push({ level: 'District', name: `District ${i}`, lastMeeting: lastMeeting, nextDue: nextDue, status: status });
+                }
+            });
+            const tableBody = document.getElementById('vmc-table-body');
+            const formatDate = date => date.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }).replace(/ /g, '-');
+            const statusColors = { 'Compliant': 'bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400', 'Upcoming': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400', 'DELAYED': 'bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400' };
+            let nonCompliantCount = 0;
+            let totalDistricts = 0;
+            Object.keys(vmcDataStructured).forEach(stateName => {
+                const stateData = vmcDataStructured[stateName];
+                const stateRow = document.createElement('tr');
+                stateRow.className = 'border-b dark:border-gray-700 state-row';
+                stateRow.dataset.state = stateName;
+                stateRow.innerHTML = `<td class="px-4 py-3 font-bold text-slate-800 dark:text-gray-100"><div class="flex items-center"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2 text-slate-500 transition-transform transform"><polyline points="9 18 15 12 9 6"></polyline></svg>${stateName}</div></td><td class="px-4 py-3 text-slate-600 dark:text-gray-400">${formatDate(stateData.lastMeeting)}</td><td class="px-4 py-3 text-slate-600 dark:text-gray-400 ${stateData.status === 'DELAYED' ? 'text-red-600 dark:text-red-500 font-semibold' : ''}">${formatDate(stateData.nextDue)}</td><td class="px-4 py-3"><span class="${statusColors[stateData.status]} text-xs font-semibold px-2 py-1 rounded-full">${stateData.status}</span></td>`;
+                tableBody.appendChild(stateRow);
+                stateData.districts.forEach(district => {
+                    totalDistricts++;
+                    if (district.status === 'DELAYED') nonCompliantCount++;
+                    const districtRow = document.createElement('tr');
+                    districtRow.className = 'border-b dark:border-gray-700 district-row hidden';
+                    districtRow.dataset.parentState = stateName;
+                    districtRow.innerHTML = `<td class="px-4 py-3 font-medium text-slate-700 dark:text-gray-200 pl-12">${district.name}</td><td class="px-4 py-3 text-slate-600 dark:text-gray-400">${formatDate(district.lastMeeting)}</td><td class="px-4 py-3 text-slate-600 dark:text-gray-400 ${district.status === 'DELAYED' ? 'text-red-600 dark:text-red-500 font-semibold' : ''}">${formatDate(district.nextDue)}</td><td class="px-4 py-3"><span class="${statusColors[district.status]} text-xs font-semibold px-2 py-1 rounded-full">${district.status}</span></td>`;
+                    tableBody.appendChild(districtRow);
+                });
+            });
+            tableBody.addEventListener('click', e => {
+                const stateRow = e.target.closest('.state-row');
+                if (!stateRow) return;
+                const stateName = stateRow.dataset.state;
+                stateRow.querySelector('svg').classList.toggle('rotate-90');
+                tableBody.querySelectorAll(`.district-row[data-parent-state="${stateName}"]`).forEach(row => row.classList.toggle('hidden'));
+            });
+            document.getElementById('vmc-compliance-rate').textContent = `${Math.round(((totalDistricts - nonCompliantCount) / totalDistricts) * 100)}%`;
+            document.getElementById('vmc-non-compliant-districts').textContent = `${nonCompliantCount} of ${totalDistricts} districts are non-compliant`;
+            document.getElementById('download-csv').addEventListener('click', () => {
+                const headers = ['Level', 'Name', 'Last Meeting', 'Next Due', 'Status'];
+                const csvRows = [headers.join(',')];
+                Object.keys(vmcDataStructured).forEach(stateName => {
+                    const stateData = vmcDataStructured[stateName];
+                    csvRows.push(['State', `"${stateName}"`, formatDate(stateData.lastMeeting), formatDate(stateData.nextDue), stateData.status].join(','));
+                    stateData.districts.forEach(district => { csvRows.push(['District', `"${stateName} - ${district.name}"`, formatDate(district.lastMeeting), formatDate(district.nextDue), district.status].join(',')) });
+                });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' }));
+                link.setAttribute('download', 'vmc_status_report.csv');
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+
+            // --- POLICY ANALYSIS TOOL ---
+            const atrocityTypes = ['Forced Labour', 'Insult', 'Land Alienation', 'Social Boycott', 'Other'];
+            const demographics = ['Female, 18-30', 'Male, 60+', 'Minor', 'Other'];
+            const statuses = ['Conviction', 'Acquittal'];
+            const policyDemoData = [];
+            for (let i = 0; i < 30; i++) {
+                policyDemoData.push({
+                    atrocityType: atrocityTypes[Math.floor(Math.random() * atrocityTypes.length)],
+                    victimDemographic: demographics[Math.floor(Math.random() * demographics.length)],
+                    caseStatus: statuses[Math.floor(Math.random() * statuses.length)],
+                });
+            }
+
+            const applyFiltersBtn = document.getElementById('apply-filters-btn');
+            const atrocityFilterEl = document.getElementById('atrocity-type-filter');
+            const demographicFilterEl = document.getElementById('demographic-filter');
+            const statusFilterEl = document.getElementById('status-filter');
+
+            function updatePolicyChart(filteredData) {
+                const dataForChart = {
+                    'Forced Labour': { Conviction: 0, Acquittal: 0 },
+                    'Insult': { Conviction: 0, Acquittal: 0 },
+                    'Land Alienation': { Conviction: 0, Acquittal: 0 },
+                    'Social Boycott': { Conviction: 0, Acquittal: 0 },
+                    'Other': { Conviction: 0, Acquittal: 0 },
+                };
+
+                for (const item of filteredData) {
+                    if (dataForChart[item.atrocityType]) {
+                        dataForChart[item.atrocityType][item.caseStatus]++;
+                    }
+                }
+                
+                charts.policy.data.datasets[0].data = atrocityTypes.map(type => dataForChart[type].Conviction);
+                charts.policy.data.datasets[1].data = atrocityTypes.map(type => dataForChart[type].Acquittal);
+                charts.policy.update();
+            }
+
+            function applyPolicyFilters() {
+                const type = atrocityFilterEl.value;
+                const demographic = demographicFilterEl.value;
+                const status = statusFilterEl.value;
+
+                const filteredData = policyDemoData.filter(item => 
+                    (type === 'All' || item.atrocityType === type) &&
+                    (demographic === 'All' || item.victimDemographic === demographic) &&
+                    (status === 'All' || item.caseStatus === status)
+                );
+                updatePolicyChart(filteredData);
+            }
+
+            applyFiltersBtn.addEventListener('click', applyPolicyFilters);
+
+
+            // --- CHARTING AND THEME LOGIC ---
+            const getChartOptions = (isDark) => {
+                const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0';
+                const textColor = isDark ? '#9ca3af' : '#64748b';
+                
+                return {
+                    stackedBar: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            y: { grid: { color: gridColor }, ticks: { color: textColor }, stacked: true },
+                            x: { grid: { display: false }, ticks: { color: textColor }, stacked: true }
+                        },
+                        plugins: { legend: { position: 'top', align: 'end', labels: { color: textColor } } },
+                        interaction: { intersect: false, mode: 'index' },
+                    }
+                };
+            };
+            
+            function createCharts(isDark) {
+                const options = getChartOptions(isDark);
+
+                // Policy Analysis Chart
+                const policyCtx = document.getElementById('policyAnalysisChart').getContext('2d');
+                charts.policy = new Chart(policyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: atrocityTypes,
+                        datasets: [
+                            { label: 'Conviction', data: [], backgroundColor: isDark ? '#22c55e' : '#16a34a', borderRadius: 4 },
+                            { label: 'Acquittal', data: [], backgroundColor: isDark ? '#ef4444' : '#dc2626', borderRadius: 4 }
+                        ]
+                    },
+                    options: options.stackedBar
+                });
+                // Initial population of the chart
+                applyPolicyFilters();
+            }
+            
+            function updateAllChartsTheme(isDark) {
+                if(charts.policy) charts.policy.destroy();
+                createCharts(isDark);
+            }
+
+            const setTheme = (isDark) => {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    lightIcon.classList.add('hidden');
+                    darkIcon.classList.remove('hidden');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    lightIcon.classList.remove('hidden');
+                    darkIcon.classList.add('hidden');
+                    localStorage.setItem('theme', 'light');
+                }
+                updateAllChartsTheme(isDark);
+            };
+
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            const isDarkMode = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+            
+            setTheme(isDarkMode);
+
+            themeToggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                setTheme(!isDark);
+            });
+        });
+    </script>
+</body>
+</html>
+

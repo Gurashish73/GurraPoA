@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financials | CSS Governance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configure Tailwind to use the 'dark' class for dark mode
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar {
+            background-color: #ffffff;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        /* Dark mode specific card styles */
+        .dark .card {
+            background-color: #1c1b1a;
+            border: 1px solid #374151; /* gray-700 */
+            box-shadow: none;
+        }
+        .dark .card:hover {
+            background-color: #2c2b2a;
+        }
+        /* Style for sortable table headers */
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+        }
+        .sortable-header:hover {
+            background-color: #f1f5f9;
+        }
+        .dark .sortable-header:hover {
+             background-color: #374151;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-[#fdfaf6] dark:bg-black">
+    <aside class="sidebar w-64 flex-shrink-0 border-r border-slate-200 dark:border-gray-700 flex flex-col dark:bg-[#1c1b1a]">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold text-slate-800 dark:text-gray-100 flex items-center">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7 mr-2 text-indigo-600"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path><path d="M12 3v2"></path><path d="M12 19v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M3 12h2"></path><path d="M19 12h2"></path><path d="m4.93 19.07 1.41-1.41"></path><path d="m17.66 6.34 1.41-1.41"></path></svg>
+                CSS Governance
+            </h1>
+        </div>
+        <nav class="flex-1 px-4 py-2">
+            <a href="state.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg font-medium">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                Dashboard
+            </a>
+            <a href="financials.html" class="flex items-center px-4 py-2.5 text-slate-700 bg-indigo-50 dark:bg-white dark:text-slate-900 rounded-lg mt-1 font-semibold">
+                <i data-lucide="landmark" class="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-600"></i>
+                Financials
+            </a>
+            <a href="performance.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="bar-chart-3" class="w-5 h-5 mr-3"></i>
+                Performance
+            </a>
+            <a href="compliance.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="shield-check" class="w-5 h-5 mr-3"></i>
+                Compliance
+            </a>
+             <a href="reports.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="file-spreadsheet" class="w-5 h-5 mr-3"></i>
+                Reports
+            </a>
+        </nav>
+        <div class="p-4 mt-auto">
+            <a href="#" class="flex items-center px-4 py-4 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-4 font-medium">
+                <i data-lucide="log-out" class="w-5 h-5 mr-3"></i>
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 lg:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-800 dark:text-gray-100">Financials Dashboard</h2>
+                <p class="text-slate-500 dark:text-gray-400 mt-1">Detailed view of fund flow, utilization, and PFMS transactions.</p>
+            </div>
+            <div class="flex items-center mt-4 sm:mt-0">
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700">
+                        <i data-lucide="bell" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i>
+                    </button>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700">
+                        <i data-lucide="sun" id="theme-toggle-light-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i>
+                        <i data-lucide="moon" id="theme-toggle-dark-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400 hidden"></i>
+                    </button>
+                </div>
+                <div class="flex items-center ml-6">
+                    <img src="https://placehold.co/40x40/E2E8F0/475569?text=PS" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="ml-3">
+                        <p class="font-semibold text-slate-800 dark:text-gray-100">Ms. Priya Singh</p>
+                        <p class="text-sm text-slate-500 dark:text-gray-400">Secretary, Social Welfare</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="card p-5">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Total Budget (FY 2025-26)</h3>
+                    <div class="p-2 bg-indigo-100 dark:bg-indigo-500/10 rounded-md"><i data-lucide="wallet" class="w-5 h-5 text-indigo-600 dark:text-indigo-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">₹125 Cr</p>
+            </div>
+            <div class="card p-5">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Funds Released (Central)</h3>
+                    <div class="p-2 bg-blue-100 dark:bg-blue-500/10 rounded-md"><i data-lucide="arrow-down-to-line" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">₹100 Cr</p>
+            </div>
+            <div class="card p-5">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Funds Disbursed</h3>
+                    <div class="p-2 bg-green-100 dark:bg-green-500/10 rounded-md"><i data-lucide="send" class="w-5 h-5 text-green-600 dark:text-green-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">₹98.3 Cr</p>
+            </div>
+            <div class="card p-5">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Utilization Rate</h3>
+                    <div class="p-2 bg-emerald-100 dark:bg-emerald-500/10 rounded-md"><i data-lucide="pie-chart" class="w-5 h-5 text-emerald-600 dark:text-emerald-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-emerald-600 dark:text-emerald-500 mt-2">98.3%</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="card lg:col-span-2 p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">Fund Flow Dynamics (FY 2025-26)</h3>
+                    <select class="border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 rounded-md text-sm px-2 py-1">
+                        <option>Monthly</option>
+                        <option>Quarterly</option>
+                    </select>
+                </div>
+                <div style="height: 300px;">
+                    <canvas id="fundFlowChart"></canvas>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-6">
+                <div class="card p-5 flex-grow">
+                    <h4 class="font-semibold text-slate-800 dark:text-gray-100 mb-3">SNA Account Snapshot</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-500 dark:text-gray-400">Current Balance</span>
+                            <span class="font-semibold text-slate-800 dark:text-gray-100">₹1.7 Cr</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-500 dark:text-gray-400">Total Inflow</span>
+                            <span class="font-semibold text-green-600 dark:text-green-500">₹100 Cr</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-slate-500 dark:text-gray-400">Total Outflow</span>
+                            <span class="font-semibold text-red-600 dark:text-red-500">₹98.3 Cr</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-5 flex-grow">
+                     <h4 class="font-semibold text-slate-800 dark:text-gray-100 mb-2">Payment Failure Analysis</h4>
+                       <div style="height: 120px;">
+                         <canvas id="paymentFailureChart"></canvas>
+                       </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card p-5">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">District-wise Fund Utilization</h3>
+                <div class="flex items-center gap-4 w-full md:w-auto">
+                     <div class="relative w-full md:w-64">
+                         <input type="text" id="district-search" placeholder="Search by district..." class="w-full pl-10 pr-4 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300">
+                         <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                     </div>
+                    <button id="export-csv-btn" class="flex-shrink-0 flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 bg-indigo-50 dark:bg-indigo-500/10 px-4 py-2 rounded-lg">
+                        Export CSV <i data-lucide="file-spreadsheet" class="w-4 h-4 ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-sort="name">
+                                <div class="flex items-center">District <span class="sort-icon ml-1"></span></div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-sort="allocated">
+                                <div class="flex items-center">Allocated <span class="sort-icon ml-1"></span></div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-sort="disbursed">
+                                <div class="flex items-center">Disbursed <span class="sort-icon ml-1"></span></div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-sort="utilization">
+                                <div class="flex items-center">Utilization <span class="sort-icon ml-1"></span></div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-sort="transactions">
+                                <div class="flex items-center">Transactions <span class="sort-icon ml-1"></span></div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-sort="failureRate">
+                                <div class="flex items-center">Failure Rate <span class="sort-icon ml-1"></span></div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="district-table-body">
+                        </tbody>
+                </table>
+                 <div id="no-results" class="text-center py-8 text-slate-500 dark:text-gray-400 hidden">
+                    <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-2"></i>
+                    <p>No districts found matching your search.</p>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mt-4 text-sm text-slate-600 dark:text-gray-400">
+                <span id="pagination-info"></span>
+                <div class="flex gap-2">
+                    <button id="prev-page-btn" class="px-3 py-1 border border-slate-300 dark:border-gray-600 rounded-md hover:bg-slate-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                    <button id="next-page-btn" class="px-3 py-1 border border-slate-300 dark:border-gray-600 rounded-md hover:bg-slate-100 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            lucide.createIcons();
+
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            let charts = {};
+
+            const getChartOptions = (isDark) => {
+                const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0';
+                const textColor = isDark ? '#9ca3af' : '#64748b';
+                const titleColor = isDark ? '#f3f4f6' : '#1e293b';
+                return {
+                    line: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, callback: value => `₹${value} Cr` } },
+                            x: { grid: { display: false }, ticks: { color: textColor } }
+                        },
+                        plugins: { legend: { position: 'top', align: 'end', labels: { color: textColor } } },
+                        interaction: { intersect: false, mode: 'index' },
+                        elements: { line: { tension: 0.3 } }
+                    },
+                    doughnut: {
+                          responsive: true, maintainAspectRatio: false,
+                          cutout: '60%',
+                          plugins: { legend: { display: false }, tooltip: { enabled: true } }
+                    }
+                };
+            };
+            
+            function createCharts(isDark) {
+                const options = getChartOptions(isDark);
+
+                // Fund Flow Over Time Chart
+                const fundFlowCtx = document.getElementById('fundFlowChart').getContext('2d');
+                charts.fundFlow = new Chart(fundFlowCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+                        datasets: [
+                            {
+                                label: 'Released',
+                                data: [10, 25, 40, 50, 65, 80, 90, 100],
+                                borderColor: isDark ? '#818cf8' : '#6366f1',
+                                backgroundColor: isDark ? 'rgba(99, 102, 241, 0.2)' : 'rgba(99, 102, 241, 0.1)',
+                                fill: true,
+                                pointBackgroundColor: '#6366f1'
+                            },
+                             {
+                                label: 'Disbursed',
+                                data: [8, 22, 35, 48, 63, 78, 88, 98.3],
+                                borderColor: isDark ? '#4ade80' : '#22c55e',
+                                backgroundColor: isDark ? 'rgba(34, 197, 94, 0.2)' : 'rgba(34, 197, 94, 0.1)',
+                                fill: true,
+                                pointBackgroundColor: '#22c55e'
+                            }
+                        ]
+                    },
+                    options: options.line
+                });
+
+                // Payment Failure Analysis Chart
+                const paymentFailureCtx = document.getElementById('paymentFailureChart').getContext('2d');
+                charts.paymentFailure = new Chart(paymentFailureCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Invalid Aadhaar', 'Dormant Account', 'Name Mismatch', 'Other'],
+                        datasets: [{
+                            data: [1204, 451, 198, 88],
+                            backgroundColor: ['#ef4444', '#f59e0b', '#f97316', '#6b7280'],
+                            borderWidth: 0,
+                        }]
+                    },
+                    options: options.doughnut
+                });
+            }
+            
+            function updateAllChartsTheme(isDark) {
+                Object.values(charts).forEach(chart => chart.destroy());
+                createCharts(isDark);
+            }
+
+            const setTheme = (isDark) => {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    lightIcon.classList.add('hidden');
+                    darkIcon.classList.remove('hidden');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    lightIcon.classList.remove('hidden');
+                    darkIcon.classList.add('hidden');
+                    localStorage.setItem('theme', 'light');
+                }
+                updateAllChartsTheme(isDark);
+            };
+
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            const isDarkMode = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+            
+            setTheme(isDarkMode);
+
+            themeToggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                setTheme(!isDark);
+            });
+
+            // =====================================================================
+            // == DISTRICT-WISE FUND UTILIZATION TABLE LOGIC
+            // =====================================================================
+
+            // 1. DATA SOURCE (Simulating API response with 30 results)
+            const districtData = [
+                { id: 1, name: 'North Delhi', allocated: 12, disbursed: 11.9, transactions: 1502, failureRate: 0.5 },
+                { id: 2, name: 'West Delhi', allocated: 10, disbursed: 9.7, transactions: 1120, failureRate: 0.8 },
+                { id: 3, name: 'South Delhi', allocated: 15, disbursed: 14.1, transactions: 1890, failureRate: 1.2 },
+                { id: 4, name: 'East Delhi', allocated: 8, disbursed: 6.9, transactions: 950, failureRate: 3.5 },
+                { id: 5, name: 'Central Delhi', allocated: 9.5, disbursed: 9.4, transactions: 1050, failureRate: 0.9 },
+                { id: 6, name: 'New Delhi', allocated: 11, disbursed: 10.9, transactions: 1300, failureRate: 0.4 },
+                { id: 7, name: 'Shahdara', allocated: 7, disbursed: 6.8, transactions: 880, failureRate: 1.1 },
+                { id: 8, name: 'North West Delhi', allocated: 14, disbursed: 13.5, transactions: 1750, failureRate: 1.5 },
+                { id: 9, name: 'South West Delhi', allocated: 13, disbursed: 12.8, transactions: 1620, failureRate: 0.7 },
+                { id: 10, name: 'North East Delhi', allocated: 6, disbursed: 5.1, transactions: 750, failureRate: 4.2 },
+                { id: 11, name: 'South East Delhi', allocated: 10.5, disbursed: 10.2, transactions: 1240, failureRate: 1.3 },
+                { id: 12, name: 'Gurugram', allocated: 18, disbursed: 17.8, transactions: 2200, failureRate: 0.6 },
+                { id: 13, name: 'Faridabad', allocated: 16, disbursed: 15.5, transactions: 1950, failureRate: 1.8 },
+                { id: 14, name: 'Noida', allocated: 20, disbursed: 19.9, transactions: 2500, failureRate: 0.3 },
+                { id: 15, name: 'Ghaziabad', allocated: 17, disbursed: 16.2, transactions: 2100, failureRate: 2.1 },
+                { id: 16, name: 'Meerut', allocated: 9, disbursed: 8.5, transactions: 1100, failureRate: 2.5 },
+                { id: 17, name: 'Agra', allocated: 11.5, disbursed: 10.9, transactions: 1400, failureRate: 1.9 },
+                { id: 18, name: 'Lucknow', allocated: 22, disbursed: 21.5, transactions: 2800, failureRate: 0.9 },
+                { id: 19, name: 'Kanpur', allocated: 19, disbursed: 18.2, transactions: 2300, failureRate: 2.3 },
+                { id: 20, name: 'Varanasi', allocated: 12.5, disbursed: 12.1, transactions: 1600, failureRate: 1.4 },
+                { id: 21, name: 'Prayagraj', allocated: 13.5, disbursed: 12.8, transactions: 1700, failureRate: 2.0 },
+                { id: 22, name: 'Jaipur', allocated: 25, disbursed: 24.8, transactions: 3100, failureRate: 0.5 },
+                { id: 23, name: 'Jodhpur', allocated: 14.5, disbursed: 14.0, transactions: 1800, failureRate: 1.6 },
+                { id: 24, name: 'Udaipur', allocated: 10, disbursed: 9.8, transactions: 1250, failureRate: 1.1 },
+                { id: 25, name: 'Bhopal', allocated: 15.5, disbursed: 15.0, transactions: 1900, failureRate: 1.3 },
+                { id: 26, name: 'Indore', allocated: 21, disbursed: 20.7, transactions: 2600, failureRate: 0.7 },
+                { id: 27, name: 'Patna', allocated: 16.5, disbursed: 15.8, transactions: 2000, failureRate: 2.2 },
+                { id: 28, name: 'Gaya', allocated: 8.5, disbursed: 7.9, transactions: 1000, failureRate: 3.1 },
+                { id: 29, name: 'Ranchi', allocated: 11, disbursed: 10.7, transactions: 1350, failureRate: 1.0 },
+                { id: 30, name: 'Jamshedpur', allocated: 12, disbursed: 11.5, transactions: 1450, failureRate: 1.7 }
+            ].map(d => ({ ...d, utilization: d.allocated > 0 ? parseFloat(((d.disbursed / d.allocated) * 100).toFixed(1)) : 0 }));
+
+
+            // 2. STATE MANAGEMENT
+            let currentPage = 1;
+            const rowsPerPage = 5;
+            let currentSort = { key: 'name', direction: 'asc' };
+            let searchQuery = '';
+            
+            // 3. DOM ELEMENT REFERENCES
+            const tableBody = document.getElementById('district-table-body');
+            const searchInput = document.getElementById('district-search');
+            const prevBtn = document.getElementById('prev-page-btn');
+            const nextBtn = document.getElementById('next-page-btn');
+            const paginationInfo = document.getElementById('pagination-info');
+            const sortableHeaders = document.querySelectorAll('.sortable-header');
+            const noResultsDiv = document.getElementById('no-results');
+            const exportBtn = document.getElementById('export-csv-btn');
+
+            // 4. CORE RENDERING FUNCTION
+            function renderTable() {
+                // a. Filter data
+                const filteredData = districtData.filter(d => 
+                    d.name.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+
+                // b. Sort data
+                const sortedData = filteredData.sort((a, b) => {
+                    const valA = a[currentSort.key];
+                    const valB = b[currentSort.key];
+                    
+                    if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+                    if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+                    return 0;
+                });
+                
+                // c. Paginate data
+                const totalRows = sortedData.length;
+                const totalPages = Math.ceil(totalRows / rowsPerPage);
+                const start = (currentPage - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                const paginatedData = sortedData.slice(start, end);
+
+                // d. Render rows
+                tableBody.innerHTML = '';
+                if (paginatedData.length === 0) {
+                    noResultsDiv.classList.remove('hidden');
+                    tableBody.classList.add('hidden');
+                } else {
+                    noResultsDiv.classList.add('hidden');
+                    tableBody.classList.remove('hidden');
+                    paginatedData.forEach(district => {
+                        const util = district.utilization;
+                        let colorClass, darkColorClass, barColor;
+                        if (util >= 95) { colorClass = 'text-green-600'; darkColorClass = 'dark:text-green-500'; barColor = 'bg-green-500'; }
+                        else if (util >= 90) { colorClass = 'text-yellow-600'; darkColorClass = 'dark:text-yellow-500'; barColor = 'bg-yellow-500'; }
+                        else { colorClass = 'text-red-600'; darkColorClass = 'dark:text-red-500'; barColor = 'bg-red-500'; }
+                        
+                        const row = `
+                            <tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700">
+                                <td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">${district.name}</td>
+                                <td class="px-6 py-4 dark:text-gray-300">₹${district.allocated} Cr</td>
+                                <td class="px-6 py-4 font-medium dark:text-gray-200">₹${district.disbursed} Cr</td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-full bg-slate-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                            <div class="${barColor} h-2 rounded-full" style="width: ${util}%;"></div>
+                                        </div>
+                                        <span class="${colorClass} ${darkColorClass}">${util}%</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 dark:text-gray-300">${district.transactions.toLocaleString()}</td>
+                                <td class="px-6 py-4 ${colorClass} ${darkColorClass}">${district.failureRate}%</td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                }
+                
+                // e. Update UI state (pagination buttons, info text, sort icons)
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage >= totalPages || totalRows === 0;
+                paginationInfo.textContent = `Showing ${totalRows > 0 ? start + 1 : 0} to ${Math.min(end, totalRows)} of ${totalRows} results`;
+
+                sortableHeaders.forEach(header => {
+                    const icon = header.querySelector('.sort-icon');
+                    const key = header.dataset.sort;
+                    if (key === currentSort.key) {
+                        icon.innerHTML = currentSort.direction === 'asc' ? '&#9650;' : '&#9660;'; // Up/Down arrows
+                    } else {
+                        icon.innerHTML = '';
+                    }
+                });
+            }
+
+            // 5. EVENT LISTENERS
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                currentPage = 1; // Reset to first page on search
+                renderTable();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable();
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                const totalRows = districtData.filter(d => d.name.toLowerCase().includes(searchQuery.toLowerCase())).length;
+                const totalPages = Math.ceil(totalRows / rowsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTable();
+                }
+            });
+
+            sortableHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const key = header.dataset.sort;
+                    if (currentSort.key === key) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort.key = key;
+                        currentSort.direction = 'asc';
+                    }
+                    renderTable();
+                });
+            });
+
+            // 6. EXPORT FUNCTIONALITY
+            function exportToCSV() {
+                // Use the same filter and sort logic as rendering
+                const filteredData = districtData.filter(d => d.name.toLowerCase().includes(searchQuery.toLowerCase()));
+                const dataToExport = filteredData.sort((a, b) => {
+                    const valA = a[currentSort.key];
+                    const valB = b[currentSort.key];
+                    if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+                    if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+                    return 0;
+                });
+
+                const headers = ['District', 'Allocated (Cr)', 'Disbursed (Cr)', 'Utilization (%)', 'Transactions', 'Failure Rate (%)'];
+                const csvRows = [headers.join(',')];
+
+                dataToExport.forEach(row => {
+                    const values = [
+                        `"${row.name}"`,
+                        row.allocated,
+                        row.disbursed,
+                        row.utilization,
+                        row.transactions,
+                        row.failureRate
+                    ];
+                    csvRows.push(values.join(','));
+                });
+
+                const csvString = csvRows.join('\n');
+                const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.setAttribute('hidden', '');
+                a.setAttribute('href', url);
+                a.setAttribute('download', 'district_fund_utilization.csv');
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+
+            exportBtn.addEventListener('click', exportToCSV);
+
+            // 7. INITIAL RENDER
+            renderTable();
+        });
+    </script>
+</body>
+</html>
