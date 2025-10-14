@@ -10,7 +10,59 @@
 
     <!-- <script type="module" crossorigin="" src="/assets/index-Dt7EoueR.js"></script> -->
     <link rel="stylesheet" crossorigin="" href="index.css" />
+     <style>
+      /* Icon Button */
+      .icon-btn {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 25px;
+        height: 25px;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s ease;
+      }
 
+      .icon-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .icon-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      }
+
+      /* Icon */
+      .icon-btn .icon {
+        width: 50px;
+        height: 50px;
+        background: url("assets/user-interface_2609282.png") no-repeat center
+          center;
+        background-size: contain;
+      }
+
+      /* Ripple Effect */
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple 0.6s linear;
+        background-color: rgba(255, 255, 255, 0.6);
+        pointer-events: none;
+      }
+
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    </style>
     <style>
       #lovable-badge {
         position: fixed;
@@ -764,6 +816,27 @@
                     <line x1="12" x2="12" y1="4" y2="20"></line></svg
                   ><span class="hidden sm:inline">Text Size</span>
                 </button>
+                <button class="icon-btn" id="iconBtn">
+                  <span class="icon"></span>
+                </button>
+
+                <script>
+                  const btn = document.getElementById("iconBtn");
+
+                  btn.addEventListener("click", function (e) {
+                    // Ripple effect
+                    const circle = document.createElement("span");
+                    circle.classList.add("ripple");
+                    const rect = btn.getBoundingClientRect();
+                    circle.style.left = `${e.clientX - rect.left}px`;
+                    circle.style.top = `${e.clientY - rect.top}px`;
+                    btn.appendChild(circle);
+                    setTimeout(() => circle.remove(), 600);
+
+                    // Login action
+                    window.location.href = "Pages/login.html";
+                  });
+                </script>
               </div>
             </div>
           </div>
