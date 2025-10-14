@@ -1285,110 +1285,120 @@
         }
 
         /* --- Responsive Design Adjustments --- */
-@media (max-width: 768px) {
-    body {
-        font-size: 16px; /* Adjust base font size for smaller screens */
-    }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                /* Adjust base font size for smaller screens */
+            }
 
-    .container {
-        padding: 0 8px; /* Reduce side padding */
-    }
+            .container {
+                padding: 0 8px;
+                /* Reduce side padding */
+            }
 
-    .main-content {
-        padding-top: 80px;    /* Less space for a smaller header */
-        padding-bottom: 200px; /* More space for stacked bottom elements */
-    }
+            .main-content {
+                padding-top: 80px;
+                /* Less space for a smaller header */
+                padding-bottom: 200px;
+                /* More space for stacked bottom elements */
+            }
 
-    .header {
-        padding: 12px 8px;
-    }
+            .header {
+                padding: 12px 8px;
+            }
 
-    .header-identity .name {
-        font-size: 16px;
-    }
+            .header-identity .name {
+                font-size: 16px;
+            }
 
-    .card {
-        padding: 16px;
-        margin-bottom: 16px;
-    }
+            .card {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
 
-    h2.card-title {
-        font-size: 20px;
-    }
+            h2.card-title {
+                font-size: 20px;
+            }
 
-    .journey-stage {
-        padding-left: 60px; /* Adjust timeline padding */
-    }
+            .journey-stage {
+                padding-left: 60px;
+                /* Adjust timeline padding */
+            }
 
-    .journey-node {
-        left: 0;
-        width: 40px;
-        height: 40px;
-    }
+            .journey-node {
+                left: 0;
+                width: 40px;
+                height: 40px;
+            }
 
-    .journey-line {
-        left: 19px; /* Re-center the timeline */
-    }
+            .journey-line {
+                left: 19px;
+                /* Re-center the timeline */
+            }
 
-    .sub-stage {
-        margin-left: -35px;
-    }
-    
-    .sub-stage .journey-node {
-        width: 30px;
-        height: 30px;
-        left: 4px;
-    }
+            .sub-stage {
+                margin-left: -35px;
+            }
 
-    /* Adjust FABs to be less intrusive */
-    .fab, .ai-fab {
-        width: 50px;
-        height: 50px;
-        bottom: 100px; /* Position above the protection banner */
-    }
+            .sub-stage .journey-node {
+                width: 30px;
+                height: 30px;
+                left: 4px;
+            }
 
-    .fab {
-        right: 15px;
-    }
+            /* Adjust FABs to be less intrusive */
+            .fab,
+            .ai-fab {
+                width: 50px;
+                height: 50px;
+                bottom: 100px;
+                /* Position above the protection banner */
+            }
 
-    .ai-fab {
-        left: 15px;
-    }
+            .fab {
+                right: 15px;
+            }
 
-    /* Handle the chat window on mobile */
-    .chat-container {
-        left: 5%;
-        width: 90%;
-        max-width: none;
-        bottom: 90px;
-        max-height: 65vh;
-    }
+            .ai-fab {
+                left: 15px;
+            }
 
-    .protection-banner {
-        flex-direction: column; /* Stack banner content */
-        text-align: center;
-        gap: 12px;
-        padding: 12px;
-    }
+            /* Handle the chat window on mobile */
+            .chat-container {
+                left: 5%;
+                width: 90%;
+                max-width: none;
+                bottom: 90px;
+                max-height: 65vh;
+            }
 
-    .protection-banner p {
-        margin: 0;
-    }
+            .protection-banner {
+                flex-direction: column;
+                /* Stack banner content */
+                text-align: center;
+                gap: 12px;
+                padding: 12px;
+            }
 
-    .evidence-timeline {
-        padding: 8px;
-    }
+            .protection-banner p {
+                margin: 0;
+            }
 
-    .evidence-card {
-        flex: 0 0 180px; /* Make evidence cards a bit smaller */
-    }
+            .evidence-timeline {
+                padding: 8px;
+            }
 
-    /* Ensure grids stack to a single column */
-    #officials-content .officials-grid,
-    #path-to-recovery .schemes-grid {
-        grid-template-columns: 1fr;
-    }
-}
+            .evidence-card {
+                flex: 0 0 180px;
+                /* Make evidence cards a bit smaller */
+            }
+
+            /* Ensure grids stack to a single column */
+            #officials-content .officials-grid,
+            #path-to-recovery .schemes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -2113,933 +2123,18 @@
                     mismatch_details_label: "कृपया समस्या का वर्णन करें",
                     mismatch_placeholder: "बताएं कि वर्तमान स्थिति के बारे में क्या गलत है...",
                     submit_ticket: "टिकट जमा करें"
-                }
-
-                <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Aid Lifeline</title>
-    <!-- Noto Sans Font from Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            /* Light Mode (Default) */
-            --bg-primary: #F7F7FF;
-            --bg-card: #FFFFFF;
-            --text-primary: #1C1C1C;
-            --text-secondary: #555;
-            --border-color: #E0E0E0;
-            --header-bg: rgba(247, 247, 247, 0.8);
-            --bot-message-bg: #E7F0FA;
-
-            /* Accents */
-            --accent-action: #0056b3;
-            --accent-action-glow: rgba(0, 86, 179, 0.2);
-            --accent-success: #28a745;
-            --accent-alert: #dc3545;
-            --accent-help: #ffc107;
-            --bg-action-light: #E7F0FA;
-        }
-
-        body.dark-mode {
-            --bg-primary: #000000;
-            --bg-card: #1A1A1A;
-            --text-primary: #FFFFFF;
-            --text-secondary: #AAAAAA;
-            --border-color: #333333;
-            --header-bg: rgba(0, 0, 0, 0.7);
-            --bot-message-bg: #0A1929;
-        }
-
-        body {
-            font-family: 'Noto Sans', sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            margin: 0;
-            padding: 0;
-            font-size: 18px;
-            line-height: 1.6;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-
-        .main-content {
-            padding-top: 100px; /* Space for fixed header */
-            padding-bottom: 180px; /* Space for FABs and protection banner */
-        }
-
-        /* --- 1. Header --- */
-        .header {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            padding: 16px;
-            background-color: var(--header-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
-            z-index: 1000;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header-identity .name { font-size: 18px; font-weight: 700; }
-        .header-identity .case-no { font-size: 14px; color: var(--text-secondary); }
-        .header-controls { display: flex; gap: 16px; align-items: center;}
-        .control-btn { background: none; border: none; cursor: pointer; color: var(--text-primary); padding: 0; }
-        
-        /* --- Language Circle Meter --- */
-        #language-selector-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .language-circle {
-            position: absolute;
-            top: calc(100% + 15px); /* Position below the header */
-            right: 0; /* Align to the right of the container */
-            width: 200px;
-            height: 200px;
-            pointer-events: none;
-            opacity: 0;
-            transform-origin: top right; /* Animate from the top right corner */
-            transform: scale(0.5);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-            z-index: 1001;
-        }
-        .language-circle.visible {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: all;
-        }
-        .language-option {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 44px;
-            height: 44px;
-            margin: -22px 0 0 -22px;
-            background-color: var(--bg-card);
-            color: var(--text-primary);
-            border: 2px solid var(--accent-action);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.2s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-        .language-option:hover {
-            background-color: var(--accent-action);
-            color: white;
-            transform: var(--initial-transform) scale(1.15) !important;
-        }
-
-
-        /* --- Generic Card Style --- */
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 24px;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        h2.card-title { font-size: 22px; margin-bottom: 20px; }
-        h5.card-subtitle { font-size: 16px; margin-top: -10px; margin-bottom: 15px; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
-
-
-        .hidden { display: none !important; }
-
-        /* --- 2. Action Card --- */
-        .action-card { background-color: var(--bg-action-light); text-align: center; border-color: var(--accent-action); box-shadow: 0 0 20px var(--accent-action-glow); }
-        body.dark-mode .action-card { background-color: #0A1929; }
-        .action-card-icon { color: var(--accent-action); margin-bottom: 16px; }
-        .action-card-instruction { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-        .action-card-subtext { font-size: 16px; color: var(--text-secondary); margin-bottom: 16px; }
-        .voice-note-btn { background: none; border: none; cursor: pointer; color: var(--text-primary); vertical-align: middle; margin-left: 8px; }
-        .btn-full { width: 100%; padding: 16px; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; background-color: var(--accent-action); color: white; }
-        .btn-sm { padding: 8px 12px; font-size: 14px; border-radius: 6px; }
-        .btn-full:disabled { background-color: #888; cursor: not-allowed; }
-        .btn-alert { background-color: var(--accent-alert); }
-        .btn-success { background-color: var(--accent-success); }
-
-        /* --- Redesigned Journey Map --- */
-        .journey-map { position: relative; padding-left: 20px; }
-        .journey-line { position: absolute; left: 43px; top: 0; bottom: 0; width: 6px; background-color: var(--border-color); border-radius: 3px; }
-        .journey-stage { display: flex; align-items: flex-start; position: relative; padding-left: 80px; margin-bottom: 30px; cursor: pointer; }
-        .journey-node { position: absolute; left: 20px; top: 5px; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 4px solid var(--border-color); background-color: var(--bg-primary); color: var(--text-secondary); }
-        .journey-stage.completed .journey-node { background-color: var(--accent-success); border-color: var(--accent-success); color: white; }
-        .journey-stage.active .journey-node, .journey-stage.verifying .journey-node { background-color: var(--accent-action); border-color: var(--accent-action); color: white; animation: pulse 2s infinite; }
-        .journey-details-title { font-weight: 700; font-size: 18px; }
-        .journey-details-sub { font-size: 14px; color: var(--text-secondary); }
-        .ecourts-badge { font-size: 12px; background-color: var(--accent-action); color: white; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-left: 8px; }
-        .countdown-clock { font-size: 18px; font-weight: 700; color: var(--accent-action); margin-top: 8px; background-color: var(--bg-action-light); padding: 8px; border-radius: 6px; display: inline-block; }
-        body.dark-mode .countdown-clock { background-color: #0A1929; }
-        .countdown-clock.overdue { color: var(--accent-alert); background-color: #FFE3E3; }
-        body.dark-mode .countdown-clock.overdue { background-color: #4D1212; }
-        .sub-stage { margin-left: -50px; margin-top: 20px; margin-bottom: 20px; }
-        .sub-stage .journey-node { width: 36px; height: 36px; left: 26px; }
-
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 86, 179, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(0, 86, 179, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 86, 179, 0); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .animate-spin { animation: spin 1s linear infinite; }
-        
-        .mismatch-link {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-decoration: underline;
-            cursor: pointer;
-            margin-top: 8px;
-            display: inline-block;
-        }
-
-
-        /* --- 4. DBT Hub / Financial Rights --- */
-        .financial-total { font-size: 24px; font-weight: 700; margin-bottom: 16px; }
-        .progress-bar { height: 12px; background-color: var(--border-color); border-radius: 6px; overflow: hidden; margin-bottom: 20px; }
-        .progress-bar-fill { height: 100%; width: 25%; background-color: var(--accent-success); border-radius: 6px; }
-        .ledger-item { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
-        .ledger-item:last-child { border-bottom: none; }
-        .ledger-details { flex-grow: 1; }
-        .ledger-amount { font-weight: 700; font-size: 18px; }
-        .ledger-status { display: block; font-size: 14px; margin-top: 4px; }
-        .ledger-actions { flex-shrink: 0; margin-left: 16px; }
-        .status-paid { color: var(--accent-success); }
-        .status-disbursed { color: var(--accent-action); }
-        .status-pending { color: var(--text-secondary); }
-
-        .bank-status-container { display: flex; justify-content: space-between; align-items: center; background-color: var(--bg-primary); padding: 16px; border-radius: 8px; margin-bottom: 20px; }
-        .status-badge { padding: 4px 12px; border-radius: 15px; font-weight: 700; font-size: 14px; }
-        .status-badge-unlinked { background-color: #FFE3E3; color: var(--accent-alert); border: 1px solid var(--accent-alert); }
-        .status-badge-verifying { background-color: #FFF9C4; color: #F57F17; border: 1px solid #F57F17; }
-        .status-badge-verified { background-color: #EAF6EC; color: var(--accent-success); border: 1px solid var(--accent-success); }
-
-        .dbt-flow { display: flex; justify-content: space-between; align-items: center; text-align: center; font-size: 12px; color: var(--text-secondary); margin-top: 20px; }
-        .dbt-flow-item { flex: 1; }
-        .dbt-flow-icon { margin: 0 auto 4px; }
-        .dbt-flow-arrow { flex-shrink: 0; color: var(--border-color); }
-
-
-        /* --- Feature 5: Chronological Evidence Vault --- */
-        .evidence-controls { display: flex; gap: 12px; margin-top: -10px; margin-bottom: 20px; }
-        .evidence-btn { flex-grow: 1; padding: 10px; border: 1px solid var(--accent-action); background: none; color: var(--accent-action); border-radius: 6px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .evidence-btn:hover { background-color: var(--bg-action-light); }
-        #evidence-vault { padding: 0; }
-        .evidence-timeline { display: flex; overflow-x: auto; gap: 16px; padding: 16px; min-height: 150px; }
-        .evidence-card { flex: 0 0 220px; background-color: var(--bg-primary); border: 2px solid var(--border-color); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; }
-        .evidence-card .timestamp { font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; }
-        .evidence-card .media-icon { text-align: center; margin-bottom: 8px; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
-        .evidence-card .caption { font-size: 15px; font-style: italic; white-space: normal; }
-        .evidence-card .ai-summary { font-size: 13px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-color); }
-
-        /* --- Feature 1: AI FIR Sanity Check --- */
-        #fir-sanity-check { border-left: 4px solid var(--accent-action); }
-        .sanity-check-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .sanity-check-item .icon-success { color: var(--accent-success); }
-        .sanity-check-item .icon-warning { color: var(--accent-help); }
-        .sanity-check-item .icon-error { color: var(--accent-alert); }
-
-        /* --- Feature 2: Immutable Event Stream --- */
-        .event-stream-list { list-style: none; padding: 0; margin: 0; }
-        .event-item { display: flex; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
-        .event-item:last-child { border-bottom: none; }
-        .event-item .timestamp { font-size: 14px; color: var(--text-secondary); width: 120px; flex-shrink: 0; }
-        .event-item .description { font-size: 16px; }
-
-        /* --- Feature 4: Know Your Officials Directory --- */
-        #officials-content .officials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
-        .official-card { text-align: center; }
-        .official-card img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 2px solid var(--border-color); }
-        .official-card .name { font-weight: 700; }
-        .official-card .rank { font-size: 14px; color: var(--text-secondary); }
-
-        /* --- Feature 6: Automated Travel & Expense Log --- */
-        #travel-log-card { background-color: var(--bg-action-light); }
-        body.dark-mode #travel-log-card { background-color: #0A1929; }
-        .travel-log-item { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; padding: 8px 0; border-bottom: 1px solid var(--border-color);}
-        .travel-log-item:last-child { border-bottom: none; }
-        .travel-log-route { font-weight: 700; grid-column: 1 / 2; }
-        .travel-log-amount { font-weight: 700; font-size: 20px; grid-column: 2 / 3; grid-row: 1 / 3; align-self: center; }
-        .travel-log-details { font-size: 14px; color: var(--text-secondary); grid-column: 1 / 2; }
-        
-        /* --- Feature 8: Community Alerts --- */
-        .toggle-item { display: flex; justify-content: space-between; align-items: center; }
-        .alert-example { font-size: 14px; font-style: italic; color: var(--text-secondary); background-color: var(--bg-primary); padding: 8px; border-radius: 4px; margin-top: 12px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: 700; font-size: 16px; }
-        .form-group select, .form-group textarea, .form-group input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 16px;
-            font-family: 'Noto Sans', sans-serif;
-            box-sizing: border-box;
-        }
-        .form-group textarea { resize: vertical; min-height: 100px; }
-        .error-message { color: var(--accent-alert); font-size: 14px; margin-top: 4px; }
-
-        /* --- Feature 10: Post-Case Rehabilitation --- */
-        #path-to-recovery .schemes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
-        .scheme-card { background-color: var(--bg-primary); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); }
-        .scheme-card-title { font-weight: 700; margin-bottom: 8px; }
-        .scheme-card-desc { font-size: 15px; margin-bottom: 12px; }
-
-        /* --- Feature 3: Dynamic Witness Protection Request --- */
-        .protection-banner { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--bg-card); border-top: 2px solid var(--accent-alert); padding: 16px; display: flex; justify-content: space-between; align-items: center; z-index: 999; box-shadow: 0 -4px 12px rgba(0,0,0,0.1); }
-        #legal-support-card { border-left: 4px solid var(--accent-success); }
-        .lawyer-profile { display: flex; align-items: center; gap: 20px; }
-        .lawyer-profile img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
-        .lawyer-info .name { font-weight: bold; font-size: 20px;}
-        .lawyer-info .title { font-size: 16px; color: var(--text-secondary); margin-bottom: 16px;}
-        
-        /* --- Modals and FABs --- */
-        .fab { position: fixed; bottom: 90px; right: 30px; width: 60px; height: 60px; background-color: var(--accent-help); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; z-index: 1001; animation: pulse-fab 2.5s infinite; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        .modal-content { background: var(--bg-card); padding: 24px; border-radius: 12px; width: 90%; max-width: 500px; text-align: left; }
-        .modal-content h3 { font-size: 20px; margin-top: 0; }
-        .modal-content .detail-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
-        .modal-content .detail-item:last-child { border-bottom: none; }
-        .modal-content .detail-label { color: var(--text-secondary); }
-        .modal-content .detail-value { font-weight: 700; }
-        .modal-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; font-size: 18px; border: 1px solid var(--border-color); border-radius: 8px; background-color: var(--bg-primary); color: var(--text-primary); cursor: pointer; margin-bottom: 16px; }
-        .modal-btn:last-child { margin-bottom: 0; }
-        #share-link-modal .generated-link { background-color: var(--bg-primary); padding: 12px; border-radius: 8px; font-family: monospace; word-break: break-all; margin-bottom: 16px; }
-        .consent-check { margin-top: 16px; display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary); }
-        #calculator-options { display: flex; flex-direction: column; gap: 10px; }
-        
-        /* Protections and other feature styles... */
-        .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked+.slider { background-color: var(--accent-action); }
-        input:checked+.slider:before { transform: translateX(26px); }
-        .tabs { display: flex; border-bottom: 2px solid var(--border-color); margin-bottom: 20px; }
-        .tab-btn { padding: 10px 16px; cursor: pointer; background: none; border: none; color: var(--text-secondary); font-family: 'Noto Sans', sans-serif; font-size: 16px; font-weight: 700; border-bottom: 4px solid transparent; }
-        .tab-btn.active { color: var(--text-primary); border-bottom-color: var(--accent-action); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        
-    </style>
-</head>
-
-<body>
-
-    <!-- 1. Header -->
-    <header class="header">
-        <div class="header-identity">
-            <div class="name" data-lang-key="greeting">Namaste, Sunita Devi</div>
-            <div class="case-no" data-lang-key="case_no">Case No: SC-123-2024</div>
-        </div>
-        <div class="header-controls">
-            <div id="language-selector-wrapper">
-                <button class="control-btn" id="lang-toggle" aria-label="Switch Language"><i data-lucide="languages"></i></button>
-                <div id="language-circle-menu" class="language-circle">
-                    <!-- Language options will be injected here by JS -->
-                </div>
-            </div>
-            <button class="control-btn" id="theme-toggle" aria-label="Toggle light/dark mode"><i data-lucide="sun"></i></button>
-        </div>
-    </header>
-
-    <main class="main-content">
-        <div class="container">
-            
-            <div id="case-active-content">
-                <!-- 2. "What's Next?" Action Card -->
-                <section class="card action-card">
-                    <div class="action-card-icon"><i data-lucide="shield" style="width:64px; height:64px;"></i></div>
-                    <h2 class="action-card-instruction" data-lang-key="next_step_title">Go to the Police Station</h2>
-                    <div class="action-card-subtext" data-lang-key="next_step_subtitle">Show them this FIR number: 123-456-7890</div>
-                    <button class="voice-note-btn" aria-label="Play instruction audio"><i data-lucide="play-circle"></i></button>
-                </section>
-                
-                <!-- Legal Support Card (Initially hidden) -->
-                <section class="card hidden" id="legal-support-card">
-                    <h2 class="card-title">Legal Support Assigned</h2>
-                    <div class="lawyer-profile">
-                        <img src="https://placehold.co/100x100/EAF6EC/28a745?text=LA" alt="Legal Aid Lawyer">
-                        <div class="lawyer-info">
-                            <div class="name">Advocate Priya Sharma</div>
-                            <div class="title">Legal Aid Counsel</div>
-                            <button class="btn-full btn-success" style="width: auto; padding: 10px 20px;">
-                                <i data-lucide="phone" style="vertical-align: middle; margin-right: 8px;"></i>Call Now
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Redesigned Justice Delivery Timeline -->
-                <section class="card" id="journey-map-card">
-                    <h2 class="card-title" data-lang-key="timeline_title">Justice Delivery Timeline</h2>
-                    <div class="journey-map">
-                        <div class="journey-line"></div>
-                        
-                        <!-- Stage 1: FIR Registered -->
-                        <div class="journey-stage" data-stage-id="fir-registered">
-                            <div class="journey-node"><i data-lucide="check"></i></div>
-                            <div class="journey-details">
-                                <div class="journey-details-title" data-lang-key="stage_fir">FIR Registered</div>
-                                <div class="journey-details-sub" data-lang-key="stage1_sub">Your complaint is officially recorded.</div>
-                                <div class="mismatch-link" data-lang-key="report_mismatch">Report Mismatch</div>
-                            </div>
-                        </div>
-
-                        <!-- Stage 2: Investigation & Initial Relief -->
-                        <div class="journey-stage" data-stage-id="investigation-relief">
-                             <div class="journey-node" style="visibility: hidden;"></div> <!-- Placeholder for alignment -->
-                             <div class="journey-details" style="width: 100%;">
-                                <!-- Sub-Node 2A -->
-                                <div class="journey-stage sub-stage" data-stage-id="investigation-assigned">
-                                    <div class="journey-node"><i data-lucide="search"></i></div>
-                                    <div class="journey-details">
-                                        <div class="journey-details-title" data-lang-key="stage2a_title">Investigation Assigned</div>
-                                        <div class="journey-details-sub" data-lang-key="stage2a_sub">A senior officer is now in charge.</div>
-                                        <div class="mismatch-link" data-lang-key="report_mismatch">Report Mismatch</div>
-                                    </div>
-                                </div>
-                                <!-- Sub-Node 2B -->
-                                <div class="journey-stage sub-stage" data-stage-id="relief1-paid">
-                                    <div class="journey-node"><i data-lucide="indian-rupee"></i></div>
-                                    <div class="journey-details">
-                                        <div class="journey-details-title" data-lang-key="stage2b_title">First Relief Payment</div>
-                                        <div class="journey-details-sub" data-lang-key="stage2b_sub">(Due within 7 Days of FIR)</div>
-                                        <div class="countdown-clock" id="relief-countdown">--d --h --m --s</div>
-                                        <div class="mismatch-link" data-lang-key="report_mismatch">Report Mismatch</div>
-                                    </div>
-                                </div>
-                             </div>
-                        </div>
-                        
-                        <!-- Stage 3: Charge Sheet Filed -->
-                        <div class="journey-stage" data-stage-id="chargesheet-filed" data-verifiable="true">
-                            <div class="journey-node"><i data-lucide="gavel"></i></div>
-                            <div class="journey-details">
-                                <div class="journey-details-title" data-lang-key="stage_chargesheet">Charge Sheet Filed</div>
-                                <div class="journey-details-sub" data-lang-key="stage3_sub">(Due within 60 Days of FIR)</div>
-                                <div class="countdown-clock" id="chargesheet-countdown">--d --h --m --s</div>
-                                <div class="mismatch-link" data-lang-key="report_mismatch">Report Mismatch</div>
-                            </div>
-                        </div>
-
-                        <!-- Stage 4: Second Relief Payment -->
-                        <div class="journey-stage" data-stage-id="relief2-paid">
-                            <div class="journey-node"><i data-lucide="indian-rupee"></i></div>
-                            <div class="journey-details">
-                                <div class="journey-details-title" data-lang-key="stage4_title">Second Relief Payment</div>
-                                <div class="journey-details-sub" data-lang-key="stage4_sub">Triggered after charge sheet is filed.</div>
-                                <div class="mismatch-link" data-lang-key="report_mismatch">Report Mismatch</div>
-                            </div>
-                        </div>
-
-                        <!-- Stage 5: Trial in Special Court -->
-                        <div class="journey-stage" data-stage-id="trial-progress" data-verifiable="true">
-                            <div class="journey-node"><i data-lucide="calendar"></i></div>
-                            <div class="journey-details">
-                                <div class="journey-details-title">
-                                    <span data-lang-key="stage5_title">Trial in Progress</span>
-                                    <span class="ecourts-badge">eCourts</span>
-                                </div>
-                                <div class="journey-details-sub" id="next-hearing-subtext"></div>
-                                <div class="mismatch-link" data-lang-key="report_mismatch">Report Mismatch</div>
-                            </div>
-                        </div>
-
-                        <!-- Stage 6: Final Judgment & Final Relief -->
-                        <div class="journey-stage" data-stage-id="final-judgment" data-verifiable="true">
-                            <div class="journey-node"><i data-lucide="scroll"></i></div>
-                            <div class="journey-details">
-                                <div class="journey-details-title">
-                                    <span data-lang-key="stage6_title">Final Judgment</span>
-                                    <span class="ecourts-badge">eCourts</span>
-                                </div>
-                                <div class="journey-details-sub" data-lang-key="stage6_sub">Verified by eCourts API</div>
-                                <div class="mismatch-link" data-lang-key="report_mismatch">Report Mismatch</div>
-                            </div>
-                        </div>
-
-                        <!-- Conditional Final Payment Node -->
-                        <div class="journey-stage hidden" id="final-relief-stage" data-stage-id="relief-final-paid">
-                            <div class="journey-node"><i data-lucide="award"></i></div>
-                             <div class="journey-details">
-                                <div class="journey-details-title" data-lang-key="stage_final_relief_title">Final Relief Payment</div>
-                                <div class="journey-details-sub" data-lang-key="stage_final_relief_sub">Payable upon conviction.</div>
-                                <div class="mismatch-link" data-lang-key="report_mismatch">Report Mismatch</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
-            <!-- Feature 10: Post-Case Rehabilitation & Livelihood Connector -->
-            <section class="card hidden" id="path-to-recovery">
-                <h2 class="card-title" data-lang-key="recovery_title">Your Path to Recovery</h2>
-                <p data-lang-key="recovery_desc">The court case has concluded. Here are some government schemes to support you in the next phase of your life.</p>
-                <div class="schemes-grid">
-                    <div class="scheme-card">
-                        <h3 class="scheme-card-title" data-lang-key="scheme_mgnrega_title">MGNREGA Employment</h3>
-                        <p class="scheme-card-desc" data-lang-key="scheme_mgnrega_desc">Guaranteed 100 days of wage employment in a financial year.</p>
-                        <button class="btn-full" data-lang-key="apply_now">Apply Now</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- All Other Features Restored -->
-             <section class="card">
-                <h2 class="card-title" data-lang-key="event_stream_title">Case Event Stream</h2>
-                <ul class="event-stream-list" id="event-stream"></ul>
-            </section>
-
-            <section class="card" id="evidence-vault">
-                <h2 class="card-title" data-lang-key="evidence_vault_title">Chronological Evidence Vault</h2>
-                <div class="evidence-controls">
-                    <input type="file" id="evidence-file-input" class="hidden" accept="image/*">
-                    <button class="evidence-btn" id="upload-evidence-btn"><i data-lucide="upload"></i><span data-lang-key="upload_device">Upload from Device</span></button>
-                    <button class="evidence-btn" id="digilocker-fetch-btn"><i data-lucide="shield-check"></i><span data-lang-key="fetch_digilocker">Fetch from DigiLocker</span></button>
-                </div>
-                 <div class="evidence-timeline" id="evidence-timeline">
-                    <!-- Evidence cards will be dynamically inserted here -->
-                </div>
-            </section>
-            <section class="card" id="relief-calculator-card">
-                <h2 class="card-title" data-lang-key="relief_calculator_title">Relief Entitlement Calculator</h2>
-                <p data-lang-key="relief_calculator_desc">Answer a few questions about the incident to get an estimate of the financial assistance you are entitled to under the PoA/PCR Act norms.</p>
-                <button class="btn-full" id="start-relief-calculation-btn" data-lang-key="start_calculation">Start Calculation</button>
-            </section>
-            <section class="card hidden" id="fir-sanity-check">
-                 <h2 class="card-title">AI-Powered FIR Sanity Check</h2>
-                 <div id="fir-sanity-check-content"></div>
-            </section>
-
-            <section class="card" id="dbt-hub-card">
-                <h2 class="card-title" data-lang-key="dbt_hub_title">Direct Benefit Transfer (DBT) Hub</h2>
-                
-                <h5 class="card-subtitle" data-lang-key="bank_account_title">Bank Account Status</h5>
-                <div class="bank-status-container" id="bank-status-container">
-                    <!-- Bank status content will be injected by JS -->
-                </div>
-                
-                <h5 class="card-subtitle" data-lang-key="payment_ledger_title">Payment Ledger</h5>
-                <div class="financial-total">₹8,25,000 <span style="font-size: 16px; font-weight: 400;" data-lang-key="financial_total">Total Entitlement</span></div>
-                <div class="progress-bar"><div class="progress-bar-fill" id="payment-progress-bar"></div></div>
-                <div id="payment-ledger">
-                    <!-- Ledger items will be injected by JS -->
-                </div>
-                 <h5 class="card-subtitle" style="margin-top:24px;" data-lang-key="dbt_flow_title">How DBT Works</h5>
-                 <div class="dbt-flow">
-                     <div class="dbt-flow-item">
-                         <div class="dbt-flow-icon"><i data-lucide="file-check-2"></i></div>
-                         <div data-lang-key="dbt_flow1">Sanctioned by State</div>
-                     </div>
-                     <div class="dbt-flow-arrow"><i data-lucide="chevron-right"></i></div>
-                     <div class="dbt-flow-item">
-                         <div class="dbt-flow-icon"><i data-lucide="server"></i></div>
-                          <div data-lang-key="dbt_flow2">Processed by PFMS</div>
-                     </div>
-                      <div class="dbt-flow-arrow"><i data-lucide="chevron-right"></i></div>
-                     <div class="dbt-flow-item">
-                         <div class="dbt-flow-icon"><i data-lucide="landmark"></i></div>
-                          <div data-lang-key="dbt_flow3">Sent to Bank</div>
-                     </div>
-                      <div class="dbt-flow-arrow"><i data-lucide="chevron-right"></i></div>
-                     <div class="dbt-flow-item">
-                         <div class="dbt-flow-icon"><i data-lucide="wallet"></i></div>
-                          <div data-lang-key="dbt_flow4">Credited to You</div>
-                     </div>
-                 </div>
-            </section>
-
-            <section class="card" id="travel-log-card">
-                <h2 class="card-title" data-lang-key="travel_log_title">Court Hearing Travel Allowance</h2>
-                <div id="logged-travel-expenses">
-                    <!-- Logged expenses will be dynamically inserted here -->
-                </div>
-                <button class="btn-full" id="log-travel-btn" data-lang-key="log_travel_btn">Log Travel & Expenses</button>
-            </section>
-            <section class="card">
-                <div class="tabs">
-                    <button class="tab-btn active" data-tab="officials-content" data-lang-key="tab_officials">Know Your Officials</button>
-                    <button class="tab-btn" data-tab="witness-content" data-lang-key="tab_witness">Witness Support</button>
-                    <button class="tab-btn" data-tab="rights-content" data-lang-key="tab_rights">Your Rights</button>
-                </div>
-                <div id="officials-content" class="tab-content active">
-                    <div class="officials-grid">
-                        <div class="official-card">
-                            <img src="https://placehold.co/100x100/E7F0FA/0056b3?text=IO" alt="Investigating Officer">
-                            <div class="name">A. K. Sharma</div>
-                            <div class="rank">DSP</div>
-                        </div>
-                    </div>
-                </div>
-                <div id="witness-content" class="tab-content">
-                    <div class="toggle-item">
-                        <span data-lang-key="request_witness_protection">Request Witness Protection</span>
-                        <label class="switch"><input type="checkbox"><span class="slider"></span></label>
-                    </div>
-                    <div style="margin-top: 20px;">
-                        <h4 data-lang-key="witness_rights_title">Your Rights as a Witness</h4>
-                        <p data-lang-key="witness_rights_p1">As a witness, you have the right to be treated with dignity and respect. You are entitled to protection from any harm, intimidation, or threat.</p>
-                        <ul>
-                            <li data-lang-key="witness_right_1">Right to a safe and secure waiting area at the court.</li>
-                            <li data-lang-key="witness_right_2">Right to receive travel and subsistence allowances for court appearances.</li>
-                            <li data-lang-key="witness_right_3">Right to request in-camera (private) proceedings if you feel threatened.</li>
-                        </ul>
-                    </div>
-                </div>
-                 <div id="rights-content" class="tab-content">
-                    <h4 data-lang-key="victim_rights_title">Your Rights as a Victim/Survivor</h4>
-                    <p data-lang-key="victim_rights_p1">Under the Scheduled Castes and the Scheduled Tribes (Prevention of Atrocities) Act, you have several rights to ensure justice and dignity:</p>
-                    <ul>
-                        <li data-lang-key="victim_right_1"><strong>Right to Free Legal Aid:</strong> You are entitled to free legal services from the District/State Legal Services Authority.</li>
-                        <li data-lang-key="victim_right_2"><strong>Right to Information:</strong> You have the right to be informed about the status of your case at every stage.</li>
-                        <li data-lang-key="victim_right_3"><strong>Right to Relief and Rehabilitation:</strong> You are entitled to timely monetary relief and other rehabilitation measures as prescribed by the government.</li>
-                        <li data-lang-key="victim_right_4"><strong>Right to a Speedy Trial:</strong> Cases under this Act are to be tried in Special Courts for expeditious disposal.</li>
-                        <li data-lang-key="victim_right_5"><strong>Right to be Treated with Dignity:</strong> All proceedings should be conducted in a way that respects your dignity and privacy.</li>
-                    </ul>
-                    <h5 class="card-subtitle" data-lang-key="poa_act_title">About the PoA Act, 1989</h5>
-                    <p data-lang-key="poa_act_desc">The Prevention of Atrocities (PoA) Act is a special law to prevent crimes against Scheduled Castes (SCs) and Scheduled Tribes (STs). It lists specific offenses, such as forcing someone to eat an inedible substance, social or economic boycott, or sexual exploitation, and provides for stringent punishments.</p>
-                    <h5 class="card-subtitle" data-lang-key="pcr_act_title">About the PCR Act, 1955</h5>
-                    <p data-lang-key="pcr_act_desc">The Protection of Civil Rights (PCR) Act deals with the offense of "untouchability." It makes it illegal to prevent any person from entering a place of public worship, accessing shops or public restaurants, or using any public utilities on the grounds of untouchability.</p>
-                 </div>
-            </section>
-            <section class="card">
-                <h2 class="card-title" data-lang-key="community_safety_title">Community Safety Settings</h2>
-                <div class="toggle-item">
-                    <span data-lang-key="community_safety_toggle">Enable Safety Alerts (WhatsApp, Push, IVR Calls)</span>
-                    <label class="switch"><input type="checkbox" id="community-alerts-toggle"><span class="slider"></span></label>
-                </div>
-                <div class="alert-example hidden" id="whatsapp-support-link" style="margin-top: 12px;">
-                    <b>Whatsapp support:</b> <a href="https://wa.me/911234567890" target="_blank" style="color: var(--accent-action);">Click here to chat</a>
-                </div>
-            </section>
-            <section class="card">
-                <h2 class="card-title" data-lang-key="report_title">Report an Issue</h2>
-                <form id="report-issue-form">
-                    <div class="form-group">
-                        <label for="issue-category" data-lang-key="issue_category_label">Category</label>
-                        <select id="issue-category" name="issue-category">
-                            <option value="delay" data-lang-key="issue_cat_delay">Delay in Relief Payment</option>
-                            <option value="threat" data-lang-key="issue_cat_threat">Threat from Accused</option>
-                            <option value="info" data-lang-key="issue_cat_info">Incorrect Information in App</option>
-                            <option value="other" data-lang-key="issue_cat_other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                         <label for="issue-details" data-lang-key="issue_details_label">Details</label>
-                        <textarea id="issue-details" name="issue-details" data-lang-placeholder-key="report_placeholder" placeholder="..."></textarea>
-                    </div>
-                    <button type="submit" class="btn-full" data-lang-key="submit">Submit</button>
-                </form>
-            </section>
-        </div>
-    </main>
-
-    <!-- Modals & Banners -->
-    <div class="protection-banner" id="protection-banner">
-        <p data-lang-key="protection_banner_text">Are you or your witnesses being threatened?</p>
-        <button class="btn-full btn-alert" style="width: auto;" id="request-protection-btn" data-lang-key="request_protection_btn">Request Protection</button>
-    </div>
-    
-    <div class="modal-overlay" id="help-modal">
-        <div class="modal-content" style="text-align:center;">
-             <button class="modal-btn"><i data-lucide="phone"></i><span data-lang-key="call_helpline">Call Helpline</span></button>
-             <button class="modal-btn"><i data-lucide="gavel"></i><span data-lang-key="connect_lawyer">Connect to a Lawyer</span></button>
-             <button class="modal-btn"><i data-lucide="users"></i><span data-lang-key="contact_ngo">Contact an NGO</span></button>
-            <button class="modal-btn" id="share-link-btn"><i data-lucide="share-2"></i><span data-lang-key="share_advisor_btn">Share with Advisor</span></button>
-        </div>
-    </div>
-     <div class="modal-overlay" id="protection-confirm-modal">
-        <div class="modal-content">
-            <h3 data-lang-key="confirm_protection_title">Confirm Protection Request</h3>
-            <p data-lang-key="confirm_protection_desc">This will send a high-priority alert to the DM and SP.</p>
-            <button class="btn-full btn-alert" id="confirm-protection-final" data-lang-key="confirm_protection_btn">I Confirm, Send Alert</button>
-            <button class="modal-btn" style="margin-top: 12px;" id="cancel-protection" data-lang-key="cancel">Cancel</button>
-        </div>
-    </div>
-    <div class="modal-overlay" id="share-link-modal">
-        <div class="modal-content">
-            <h3 data-lang-key="share_link_title">Secure Link</h3>
-            <p data-lang-key="share_link_desc">This link is valid for 24 hours.</p>
-            <div class="generated-link">https://nyay.gov/case/s-123/view?token=...</div>
-            <button class="btn-full" id="close-share-modal" data-lang-key="close">Close</button>
-        </div>
-    </div>
-    <div class="modal-overlay" id="travel-log-modal">
-         <div class="modal-content">
-            <h3 data-lang-key="travel_modal_title">Log Travel Expenses</h3>
-             <div id="travel-step-1">
-                <form id="travel-form">
-                    <div class="form-group">
-                        <label for="travel-from" data-lang-key="travel_from_label">From</label>
-                        <input type="text" id="travel-from" data-lang-placeholder-key="travel_from_placeholder" placeholder="e.g., Your current location" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="travel-to" data-lang-key="travel_to_label">To</label>
-                        <input type="text" id="travel-to" data-lang-placeholder-key="travel_to_placeholder" placeholder="e.g., Tis Hazari Court, Delhi" required>
-                    </div>
-                    <button type="submit" class="btn-full" data-lang-key="calculate">Calculate Allowance</button>
-                </form>
-             </div>
-             <div id="travel-step-2" class="hidden">
-                <h4 data-lang-key="travel_details_title">Confirm Travel Details</h4>
-                 <div class="detail-item">
-                    <span class="detail-label" data-lang-key="estimated_distance_range">Estimated Distance Range</span>
-                    <span class="detail-value" id="results-distance-range"></span>
-                </div>
-                 <div class="form-group" style="margin-top: 16px;">
-                    <label for="actual-distance" data-lang-key="actual_distance_label">Enter Actual Distance (in km)</label>
-                    <input type="number" id="actual-distance" step="0.1" required>
-                     <div class="error-message hidden" id="distance-error"></div>
-                </div>
-                <div class="detail-item" style="font-size: 20px;">
-                    <span class="detail-label" data-lang-key="calculated_allowance">Calculated Allowance</span>
-                    <b class="detail-value" id="results-allowance">₹0.00</b>
-                </div>
-                <button class="btn-full" style="margin-top: 20px;" id="confirm-travel-log" data-lang-key="confirm_log_expense">Confirm & Log Expense</button>
-             </div>
-         </div>
-    </div>
-    <!-- Add Evidence Modal -->
-    <div class="modal-overlay" id="add-evidence-modal">
-        <div class="modal-content">
-            <h3 data-lang-key="add_evidence_title">Add New Evidence</h3>
-            <form id="add-evidence-form">
-                <div class="form-group">
-                    <label for="evidence-caption" data-lang-key="evidence_caption_label">Caption</label>
-                    <textarea id="evidence-caption" required data-lang-placeholder-key="evidence_caption_placeholder" placeholder="Briefly describe the evidence..."></textarea>
-                </div>
-                <div class="consent-check">
-                    <input type="checkbox" id="ai-consent-checkbox">
-                    <label for="ai-consent-checkbox" data-lang-key="ai_consent_label">Allow AI to process this document to extract key information.</label>
-                </div>
-                <button type="submit" class="btn-full" style="margin-top: 20px;" data-lang-key="upload_submit">Upload and Save</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- DigiLocker Modal -->
-    <div class="modal-overlay" id="digilocker-modal">
-        <div class="modal-content">
-            <h3 data-lang-key="digilocker_title">Connect to DigiLocker</h3>
-            <p data-lang-key="digilocker_desc">To securely fetch documents, this application needs to connect to your DigiLocker account. This requires a secure server-to-server connection.</p>
-            <p data-lang-key="digilocker_redirect_info">Clicking below will redirect you to DigiLocker to authorize this application. You will be redirected back to complete the process.</p>
-            <button class="btn-full" id="proceed-to-digilocker" data-lang-key="digilocker_proceed_btn">Proceed to DigiLocker</button>
-            <button class="modal-btn" id="simulate-digilocker-fetch" style="margin-top: 12px; font-size: 16px;" data-lang-key="digilocker_simulate_btn">Run Simulation Instead</button>
-        </div>
-    </div>
-
-    <!-- Relief Calculator Modal -->
-    <div class="modal-overlay" id="relief-calculator-modal">
-        <div class="modal-content">
-            <h3 data-lang-key="relief_calculator_modal_title">Relief Entitlement Calculator</h3>
-            <div id="calculator-content">
-                <!-- Questions and results will be injected here -->
-            </div>
-            <div id="calculator-options" style="margin-top: 20px;">
-                <!-- Answer buttons will be injected here -->
-            </div>
-            <button class="modal-btn" id="restart-calculator-btn" style="margin-top: 12px; font-size: 16px;" data-lang-key="restart_calculation">Restart</button>
-        </div>
-    </div>
-    
-    <!-- Bank Account Modal -->
-    <div class="modal-overlay" id="bank-account-modal">
-        <div class="modal-content">
-            <h3 data-lang-key="link_bank_account_title">Link Bank Account</h3>
-            <p data-lang-key="link_bank_account_desc">Please provide your bank account details for DBT. This information is stored securely.</p>
-            <form id="bank-account-form">
-                <div class="form-group">
-                    <label for="bank-account-number" data-lang-key="account_number_label">Account Number</label>
-                    <input type="text" id="bank-account-number" required pattern="\d{9,18}" title="Account number should be 9 to 18 digits.">
-                </div>
-                <div class="form-group">
-                    <label for="bank-ifsc-code" data-lang-key="ifsc_code_label">IFSC Code</label>
-                    <input type="text" id="bank-ifsc-code" required pattern="[A-Z]{4}0[A-Z0-9]{6}" title="Please enter a valid 11-character IFSC code.">
-                </div>
-                 <button type="submit" class="btn-full" data-lang-key="verify_save_btn">Verify & Save</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- START: MODIFICATION -->
-    <!-- Stage Completion Modal -->
-    <div class="modal-overlay" id="stage-confirm-modal">
-        <div class="modal-content">
-            <h3 data-lang-key="stage_confirm_title">Update Status</h3>
-            <p id="stage-confirm-text"></p>
-            <button class="btn-full btn-success" id="confirm-stage-completion" data-lang-key="stage_confirm_yes">Yes, Mark as Complete</button>
-            <button class="modal-btn" style="margin-top: 12px;" id="cancel-stage-completion" data-lang-key="cancel">Cancel</button>
-        </div>
-    </div>
-    
-    <!-- Mismatch Ticket Modal -->
-    <div class="modal-overlay" id="mismatch-ticket-modal">
-        <div class="modal-content">
-            <h3 data-lang-key="mismatch_ticket_title">Report a Mismatch</h3>
-            <form id="mismatch-ticket-form">
-                <p id="mismatch-stage-name" class="font-semibold mb-2"></p>
-                <div class="form-group">
-                    <label for="mismatch-details" data-lang-key="mismatch_details_label">Please describe the issue</label>
-                    <textarea id="mismatch-details" required data-lang-placeholder-key="mismatch_placeholder" placeholder="Explain what is incorrect about the current status..."></textarea>
-                </div>
-                <button type="submit" class="btn-full" data-lang-key="submit_ticket">Submit Ticket</button>
-            </form>
-        </div>
-    </div>
-    <!-- END: MODIFICATION -->
-
-
-    <!-- Timeline Modals -->
-    <div class="modal-overlay" id="fir-details-modal"><div class="modal-content" id="modal-fir-content"></div></div>
-    <div class="modal-overlay" id="investigation-details-modal"><div class="modal-content" id="modal-investigation-content"></div></div>
-    <div class="modal-overlay" id="relief1-details-modal"><div class="modal-content" id="modal-relief1-content"></div></div>
-    <div class="modal-overlay" id="chargesheet-details-modal"><div class="modal-content"><h3>Charge Sheet</h3><p>Pending...</p></div></div>
-    <div class="modal-overlay" id="relief2-details-modal"><div class="modal-content" id="modal-relief2-content"></div></div>
-    <div class="modal-overlay" id="trial-details-modal"><div class="modal-content" id="modal-trial-content"></div></div>
-    <div class="modal-overlay" id="judgment-details-modal"><div class="modal-content" id="modal-judgment-content"></div></div>
-    <div class="modal-overlay" id="relief-final-details-modal"><div class="modal-content" id="modal-relief-final-content"></div></div>
-
-    <!-- FABs and Chat -->
-    <div class="fab" id="help-fab"><i data-lucide="help-circle"></i></div>
-    
-    <script src="https://unpkg.com/lucide@0.378.0/dist/umd/lucide.js"></script>
-    
-    <script type="module">
-        // Firebase Imports
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
-
-
-        document.addEventListener("DOMContentLoaded", () => {
-            // --- Firebase Config ---
-            // Use the config provided by the environment, with a fallback for local development
-            const firebaseConfig = typeof __firebase_config !== 'undefined'
-                ? JSON.parse(__firebase_config)
-                : { // Dummy details for local development
-                    apiKey: "AIzaSyCH-dummy-key-for-testing-purposes",
-                    authDomain: "dummy-project-id.firebaseapp.com",
-                    projectId: "dummy-project-id",
-                    storageBucket: "dummy-project-id.appspot.com",
-                    messagingSenderId: "123456789012",
-                    appId: "1:123456789012:web:dummyappid123456"
-                };
-
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const auth = getAuth(app);
-            const db = getFirestore(app);
-            const functions = getFunctions(app);
-                
-            // --- Gemini API Key ---
-            const GEMINI_API_KEY = "";
-
-            // --- START: FIX ---
-            // This variable will be provided by the environment your app runs in.
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            // --- END: FIX ---
-            
-            // --- App State, Data, and Translations ---
-            let reliefConversationHistory = [];
-            const appState = {
-                languages: ['en', 'hi', 'bho', 'ta', 'bn', 'mr', 'te'],
-                currentLang: 'en',
-                currentFile: null,
-                userId: null,
-                digilockerEvidence: [], // Will be populated from Firestore
-                journeyStatus: {} // Will be populated from Firestore
-            };
-            const caseData = {
-                cnr: "DLCT010012342024", // Case Number for eCourts
-                fir: { number: "123-456", datetime: new Date(new Date().getTime() - 80 * 24 * 60 * 60 * 1000), station: "Noida Sec 24", sections: "IPC 323, PoA 3(1)(r)" },
-                investigation: { officer: "A. K. Sharma", rank: "DSP", isValid: true },
-                relief1: { amount: "₹2,06,250", status: "Pending" },
-                relief2: { amount: "₹4,12,500", status: "Pending" },
-                trial: { nextHearing: "2025-12-10T11:00:00", history: "15-11-2025: Appearance" },
-                judgment: { verdict: "Conviction", date: "2026-03-01" },
-                reliefFinal: { amount: "₹2,06,250", status: "Pending" }
-            };
-            const translations = {
-                en: { 
-                    greeting: "Namaste, Sunita Devi", case_no: "Case No: SC-123-2024", next_step_title: "Go to the Police Station", next_step_subtitle: "Show them this FIR number: 123-456-7890", timeline_title: "Justice Delivery Timeline", stage_fir: "FIR Registered", stage1_sub: "Your complaint is officially recorded.", stage2a_title: "Investigation Assigned", stage2a_sub: "A senior officer is now in charge.", stage2b_title: "First Relief Payment", stage2b_sub: "(Due within 7 Days of FIR)", stage_chargesheet: "Charge Sheet Filed", stage3_sub: "(Due within 60 Days of FIR)", stage4_title: "Second Relief Payment", stage4_sub: "Triggered after charge sheet is filed.", stage5_title: "Trial in Progress", stage6_title: "Final Judgment", stage6_sub: "Verified by eCourts API", stage_final_relief_title: "Final Relief Payment", stage_final_relief_sub: "Payable upon conviction.", recovery_title: "Your Path to Recovery", recovery_desc: "The court case has concluded. Here are some government schemes to support you.", scheme_mgnrega_title: "MGNREGA Employment", scheme_mgnrega_desc: "Guaranteed 100 days of wage employment.", apply_now: "Apply Now", event_stream_title: "Case Event Stream", evidence_vault_title: "Chronological Evidence Vault", add_evidence: "Add Evidence", 
-                    dbt_hub_title: "Direct Benefit Transfer (DBT) Hub", bank_account_title: "Bank Account Status", payment_ledger_title: "Payment Ledger", dbt_flow_title: "How DBT Works",
-                    financial_total: "Total Entitlement", payment_item1_desc: "25% on FIR/Chargesheet", status_paid: "PAID", status_pending: "PENDING", 
-                    travel_log_title: "Court Hearing Travel Allowance", travel_log_desc: "You are entitled to a travel allowance for your upcoming hearing.", log_travel_btn: "Log Travel & Expenses", tab_officials: "Know Your Officials", tab_witness: "Witness Support", tab_rights: "Your Rights", community_safety_title: "Community Safety Settings", community_safety_toggle: "Enable Safety Alerts (WhatsApp, Push, IVR Calls)", report_title: "Report an Issue", report_placeholder: "Tell us what is wrong...", submit: "Submit", protection_banner_text: "Are you or your witnesses being threatened?", request_protection_btn: "Request Protection", call_helpline: "Call Helpline", share_advisor_btn: "Share with Advisor", connect_lawyer: "Connect to a Lawyer", contact_ngo: "Contact an NGO",
-                    request_witness_protection: "Request Witness Protection", witness_rights_title: "Your Rights as a Witness", witness_rights_p1: "As a witness, you have the right to be treated with dignity and respect. You are entitled to protection from any harm, intimidation, or threat.", witness_right_1: "Right to a safe and secure waiting area at the court.", witness_right_2: "Right to receive travel and subsistence allowances for court appearances.", witness_right_3: "Right to request in-camera (private) proceedings if you feel threatened.",
-                    victim_rights_title: "Your Rights as a Victim/Survivor", victim_rights_p1: "Under the Scheduled Castes and the Scheduled Tribes (Prevention of Atrocities) Act, you have several rights to ensure justice and dignity:", victim_right_1: "<strong>Right to Free Legal Aid:</strong> You are entitled to free legal services from the District/State Legal Services Authority.", victim_right_2: "<strong>Right to Information:</strong> You have the right to be informed about the status of your case at every stage.", victim_right_3: "<strong>Right to Relief and Rehabilitation:</strong> You are entitled to timely monetary relief and other rehabilitation measures as prescribed by the government.", victim_right_4: "<strong>Right to a Speedy Trial:</strong> Cases under this Act are to be tried in Special Courts for expeditious disposal.", victim_right_5: "<strong>Right to be Treated with Dignity:</strong> All proceedings should be conducted in a way that respects your dignity and privacy.",
-                    poa_act_title: "About the PoA Act, 1989", poa_act_desc: "The Prevention of Atrocities (PoA) Act is a special law to prevent crimes against Scheduled Castes (SCs) and Scheduled Tribes (STs). It lists specific offenses, such as forcing someone to eat an inedible substance, social or economic boycott, or sexual exploitation, and provides for stringent punishments.", pcr_act_title: "About the PCR Act, 1955", pcr_act_desc: "The Protection of Civil Rights (PCR) Act deals with the offense of 'untouchability.' It makes it illegal to prevent any person from entering a place of public worship, accessing shops or public restaurants, or using any public utilities on the grounds of untouchability.",
-                    issue_category_label: "Category", issue_cat_delay: "Delay in Relief Payment", issue_cat_threat: "Threat from Accused", issue_cat_info: "Incorrect Information in App", issue_cat_other: "Other", issue_details_label: "Details",
-                    travel_modal_title: "Log Travel Expenses", travel_from_label: "From", travel_from_placeholder: "e.g., Your current location", travel_to_label: "To", travel_to_placeholder: "e.g., Tis Hazari Court, Delhi", calculate: "Calculate Allowance", calculating: "Calculating...", travel_details_title: "Confirm Travel Details", estimated_distance_range: "Estimated Distance Range", actual_distance_label: "Enter Actual Distance (in km)", calculated_allowance: "Calculated Allowance", confirm_log_expense: "Confirm & Log Expense", distance_error_text: "Please enter a distance within the suggested range.",
-                    add_evidence_title: "Add New Evidence", evidence_caption_label: "Caption", evidence_caption_placeholder: "Briefly describe the evidence...", ai_consent_label: "Allow AI to process this document to extract key information.", upload_submit: "Upload and Save", upload_processing: "Processing with AI...",
-                    digilocker_title: "Connect to DigiLocker", digilocker_desc: "To securely fetch documents, this application needs to connect to your DigiLocker account. This requires a secure server-to-server connection.", digilocker_redirect_info: "Clicking below will redirect you to DigiLocker to authorize this application. You will be redirected back to complete the process.", digilocker_proceed_btn: "Proceed to DigiLocker", digilocker_simulate_btn: "Run Simulation Instead",
-                    upload_device: "Upload from Device", fetch_digilocker: "Fetch from DigiLocker",
-                    confirm_protection_title: "Confirm Protection Request", confirm_protection_desc: "This will send a high-priority alert to the DM and SP.", confirm_protection_btn: "I Confirm, Send Alert", cancel: "Cancel",
-                    share_link_title: "Secure Link", share_link_desc: "This link is valid for 24 hours.", close: "Close",
-                    relief_calculator_title: "Relief Entitlement Calculator", relief_calculator_desc: "Answer a few questions about the incident to get an estimate of the financial assistance you are entitled to under the PoA/PCR Act norms.", start_calculation: "Start Calculation",
-                    relief_calculator_modal_title: "Relief Entitlement Calculator", restart_calculation: "Restart",
-                    fetch_ecourts_status: "Fetch Latest Status", fetching: "Fetching...",
-                    dbt_flow1: "Sanctioned by State", dbt_flow2: "Processed by PFMS", dbt_flow3: "Sent to Bank", dbt_flow4: "Credited to You",
-                    link_bank_account: "Link Bank Account", link_bank_account_title: "Link Bank Account", link_bank_account_desc: "Please provide your bank account details for DBT. This information is stored securely.",
-                    account_number_label: "Account Number", ifsc_code_label: "IFSC Code", verify_save_btn: "Verify & Save",
-                    bank_status_unlinked: "Not Linked", bank_status_verifying: "Verifying...", bank_status_verified: "Verified",
-                    payment_status_pending: "Pending", payment_status_disbursed: "Disbursed by State", payment_status_credited: "Credited to Account",
-                    track_payment: "Track Payment",
-                    stage_confirm_title: "Update Status", stage_confirm_question: "Have you completed this step?", stage_confirm_yes: "Yes, Mark as Complete", verifying: "Verifying...",
-                    report_mismatch: "Report Mismatch", mismatch_ticket_title: "Report a Mismatch", mismatch_details_label: "Please describe the issue", mismatch_placeholder: "Explain what is incorrect about the current status...", submit_ticket: "Submit Ticket"
                 },
-                // START: MODIFICATION
-                hi: { 
-                    greeting: "नमस्ते, सुनीता देवी", case_no: "केस नंबर: SC-123-2024", next_step_title: "पुलिस स्टेशन जाएं", next_step_subtitle: "उन्हें यह एफआईआर नंबर दिखाएं", timeline_title: "न्याय वितरण समयरेखा", stage_fir: "प्राथमिकी दर्ज", stage1_sub: "आपकी शिकायत आधिकारिक तौर पर दर्ज है।", stage2a_title: "जांच सौंपी गई", stage2a_sub: "एक वरिष्ठ अधिकारी अब प्रभारी है।", stage2b_title: "पहली राहत भुगतान", stage2b_sub: "(प्राथमिकी के 7 दिनों के भीतर देय)", stage_chargesheet: "आरोप पत्र दायर", stage3_sub: "(प्राथमिकी के 60 दिनों के भीतर देय)", stage4_title: "दूसरी राहत भुगतान", stage4_sub: "आरोप पत्र दाखिल होने के बाद शुरू हुआ।", stage5_title: "परीक्षण प्रगति पर है", stage6_title: "अंतिम निर्णय", stage6_sub: "ई-कोर्ट्स एपीआई द्वारा सत्यापित", stage_final_relief_title: "अंतिम राहत भुगतान", stage_final_relief_sub: "सजा पर देय।", event_stream_title: "केस घटनाक्रम", evidence_vault_title: "साक्ष्य वॉल्ट", add_evidence: "साक्ष्य जोड़ें", 
-                    dbt_hub_title: "प्रत्यक्ष लाभ अंतरण (DBT) हब", bank_account_title: "बैंक खाता स्थिति", payment_ledger_title: "भुगतान लेजर", dbt_flow_title: "DBT कैसे काम करता है",
-                    financial_total: "कुल हकदारी", travel_log_title: "कोर्ट सुनवाई यात्रा भत्ता", log_travel_btn: "यात्रा और व्यय लॉग करें", tab_officials: "अपने अधिकारियों को जानें", tab_witness: "गवाह सहायता", tab_rights: "आपके अधिकार", community_safety_title: "सामुदायिक सुरक्षा सेटिंग्स", community_safety_toggle: "सुरक्षा अलर्ट सक्षम करें (व्हाट्सएप, पुश, आईवीआर कॉल)", report_title: "समस्या की रिपोर्ट करें", submit: "प्रस्तुत करें", protection_banner_text: "क्या आपको या आपके गवाहों को धमकाया जा रहा है?", request_protection_btn: "सुरक्षा का अनुरोध करें", call_helpline: "हेल्पलाइन पर कॉल करें", share_advisor_btn: "सलाहकार के साथ साझा करें", connect_lawyer: "वकील से जुड़ें", contact_ngo: "एनजीओ से संपर्क करें",
-                    request_witness_protection: "साक्षी संरक्षण का अनुरोध करें", witness_rights_title: "एक साक्षी के रूप में आपके अधिकार", witness_rights_p1: "एक साक्षी के रूप में, आपके साथ सम्मान और गरिमा के साथ व्यवहार किए जाने का अधिकार है। आप किसी भी नुकसान, धमकी या धमकी से सुरक्षा के हकदार हैं।", witness_right_1: "अदालत में एक सुरक्षित प्रतीक्षालय का अधिकार।", witness_right_2: "अदालत में पेशी के लिए यात्रा और निर्वाह भत्ता प्राप्त करने का अधिकार।", witness_right_3: "यदि आप खतरा महसूस करते हैं तो इन-कैमरा (निजी) कार्यवाही का अनुरोध करने का अधिकार।",
-                    victim_rights_title: "एक पीड़ित/उत्तरजीवी के रूप में आपके अधिकार", victim_rights_p1: "अनुसूचित जाति और अनुसूचित जनजाति (अत्याचार निवारण) अधिनियम के तहत, न्याय और सम्मान सुनिश्चित करने के लिए आपके पास कई अधिकार हैं:", victim_right_1: "<strong>निःशुल्क कानूनी सहायता का अधिकार:</strong> आप जिला/राज्य कानूनी सेवा प्राधिकरण से मुफ्त कानूनी सेवाओं के हकदार हैं।", victim_right_2: "<strong>सूचना का अधिकार:</strong> आपको हर स्तर पर अपने मामले की स्थिति के बारे में सूचित होने का अधिकार है।", victim_right_3: "<strong>राहत और पुनर्वास का अधिकार:</strong> आप सरकार द्वारा निर्धारित समय पर मौद्रिक राहत और अन्य पुनर्वास उपायों के हकदार हैं।", victim_right_4: "<strong>शीघ्र परीक्षण का अधिकार:</strong> इस अधिनियम के तहत मामले शीघ्र निपटान के लिए विशेष अदालतों में चलाए जाएंगे।", victim_right_5: "<strong>गरिमा के साथ व्यवहार का अधिकार:</strong> सभी कार्यवाहियाँ इस तरह से आयोजित की जानी चाहिए जो आपकी गरिमा और गोपनीयता का सम्मान करे।",
-                    poa_act_title: "पीओए अधिनियम, 1989 के बारे में", poa_act_desc: "अत्याचार निवारण (पीओए) अधिनियम अनुसूचित जातियों (एससी) और अनुसूचित जनजातियों (एसटी) के खिलाफ अपराधों को रोकने के लिए एक विशेष कानून है। यह विशिष्ट अपराधों को सूचीबद्ध करता है, जैसे किसी को अखाद्य पदार्थ खाने के लिए मजबूर करना, सामाजिक या आर्थिक बहिष्कार, या यौन शोषण, और कठोर दंड का प्रावधान करता है।", pcr_act_title: "पीसीआर अधिनियम, 1955 के बारे में", pcr_act_desc: "नागरिक अधिकार संरक्षण (पीसीआर) अधिनियम 'अस्पृश्यता' के अपराध से संबंधित है। यह किसी भी व्यक्ति को अस्पृश्यता के आधार पर सार्वजनिक पूजा स्थल में प्रवेश करने, दुकानों या सार्वजनिक रेस्तरां तक ​​पहुंचने, या किसी भी सार्वजनिक उपयोगिताओं का उपयोग करने से रोकना अवैध बनाता है।",
-                    issue_category_label: "श्रेणी", issue_cat_delay: "राहत भुगतान में देरी", issue_cat_threat: "अभियुक्त से धमकी", issue_cat_info: "ऐप में गलत जानकारी", issue_cat_other: "अन्य", issue_details_label: "विवरण",
-                    travel_modal_title: "यात्रा व्यय लॉग करें", travel_from_label: "से", travel_from_placeholder: "उदा., आपका वर्तमान स्थान", travel_to_label: "तक", travel_to_placeholder: "उदा., तीस हजारी कोर्ट, दिल्ली", calculate: "भत्ते की गणना करें", calculating: "गणना हो रही है...", travel_details_title: "यात्रा विवरण की पुष्टि करें", estimated_distance_range: "अनुमानित दूरी सीमा", actual_distance_label: "वास्तविक दूरी दर्ज करें (किमी में)", calculated_allowance: "गणना की गई भत्ता", confirm_log_expense: "पुष्टि करें और व्यय लॉग करें", distance_error_text: "कृपया सुझाई गई सीमा के भीतर दूरी दर्ज करें।",
-                    add_evidence_title: "नया साक्ष्य जोड़ें", evidence_caption_label: "कैप्शन", evidence_caption_placeholder: "साक्ष्य का संक्षिप्त विवरण दें...", ai_consent_label: "मुख्य जानकारी निकालने के लिए AI को इस दस्तावेज़ को संसाधित करने की अनुमति दें।", upload_submit: "अपलोड करें और सहेजें", upload_processing: "AI के साथ प्रसंस्करण...",
-                    digilocker_title: "डिजीलॉकर से कनेक्ट करें", digilocker_desc: "दस्तावेज़ों को सुरक्षित रूप से प्राप्त करने के लिए, इस एप्लिकेशन को आपके डिजीलॉकर खाते से कनेक्ट करने की आवश्यकता है। इसके लिए एक सुरक्षित सर्वर-टू-सर्वर कनेक्शन की आवश्यकता है।", digilocker_redirect_info: "नीचे क्लिक करने पर यह एप्लिकेशन आपको अधिकृत करने के लिए डिजीलॉकर पर रीडायरेक्ट करेगा। प्रक्रिया पूरी करने के लिए आपको वापस रीडायरेक्ट किया जाएगा।", digilocker_proceed_btn: "डिजीलॉकर पर जाएं", digilocker_simulate_btn: "इसके बजाय सिमुलेशन चलाएं",
-                    upload_device: "डिवाइस से अपलोड करें", fetch_digilocker: "डिजीलॉकर से प्राप्त करें",
-                    confirm_protection_title: "सुरक्षा अनुरोध की पुष्टि करें", confirm_protection_desc: "यह डीएम और एसपी को एक उच्च-प्राथमिकता वाला अलर्ट भेजेगा।", confirm_protection_btn: "मैं पुष्टि करता हूं, अलर्ट भेजें", cancel: "रद्द करें",
-                    share_link_title: "सुरक्षित लिंक", share_link_desc: "यह लिंक 24 घंटे के लिए वैध है।", close: "बंद करें",
-                    relief_calculator_title: "राहत पात्रता कैलक्यूलेटर", relief_calculator_desc: "घटना के बारे में कुछ सवालों के जवाब दें ताकि आप PoA/PCR अधिनियम के मानदंडों के तहत वित्तीय सहायता का अनुमान लगा सकें।", start_calculation: "गणना शुरू करें",
-                    relief_calculator_modal_title: "राहत पात्रता कैलक्यूलेटर", restart_calculation: "पुनः आरंभ करें",
-                    fetch_ecourts_status: "नवीनतम स्थिति प्राप्त करें", fetching: "प्राप्त हो रहा है...",
-                    dbt_flow1: "राज्य द्वारा स्वीकृत", dbt_flow2: "PFMS द्वारा संसाधित", dbt_flow3: "बैंक को भेजा गया", dbt_flow4: "आपको क्रेडिट किया गया",
-                    link_bank_account: "बैंक खाता लिंक करें", link_bank_account_title: "बैंक खाता लिंक करें", link_bank_account_desc: "कृपया DBT के लिए अपने बैंक खाते का विवरण प्रदान करें। यह जानकारी सुरक्षित रूप से संग्रहीत है।",
-                    account_number_label: "खाता संख्या", ifsc_code_label: "IFSC कोड", verify_save_btn: "सत्यापित करें और सहेजें",
-                    bank_status_unlinked: "लिंक नहीं है", bank_status_verifying: "सत्यापित हो रहा है...", bank_status_verified: "सत्यापित",
-                    payment_status_pending: "लंबित", payment_status_disbursed: "राज्य द्वारा वितरित", payment_status_credited: "खाते में जमा किया गया",
-                    track_payment: "भुगतान ट्रैक करें",
-                    stage_confirm_title: "स्थिति अपडेट करें", stage_confirm_question: "क्या आपने यह चरण पूरा कर लिया है?", stage_confirm_yes: "हाँ, पूर्ण के रूप में चिह्नित करें", verifying: "सत्यापित हो रहा है...",
-                    report_mismatch: "गलती की रिपोर्ट करें", mismatch_ticket_title: "गलती की रिपोर्ट करें", mismatch_details_label: "कृपया समस्या का वर्णन करें", mismatch_placeholder: "बताएं कि वर्तमान स्थिति में क्या गलत है...", submit_ticket: "टिकट जमा करें"
-                },
-                bho: { greeting: "नमस्ते, सुनीता देवी", case_no: "केस नंबर: SC-123-2024", next_step_title: "पुलिस स्टेशन जाईं", next_step_subtitle: "ओहिजा ई एफआईआर नंबर दिखाईं", timeline_title: "न्याय के समयरेखा", stage_fir: "FIR दर्ज हो गइल", stage1_sub: "रउआ शिकायत दर्ज हो गइल बा।", stage2a_title: "जांच सौंपल गइल", stage2a_sub: "अब एक वरिष्ठ अधिकारी प्रभारी बाड़ें।", stage2b_title: "पहिला राहत भुगतान", stage2b_sub: "(FIR के 7 दिन के भीतर)", stage_chargesheet: "चार्जशीट दाखिल हो गइल", stage3_sub: "(FIR के 60 दिन के भीतर)", stage4_title: "दूसर राहत भुगतान", stage4_sub: "चार्जशीट के बाद मिली।", stage5_title: "ट्रायल चल रहल बा", stage6_title: "अंतिम फैसला", stage6_sub: "ई-कोर्ट्स से सत्यापित", stage_final_relief_title: "अंतिम राहत भुगतान", stage_final_relief_sub: "सजा पर मिली।", event_stream_title: "केस के घटनाक्रम", evidence_vault_title: "सबूत के तिजोरी", add_evidence: "सबूत जोड़ीं", financial_title: "रउआ वित्तीय अधिकार", financial_total: "कुल हकदारी", travel_log_title: "कोर्ट सुनवाई के खरचा", log_travel_btn: "खरचा लिखीं", tab_officials: "अधिकारी के जानीं", tab_witness: "गवाह के मदद", tab_rights: "रउआ अधिकार", community_safety_title: "समाज के सुरक्षा", community_safety_toggle: "सुरक्षा अलर्ट चालू करीं", report_title: "समस्या बताईं", submit: "जमा करीं", protection_banner_text: "का रउआ भा रउआ गवाह के धमकी मिलत बा?", request_protection_btn: "सुरक्षा मांगीं", call_helpline: "हेल्पलाइन के फोन करीं", share_advisor_btn: "सलाहकार से साझा करीं", connect_lawyer: "वकील से जुड़ी", contact_ngo: "NGO से संपर्क करीं", report_mismatch: "गलती बताईं", stage_confirm_yes: "हां, पूरा भइल चिन्हित करीं" },
-                ta: { greeting: "வணக்கம், சுனிதா தேவி", case_no: "வழக்கு எண்: SC-123-2024", next_step_title: "காவல் நிலையம் செல்லவும்", next_step_subtitle: "இந்த FIR எண்ணைக் காட்டுங்கள்", timeline_title: "நீதி வழங்கல் காலவரிசை", stage_fir: "FIR பதிவு செய்யப்பட்டது", stage1_sub: "உங்கள் புகார் பதிவு செய்யப்பட்டது.", stage2a_title: "விசாரணை ஒப்படைக்கப்பட்டது", stage2a_sub: "ஒரு மூத்த அதிகாரி பொறுப்பேற்றுள்ளார்.", stage2b_title: "முதல் நிவாரணத் தொகை", stage2b_sub: "(FIR செய்த 7 நாட்களுக்குள்)", stage_chargesheet: "குற்றப்பத்திரிகை தாக்கல்", stage3_sub: "(FIR செய்த 60 நாட்களுக்குள்)", stage4_title: "இரண்டாவது நிவாரணத் தொகை", stage4_sub: "குற்றப்பத்திரிகைக்குப் பிறகு வழங்கப்படும்.", stage5_title: "விசாரணை চলছে", stage6_title: "இறுதி தீர்ப்பு", stage6_sub: "eCourts மூலம் சரிபார்க்கப்பட்டது", stage_final_relief_title: "இறுதி நிவாரணத் தொகை", stage_final_relief_sub: "தண்டனைக்குப் பிறகு வழங்கப்படும்.", event_stream_title: "வழக்கு நிகழ்வுகள்", evidence_vault_title: "ஆதார பெட்டகம்", add_evidence: "ஆதாரம் சேர்க்கவும்", financial_title: "உங்கள் நிதி உரிமைகள்", financial_total: "மொத்த உரிமை", travel_log_title: "நீதிமன்ற விசாரணை பயணப்படி", log_travel_btn: "பயண செலவுகளை பதிவு செய்யவும்", tab_officials: "உங்கள் அதிகாரிகளை அறியுங்கள்", tab_witness: "சாட்சி ஆதரவு", tab_rights: "உங்கள் உரிமைகள்", community_safety_title: "சமூக பாதுகாப்பு", community_safety_toggle: "பாதுகாப்பு விழிப்பூட்டல்களை இயக்கு", report_title: "சிக்கலைப் புகாரளி", submit: "சமர்ப்பி", protection_banner_text: "நீங்களோ அல்லது உங்கள் சாட்சிகளோ அச்சுறுத்தப்படுகிறீர்களா?", request_protection_btn: "பாதுகாப்பு கோரவும்", call_helpline: "உதவி எண்ணை அழைக்கவும்", share_advisor_btn: "ஆலோசகருடன் பகிரவும்", connect_lawyer: "வழக்கறிஞருடன் இணையுங்கள்", contact_ngo: "தன்னார்வ தொண்டு நிறுவனத்தை தொடர்பு கொள்ளுங்கள்", report_mismatch: "பொருத்தமின்மையைப் புகாரளி", stage_confirm_yes: "ஆம், முடிந்ததாகக் குறிக்கவும்" },
-                bn: { greeting: "নমস্কার, সুনিতা দেবী", case_no: "কেস নং: SC-123-2024", next_step_title: "থানায় যান", next_step_subtitle: "তাদের এই এফআইআর নম্বরটি দেখান", timeline_title: "বিচার বিতরণ টাইমলাইন", stage_fir: "এফআইআর दर्षित", stage1_sub: "আপনার অভিযোগ दर्षित হয়েছে।", stage2a_title: "তদন্ত অর্পিত", stage2a_sub: "একজন সিনিয়র অফিসার দায়িত্বে আছেন।", stage2b_title: "প্রথম ত্রাণ প্রদান", stage2b_sub: "(এফআইআর এর ৭ দিনের মধ্যে)", stage_chargesheet: "চার্জশিট দাখিল", stage3_sub: "(এফআইআর এর ৬০ দিনের মধ্যে)", stage4_title: "দ্বিতীয় ত্রাণ প্রদান", stage4_sub: "চার্জশিট দাখিলের পরে।", stage5_title: "বিচার চলছে", stage6_title: "চূড়ান্ত রায়", stage6_sub: "eCourts দ্বারা যাচাইকৃত", stage_final_relief_title: "চূড়ান্ত ত্রাণ প্রদান", stage_final_relief_sub: "সাজার পরে দেওয়া হবে।", event_stream_title: "কেস ইভেন্ট স্ট্রীম", evidence_vault_title: "প্রমাণ ভল্ট", add_evidence: "প্রমাণ যোগ করুন", financial_title: "আপনার আর্থিক অধিকার", financial_total: "মোট অধিকার", travel_log_title: "কোর্ট শুনানির ভ্রমণ ভাতা", log_travel_btn: "ভ্রমণ খরচ লগ করুন", tab_officials: "আপনার কর্মকর্তাদের জানুন", tab_witness: "সাক্ষী সমর্থন", tab_rights: "আপনার অধিকার", community_safety_title: "קהילה பாதுகாப்பு அமைப்புகள்", community_safety_toggle: "பாதுகாப்பு எச்சரிக்கைகளை இயக்கு", report_title: "সমস্যা রিপোর্ট করুন", submit: "জমা দিন", protection_banner_text: "আপনি বা আপনার সাক্ষীরা কি হুমকির সম্মুখীন হচ্ছেন?", request_protection_btn: "সুরক্ষার অনুরোধ করুন", call_helpline: "হেল্পলাইনে কল করুন", share_advisor_btn: " উপদেষ্টার সাথে শেয়ার করুন", connect_lawyer: "আইনজীবীর সাথে সংযোগ করুন", contact_ngo: "এনজিওর সাথে যোগাযোগ করুন", report_mismatch: "ভুল রিপোর্ট করুন", stage_confirm_yes: "হ্যাঁ, সম্পন্ন হিসাবে চিহ্নিত করুন" },
+
+                
+                
+                bho: { greeting: "नमस्ते, सुनीता देवी", case_no: "केस नंबर: SC-123-2024", next_step_title: "पुलिस स्टेशन जाईं", next_step_subtitle: "ओहिजा ई एफआईआर नंबर दिखाईं", timeline_title: "न्याय के समयरेखा", stage_fir: "FIR दर्ज हो गइल", stage1_sub: "रउआ शिकायत दर्ज हो गइल बा।", stage2a_title: "जांच सौंपल गइल", stage2a_sub: "अब एक वरिष्ठ अधिकारी प्रभारी बाड़ें।", stage2b_title: "पहिला राहत भुगतान", stage2b_sub: "(FIR के 7 दिन के भीतर)", stage_chargesheet: "चार्जशीट दाखिल हो गइल", stage3_sub: "(FIR के 60 दिन के भीतर)", stage4_title: "दूसर राहत भुगतान", stage4_sub: "चार्जशीट के बाद मिली।", stage5_title: "ट्रायल चल रहल बा", stage6_title: "अंतिम फैसला", stage6_sub: "ई-कोर्ट्स से सत्यापित", stage_final_relief_title: "अंतिम राहत भुगतान", stage_final_relief_sub: "सजा पर मिली।", event_stream_title: "केस के घटनाक्रम", evidence_vault_title: "सबूत के तिजोरी", add_evidence: "सबूत जोड़ीं", financial_title: "रउआ वित्तीय अधिकार", financial_total: "कुल हकदारी", travel_log_title: "कोर्ट सुनवाई के खरचा", log_travel_btn: "खरचा लिखीं", tab_officials: "अधिकारी के जानीं", tab_witness: "गवाह के मदद", tab_rights: "रउआ अधिकार", community_safety_title: "समाज के सुरक्षा", community_safety_toggle: "सुरक्षा अलर्ट चालू करीं", report_title: "समस्या बताईं", submit: "जमा करीं", protection_banner_text: "का रउआ भा रउआ गवाह के धमकी मिलत बा?", request_protection_btn: "सुरक्षा मांगीं", call_helpline: "हेल्पलाइन के फोन करीं", share_advisor_btn: "सलाहकार से साझा करीं", connect_lawyer: "वकील से जुड़ी", contact_ngo: "NGO से संपर्क करीं", report_mismatch: "गलती बताईं", stage_confirm_yes: "हां, पूरा भइल चिन्हित करीं", },
+
+
+                ta: { greeting: "வணக்கம், சுனிதா தேவி", case_no: "வழக்கு எண்: SC-123-2024", next_step_title: "காவல் நிலையம் செல்லவும்", next_step_subtitle: "இந்த FIR எண்ணைக் காட்டுங்கள்", timeline_title: "நீதி வழங்கல் காலவரிசை", stage_fir: "FIR பதிவு செய்யப்பட்டது", stage1_sub: "உங்கள் புகார் பதிவு செய்யப்பட்டது.", stage2a_title: "விசாரணை ஒப்படைக்கப்பட்டது", stage2a_sub: "ஒரு மூத்த அதிகாரி பொறுப்பேற்றுள்ளார்.", stage2b_title: "முதல் நிவாரணத் தொகை", stage2b_sub: "(FIR செய்த 7 நாட்களுக்குள்)", stage_chargesheet: "குற்றப்பத்திரிகை தாக்கல்", stage3_sub: "(FIR செய்த 60 நாட்களுக்குள்)", stage4_title: "இரண்டாவது நிவாரணத் தொகை", stage4_sub: "குற்றப்பத்திரிகைக்குப் பிறகு வழங்கப்படும்.", stage5_title: "விசாரணை চলছে", stage6_title: "இறுதி தீர்ப்பு", stage6_sub: "eCourts மூலம் சரிபார்க்கப்பட்டது", stage_final_relief_title: "இறுதி நிவாரணத் தொகை", stage_final_relief_sub: "தண்டனைக்குப் பிறகு வழங்கப்படும்.", event_stream_title: "வழக்கு நிகழ்வுகள்", evidence_vault_title: "ஆதார பெட்டகம்", add_evidence: "ஆதாரம் சேர்க்கவும்", financial_title: "உங்கள் நிதி உரிமைகள்", financial_total: "மொத்த உரிமை", travel_log_title: "நீதிமன்ற விசாரணை பயணப்படி", log_travel_btn: "பயண செலவுகளை பதிவு செய்யவும்", tab_officials: "உங்கள் அதிகாரிகளை அறியுங்கள்", tab_witness: "சாட்சி ஆதரவு", tab_rights: "உங்கள் உரிமைகள்", community_safety_title: "சமூக பாதுகாப்பு", community_safety_toggle: "பாதுகாப்பு விழிப்பூட்டல்களை இயக்கு", report_title: "சிக்கலைப் புகாரளி", submit: "சமர்ப்பி", protection_banner_text: "நீங்களோ அல்லது உங்கள் சாட்சிகளோ அச்சுறுத்தப்படுகிறீர்களா?", request_protection_btn: "பாதுகாப்பு கோரவும்", call_helpline: "உதவி எண்ணை அழைக்கவும்", share_advisor_btn: "ஆலோசகருடன் பகிரவும்", connect_lawyer: "வழக்கறிஞருடன் இணையுங்கள்", contact_ngo: "தன்னார்வ தொண்டு நிறுவனத்தை தொடர்பு கொள்ளுங்கள்", report_mismatch: "பொருத்தமின்மையைப் புகாரளி", stage_confirm_yes: "ஆம், முடிந்ததாகக் குறிக்கவும்", },
+                bn: { greeting: "নমস্কার, সুনিতা দেবী", case_no: "কেস নং: SC-123-2024", next_step_title: "থানায় যান", next_step_subtitle: "তাদের এই এফআইআর নম্বরটি দেখান", timeline_title: "বিচার বিতরণ টাইমলাইন", stage_fir: "এফআইআর दर्षित", stage1_sub: "আপনার অভিযোগ दर्षित হয়েছে।", stage2a_title: "তদন্ত অর্পিত", stage2a_sub: "একজন সিনিয়র অফিসার দায়িত্বে আছেন।", stage2b_title: "প্রথম ত্রাণ প্রদান", stage2b_sub: "(এফআইআর এর ৭ দিনের মধ্যে)", stage_chargesheet: "চার্জশিট দাখিল", stage3_sub: "(এফআইআর এর ৬০ দিনের মধ্যে)", stage4_title: "দ্বিতীয় ত্রাণ প্রদান", stage4_sub: "চার্জশিট দাখিলের পরে।", stage5_title: "বিচার চলছে", stage6_title: "চূড়ান্ত রায়", stage6_sub: "eCourts দ্বারা যাচাইকৃত", stage_final_relief_title: "চূড়ান্ত ত্রাণ প্রদান", stage_final_relief_sub: "সাজার পরে দেওয়া হবে।", event_stream_title: "কেস ইভেন্ট স্ট্রীম", evidence_vault_title: "প্রমাণ ভল্ট", add_evidence: "প্রমাণ যোগ করুন", financial_title: "আপনার আর্থিক অধিকার", financial_total: "মোট অধিকার", travel_log_title: "কোর্ট শুনানির ভ্রমণ ভাতা", log_travel_btn: "ভ্রমণ খরচ লগ করুন", tab_officials: "আপনার কর্মকর্তাদের জানুন", tab_witness: "সাক্ষী সমর্থন", tab_rights: "আপনার অধিকার", community_safety_title: "קהילה பாதுகாப்பு அமைப்புகள்", community_safety_toggle: "பாதுகாப்பு எச்சரிக்கைகளை இயக்கு", report_title: "সমস্যা রিপোর্ট করুন", submit: "জমা দিন", protection_banner_text: "আপনি বা আপনার সাক্ষীরা কি হুমকির সম্মুখীন হচ্ছেন?", request_protection_btn: "সুরক্ষার অনুরোধ করুন", call_helpline: "হেল্পলাইনে কল করুন", share_advisor_btn: " উপদেষ্টার সাথে শেয়ার করুন", connect_lawyer: "আইনজীবীর সাথে সংযোগ করুন", contact_ngo: "এনজিওর সাথে যোগাযোগ করুন", report_mismatch: "ভুল রিপোর্ট করুন", stage_confirm_yes: "হ্যাঁ, সম্পন্ন হিসাবে চিহ্নিত করুন", },
                 mr: { greeting: "नमस्कार, सुनीता देवी", case_no: "केस क्र: SC-123-2024", next_step_title: "पोलीस स्टेशनला जा", next_step_subtitle: "त्यांना हा एफआयआर क्रमांक दाखवा", timeline_title: "न्याय वितरण टाइमलाइन", stage_fir: "एफआयआर दाखल", stage1_sub: "तुमची तक्रार अधिकृतपणे नोंदवली आहे.", stage2a_title: "तपास सोपवला", stage2a_sub: "एक वरिष्ठ अधिकारी आता प्रभारी आहेत.", stage2b_title: "पहिली मदत रक्कम", stage2b_sub: "(एफआयआरच्या ७ दिवसांच्या आत)", stage_chargesheet: "आरोपपत्र दाखल", stage3_sub: "(एफआयआरच्या ६० दिवसांच्या आत)", stage4_title: "दुसरी मदत रक्कम", stage4_sub: "आरोपपत्र दाखल केल्यानंतर.", stage5_title: "खटला सुरू आहे", stage6_title: "अंतिम निकाल", stage6_sub: "ई-कोर्टद्वारे सत्यापित", stage_final_relief_title: "अंतिम मदत रक्कम", stage_final_relief_sub: "दोषी ठरल्यास देय.", event_stream_title: "केस घटना क्रम", evidence_vault_title: "पुरावा तिजोरी", add_evidence: "पुरावा जोडा", financial_title: "तुमचे आर्थिक हक्क", financial_total: "एकूण हक्क", travel_log_title: "कोर्ट सुनावणी प्रवास भत्ता", log_travel_btn: "प्रवास खर्च नोंदवा", tab_officials: "तुमचे अधिकारी जाणून घ्या", tab_witness: "साक्षीदार समर्थन", tab_rights: "तुमचे हक्क", community_safety_title: "समुदाय सुरक्षा सेटिंग्ज", community_safety_toggle: "समुदाय सुरक्षा सूचना सक्षम करा", report_title: "समस्येचा अहवाल द्या", submit: "सादर करा", protection_banner_text: "तुम्हाला किंवा तुमच्या साक्षीदारांना धमकावले जात आहे का?", request_protection_btn: "संरक्षणाची विनंती करा", call_helpline: "हेल्पलाइनवर कॉल करा", share_advisor_btn: "सल्लागारासोबत शेअर करा", connect_lawyer: "वकिलाशी संपर्क साधा", contact_ngo: "एनजीओशी संपर्क साधा", report_mismatch: "विसंगतीचा अहवाल द्या", stage_confirm_yes: "होय, पूर्ण झाले म्हणून चिन्हांकित करा" },
-                te: { greeting: "నమస్కారం, సునీతా దేవి", case_no: "కేసు నెం: SC-123-2024", next_step_title: "పోలీస్ స్టేషన్‌కు వెళ్లండి", next_step_subtitle: "వారికి ఈ FIR నంబర్‌ను చూపండి", timeline_title: "న్యాయ పంపిణీ టైమ్‌లైన్", stage_fir: "FIR దాఖలు", stage1_sub: "మీ ఫిర్యాదు అధికారికంగా నమోదు చేయబడింది.", stage2a_title: "దర్యాప్తు అప్పగించబడింది", stage2a_sub: "ఒక సీనియర్ అధికారి ఇప్పుడు బాధ్యత వహిస్తున్నారు.", stage2b_title: "మొదటి நிவாரண చెల్లింపు", stage2b_sub: "(FIR చేసిన 7 రోజులలోపు)", stage_chargesheet: "ఛార్జ్ షీట్ దాఖలు", stage3_sub: "(FIR చేసిన 60 రోజులలోపు)", stage4_title: "రెండవ நிவாரண చెల్లింపు", stage4_sub: "ఛార్జ్ షీట్ దాఖలు చేసిన తర్వాత.", stage5_title: "విచారణ జరుగుతోంది", stage6_title: "తుది తీర్పు", stage6_sub: "eCourts ద్వారా ధృవీకరించబడింది", stage_final_relief_title: "తుది நிவாரண చెల్లింపు", stage_final_relief_sub: "శిక్ష పడిన తర్వాత చెల్లించబడుతుంది.", event_stream_title: "కేసు ఈవెంట్ స్ట్రీమ్", evidence_vault_title: "సాక్ష్యాల ఖజానా", add_evidence: "సాక్ష్యం జోడించండి", financial_title: "మీ ఆర్థిక హక్కులు", financial_total: "మొత్తం హక్కు", travel_log_title: "కోర్టు విచారణ ప్రయాణ భత్యం", log_travel_btn: "ప్రయాణ ఖర్చులను లాగ్ చేయండి", tab_officials: "మీ అధికారులను తెలుసుకోండి", tab_witness: "సాక్షి మద్దతు", tab_rights: "మీ హక్కులు", community_safety_title: "కమ్యూనిటీ భద్రతా సెట్టింగ్‌లు", community_safety_toggle: "కమ్యూనిటీ భద్రతా హెచ్చరికలను ప్రారంభించండి", report_title: "సమస్యను నివేదించండి", submit: "సమర్పించు", protection_banner_text: "మీరు లేదా మీ సాక్షులు బెదిరింపులకు గురవుతున్నారా?", request_protection_btn: "రక్షణను అభ్యర్థించండి", call_helpline: "హెల్ప్‌లైన్‌కు కాల్ చేయండి", share_advisor_btn: "సలహాదారుతో పంచుకోండి", connect_lawyer: "న్యాయవాదికి కనెక్ట్ అవ్వండి", contact_ngo: "NGOని సంప్రదించండి", report_mismatch: "అసమతుల్యతను నివేదించండి", stage_confirm_yes: "అవును, పూర్తయినట్లుగా గుర్తించండి" }
-                // END: MODIFICATION
+                te: { greeting: "నమస్కారం, సునీతా దేవి", case_no: "కేసు నెం: SC-123-2024", next_step_title: "పోలీస్ స్టేషన్‌కు వెళ్లండి", next_step_subtitle: "వారికి ఈ FIR నంబర్‌ను చూపండి", timeline_title: "న్యాయ పంపిణీ టైమ్‌లైన్", stage_fir: "FIR దాఖలు", stage1_sub: "మీ ఫిర్యాదు అధికారికంగా నమోదు చేయబడింది.", stage2a_title: "దర్యాప్తు అప్పగించబడింది", stage2a_sub: "ఒక సీనియర్ అధికారి ఇప్పుడు బాధ్యత వహిస్తున్నారు.", stage2b_title: "మొదటి நிவாரண చెల్లింపు", stage2b_sub: "(FIR చేసిన 7 రోజులలోపు)", stage_chargesheet: "ఛార్జ్ షీట్ దాఖలు", stage3_sub: "(FIR చేసిన 60 రోజులలోపు)", stage4_title: "రెండవ நிவாரண చెల్లింపు", stage4_sub: "ఛార్జ్ షీట్ దాఖలు చేసిన తర్వాత.", stage5_title: "విచారణ జరుగుతోంది", stage6_title: "తుది తీర్పు", stage6_sub: "eCourts ద్వారా ధృవీకరించబడింది", stage_final_relief_title: "తుది நிவாரண చెల్లింపు", stage_final_relief_sub: "శిక్ష పడిన తర్వాత చెల్లించబడుతుంది.", event_stream_title: "కేసు ఈవెంట్ స్ట్రీమ్", evidence_vault_title: "సాక్ష్యాల ఖజానా", add_evidence: "సాక్ష్యం జోడించండి", financial_title: "మీ ఆర్థిక హక్కులు", financial_total: "మొత్తం హక్కు", travel_log_title: "కోర్టు విచారణ ప్రయాణ భత్యం", log_travel_btn: "ప్రయాణ ఖర్చులను లాగ్ చేయండి", tab_officials: "మీ అధికారులను తెలుసుకోండి", tab_witness: "సాక్షి మద్దతు", tab_rights: "మీ హక్కులు", community_safety_title: "కమ్యూనిటీ భద్రతా సెట్టింగ్‌లు", community_safety_toggle: "కమ్యూనిటీ భద్రతా హెచ్చరికలను ప్రారంభించండి", report_title: "సమస్యను నివేదించండి", submit: "సమర్పించు", protection_banner_text: "మీరు లేదా మీ సాక్షులు బెదిరింపులకు గురవుతున్నారా?", request_protection_btn: "రక్షణను అభ్యర్థించండి", call_helpline: "హెల్ప్‌లైన్‌కు కాల్ చేయండి", share_advisor_btn: "సలహాదారుతో పంచుకోండి", connect_lawyer: "న్యాయవాదికి కనెక్ట్ అవ్వండి", contact_ngo: "NGOని సంప్రదించండి", report_mismatch: "అసమతుల్యతను నివేదించండి", stage_confirm_yes: "అవును, పూర్తయినట్లుగా గుర్తించండి", },
+
                 // Other language translations would be updated similarly...
             };
 
@@ -4159,6 +3254,7 @@
                     appState.userId = user.uid;
 
                     initializeAppLogic(); // Run the main app logic
+                    setupFirestoreListeners(); // Set up Firestore listeners
 
                     // // Set up Firestore listener for DigiLocker evidence
                     // const digilockerCol = collection(db, 'users', appState.userId, 'digilockerEvidence');
