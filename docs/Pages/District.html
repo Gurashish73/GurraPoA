@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>District Collector Dashboard | Smart DBT (PCR/PoA Act)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configure Tailwind to use the 'dark' class for dark mode
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar {
+            background-color: #ffffff;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        /* Dark mode specific card styles */
+        .dark .card {
+            background-color: #1c1b1a;
+            border: 1px solid #374151; /* gray-700 */
+            box-shadow: none;
+        }
+        .dark .card:hover {
+            background-color: #2c2b2a;
+        }
+        /* Highlighting for SLA Breach card */
+        .deadline-breach {
+            animation: pulse-red 1s infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { background-color: rgba(252, 165, 165, 0.2); } /* red-300 with transparency */
+            50% { background-color: rgba(239, 68, 68, 0.4); } /* red-500 with transparency */
+        }
+        .dark .deadline-breach {
+            animation: pulse-dark-red 1s infinite;
+        }
+        @keyframes pulse-dark-red {
+            0%, 100% { background-color: rgba(153, 27, 27, 0.2); } /* dark red with transparency */
+            50% { background-color: rgba(185, 28, 28, 0.4); } /* darker red with transparency */
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-[#fdfaf6] dark:bg-black">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar w-64 flex-shrink-0 border-r border-slate-200 dark:border-gray-700 flex flex-col dark:bg-[#1c1b1a]">
+        <div class="p-6">
+            <h1 class="text-xl font-bold text-slate-800 dark:text-gray-100 flex items-center">
+                <i data-lucide="brain" class="w-7 h-7 mr-2 text-indigo-600"></i>
+                SMART DBT
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">PCR / PoA Act Monitoring</p>
+        </div>
+        <nav class="flex-1 px-4 py-2">
+            <!-- Sidebar Links reflect dedicated modules for better navigation -->
+            <a href="#" data-tab="dashboard" class="tab-link flex items-center px-4 py-2.5 text-slate-700 bg-indigo-50 dark:bg-white dark:text-slate-900 rounded-lg font-semibold">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-600"></i>
+                Work Queue & Sanction
+            </a>
+            <a href="#" data-tab="verification" class="tab-link flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="shield-check" class="w-5 h-5 mr-3"></i>
+                Integrated Verification
+            </a>
+            <a href="#" data-tab="analytics" class="tab-link flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="bar-chart-2" class="w-5 h-5 mr-3"></i>
+                Performance & Policy
+            </a>
+            <a href="#" data-tab="grievance_monitor" class="tab-link flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="message-square-text" class="w-5 h-5 mr-3"></i>
+                Grievance SLA Monitor
+            </a>
+            <!-- RESTORED: Dedicated link for Inter-Caste Marriage Tracker -->
+            <a href="#" data-tab="marriage_tracker" class="tab-link flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="heart" class="w-5 h-5 mr-3"></i>
+                Inter-Caste Tracker
+            </a>
+        </nav>
+        <!-- Sidebar Footer remains the same -->
+        <div class="p-4 mt-auto">
+            <div class="bg-slate-100 dark:bg-gray-800 rounded-lg p-4 text-center">
+                <i data-lucide="help-circle" class="w-10 h-10 mx-auto text-slate-500 dark:text-gray-400"></i>
+                <p class="text-sm text-slate-600 dark:text-gray-300 mt-2">Need help with the portal?</p>
+                <button class="mt-3 w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-indigo-700 dark:hover:bg-indigo-500">Contact Support</button>
+            </div>
+            <a href="#" class="flex items-center px-4 py-4 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-4 font-medium">
+                <i data-lucide="log-out" class="w-5 h-5 mr-3"></i>
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-6 lg:p-8">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-800 dark:text-gray-100" id="main-title">Work Queue & Sanction Overview</h2>
+                <p class="text-slate-500 dark:text-gray-400 mt-1" id="main-subtitle">Real-time DBT monitoring for PCR/PoA Act relief</p>
+            </div>
+            <div class="flex items-center mt-4 sm:mt-0">
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700">
+                        <i data-lucide="bell-ring" class="w-5 h-5 text-red-600 dark:text-red-400"></i>
+                    </button>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700">
+                        <i data-lucide="sun" id="theme-toggle-light-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i>
+                        <i data-lucide="moon" id="theme-toggle-dark-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400 hidden"></i>
+                    </button>
+                </div>
+                <div class="flex items-center ml-6">
+                    <img src="https://placehold.co/40x40/E2E8F0/475569?text=DC" alt="District Collector" class="w-10 h-10 rounded-full">
+                    <div class="ml-3">
+                        <p class="font-semibold text-slate-800 dark:text-gray-100">Dr. Priya Sharma</p>
+                        <p class="text-sm text-slate-500 dark:text-gray-400">District Collector, [District Name]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: DASHBOARD OVERVIEW (Work Queue, Sanction & Funnel) -->
+        <div id="dashboard" class="tab-content active">
+            <!-- KPI Cards Grid - Focused on Workflow and Deadlines -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="card p-5">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-slate-500 dark:text-gray-400 font-medium">Total Active Cases</h3>
+                        <div class="p-2 bg-indigo-100 dark:bg-indigo-500/10 rounded-md">
+                            <i data-lucide="gavel" class="w-5 h-5 text-indigo-600 dark:text-indigo-400"></i>
+                        </div>
+                    </div>
+                    <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">154</p>
+                    <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">Victims requiring assistance</p>
+                </div>
+                <div class="card p-5 cursor-pointer hover:bg-slate-50 dark:hover:bg-gray-700" onclick="switchTab('verification')">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-slate-500 dark:text-gray-400 font-medium">Pending Verification</h3>
+                        <div class="p-2 bg-yellow-100 dark:bg-yellow-500/10 rounded-md">
+                            <i data-lucide="fingerprint" class="w-5 h-5 text-yellow-600 dark:text-yellow-400"></i>
+                        </div>
+                    </div>
+                    <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">18</p>
+                    <p class="text-sm text-red-600 dark:text-red-400 flex items-center mt-1">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 mr-1"></i>
+                        <span>4 cases > 7 days</span>
+                    </p>
+                </div>
+                <div class="card p-5">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-slate-500 dark:text-gray-400 font-medium">Ready for Sanction</h3>
+                            <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">24</p>
+                        </div>
+                        <div class="p-2 bg-green-100 dark:bg-green-500/10 rounded-md">
+                            <i data-lucide="badge-check" class="w-5 h-5 text-green-600 dark:text-green-400"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-green-600 dark:text-green-400 flex items-center mt-1">
+                        <i data-lucide="arrow-up" class="w-4 h-4 mr-1"></i>
+                        <span>Quickest Sanction: 1 Day</span>
+                    </p>
+                </div>
+                <div class="card p-5 deadline-breach cursor-pointer hover:bg-slate-50 dark:hover:bg-gray-700" onclick="switchTab('grievance_monitor')">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-slate-500 dark:text-gray-400 font-medium">Grievance SLA Breaches</h3>
+                            <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">3</p>
+                        </div>
+                        <div class="p-2 bg-red-100 dark:bg-red-500/10 rounded-md">
+                            <i data-lucide="timer-off" class="w-5 h-5 text-red-600 dark:text-red-400"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-red-600 dark:text-red-400 flex items-center mt-1">
+                        <i data-lucide="trending-up" class="w-4 h-4 mr-1"></i>
+                        <span>Avg. Redressal: 15 Days</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Charts and Action Panels -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                <!-- Case Workflow Funnel -->
+                <div class="card lg:col-span-2 p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">Case Workflow Funnel (Last 30 Days)</h3>
+                        <select class="border border-slate-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 rounded-md text-sm px-2 py-1">
+                            <option>Current Quarter</option>
+                            <option>Last Quarter</option>
+                        </select>
+                    </div>
+                    <div style="height: 300px;">
+                        <canvas id="caseFunnelChart"></canvas>
+                    </div>
+                </div>
+                <!-- Financial & Sanction Action Panel -->
+                <div class="flex flex-col gap-6">
+                    <div class="card p-5 border-l-4 border-green-500 dark:border-green-600">
+                        <h3 class="text-slate-800 dark:text-gray-100 font-semibold flex items-center mb-3">
+                            <i data-lucide="dollar-sign" class="w-5 h-5 mr-2 text-green-600"></i>
+                            Digital Sanction Queue
+                        </h3>
+                        <p class="text-3xl font-bold text-slate-800 dark:text-gray-100 mt-1">₹3.84 Lakh</p>
+                        <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">Total pending amount for final approval</p>
+                        <button class="mt-4 w-full bg-green-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-green-700">
+                            <i data-lucide="signature" class="w-4 h-4 mr-2"></i>
+                            Review & Sign 24 Files (PFMS)
+                        </button>
+                    </div>
+                    <div class="card p-5 border-l-4 border-yellow-500 dark:border-yellow-600">
+                        <h3 class="text-slate-800 dark:text-gray-100 font-semibold flex items-center mb-3">
+                            <i data-lucide="message-circle-code" class="w-5 h-5 mr-2 text-yellow-600"></i>
+                            Victim Communication (Mass)
+                        </h3>
+                        <p class="text-sm text-slate-800 dark:text-gray-100 mt-1">Send status updates and next step advisories</p>
+                        <div class="mt-3 flex space-x-2">
+                            <button class="flex-1 bg-indigo-500 text-white py-2 rounded-lg text-sm font-semibold hover:bg-indigo-600">
+                                <i data-lucide="message-square" class="w-4 h-4 mr-2"></i>
+                                Send WhatsApp
+                            </button>
+                            <button class="flex-1 bg-indigo-500 text-white py-2 rounded-lg text-sm font-semibold hover:bg-indigo-600">
+                                <i data-lucide="mail-check" class="w-4 h-4 mr-2"></i>
+                                Update Public Tracker
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jurisdiction Case List & Work Queue Table -->
+            <div class="card mt-6 p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">Jurisdiction Case List & Work Queue (Cases needing attention)</h3>
+                    <button class="flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
+                        <i data-lucide="filter" class="w-4 h-4 mr-1"></i>
+                        Filter Cases
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Case ID</th>
+                                <th scope="col" class="px-6 py-3">Victim Name</th>
+                                <th scope="col" class="px-6 py-3">Stage</th>
+                                <th scope="col" class="px-6 py-3">Deadline (Proactive Management)</th>
+                                <th scope="col" class="px-6 py-3">Verification Status (One-Click)</th>
+                                <th scope="col" class="px-6 py-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">PCR/PO/25/0012</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Smt. Geeta Devi</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Pending Police Report</td>
+                                <td class="px-6 py-4"><span class="bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400 text-xs font-medium px-2.5 py-0.5 rounded-full">BREACHED! (2 Days Late)</span></td>
+                                <td class="px-6 py-4"><span class="bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400 text-xs font-medium px-2.5 py-0.5 rounded-full">Aadhaar Verified</span></td>
+                                <td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">Escalate</button></td>
+                            </tr>
+                            <tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">PO/DBT/25/0045</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Sh. Suresh Kumar</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Pending Sanction</td>
+                                <td class="px-6 py-4"><span class="bg-orange-100 text-orange-800 dark:bg-orange-500/10 dark:text-orange-400 text-xs font-medium px-2.5 py-0.5 rounded-full">2 Days Left</span></td>
+                                <td class="px-6 py-4"><button class="bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400 text-xs font-medium px-2.5 py-0.5 rounded-full" onclick="switchTab('verification')">VERIFY ALL</button></td>
+                                <td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">Review</button></td>
+                            </tr>
+                            <tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">PCR/PO/25/0067</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Smt. Rina Begum</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Payment Failed (PFMS)</td>
+                                <td class="px-6 py-4"><span class="bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400 text-xs font-medium px-2.5 py-0.5 rounded-full">7 Days Left</span></td>
+                                <td class="px-6 py-4"><span class="bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400 text-xs font-medium px-2.5 py-0.5 rounded-full">ALL Verified</span></td>
+                                <td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">Re-send DBT</button></td>
+                            </tr>
+                            <tr class="bg-white dark:bg-[#1c1b1a] dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">PO/DBT/25/0089</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Sh. Anil Singh</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Pending eCourts Order</td>
+                                <td class="px-6 py-4"><span class="bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400 text-xs font-medium px-2.5 py-0.5 rounded-full">30 Days Left</span></td>
+                                <td class="px-6 py-4"><span class="bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400 text-xs font-medium px-2.5 py-0.5 rounded-full">ALL Verified</span></td>
+                                <td class="px-6 py-4"><button class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-medium">Track eCourts</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: INTEGRATED VERIFICATION (One-Click Engine) -->
+        <div id="verification" class="tab-content">
+            <h3 class="text-xl font-semibold text-slate-800 dark:text-gray-100 mb-6">Case Verification and Document Scrutiny</h3>
+            
+            <div class="card p-5 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-lg text-slate-800 dark:text-gray-100">Verification Work Queue: Cases Pending API Check</h4>
+                    <span class="bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400 text-sm font-medium px-2.5 py-1 rounded-full">18 Cases Need Review</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Case ID</th>
+                                <th scope="col" class="px-6 py-3">Victim Name</th>
+                                <th scope="col" class="px-6 py-3">Pending Checks</th>
+                                <th scope="col" class="px-6 py-3">Doc Deficiency</th>
+                                <th scope="col" class="px-6 py-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">PO/DBT/25/0045</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Sh. Suresh Kumar</td>
+                                <td class="px-6 py-4 dark:text-gray-300"><span class="bg-yellow-100 text-yellow-800 dark:bg-yellow-500/10 dark:text-yellow-400 text-xs font-medium px-2.5 py-0.5 rounded-full">CCTNS FIR Status, eCourts Order</span></td>
+                                <td class="px-6 py-4"><span class="bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400 text-xs font-medium px-2.5 py-0.5 rounded-full">None</span></td>
+                                <td class="px-6 py-4"><button class="bg-indigo-600 text-white text-xs px-3 py-1 rounded-full hover:bg-indigo-700">Run One-Click Check</button></td>
+                            </tr>
+                            <tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-700">
+                                <td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">PCR/PO/25/0101</td>
+                                <td class="px-6 py-4 dark:text-gray-300">Smt. Kunti Devi</td>
+                                <td class="px-6 py-4 dark:text-gray-300"><span class="bg-green-100 text-green-800 dark:bg-green-500/10 dark:text-green-400 text-xs font-medium px-2.5 py-0.5 rounded-full">None</span></td>
+                                <td class="px-6 py-4"><span class="bg-red-100 text-red-800 dark:bg-red-500/10 dark:text-red-400 text-xs font-medium px-2.5 py-0.5 rounded-full">Missing PoA Certificate</span></td>
+                                <td class="px-6 py-4">
+                                    <button class="bg-red-600 text-white text-xs px-3 py-1 rounded-full hover:bg-red-700">Alert Victim</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Verification Status Details Card -->
+            <div class="card p-5">
+                <h4 class="font-bold text-lg text-slate-800 dark:text-gray-100 mb-4">API Verification Status for Case PO/DBT/25/0089</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="p-3 border rounded-lg bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700">
+                        <p class="text-sm font-medium text-green-700 dark:text-green-400">UIDAI Aadhaar Match</p>
+                        <p class="text-lg font-bold text-green-800 dark:text-green-300">SUCCESS</p>
+                    </div>
+                    <div class="p-3 border rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700">
+                        <p class="text-sm font-medium text-yellow-700 dark:text-yellow-400">CCTNS FIR Status</p>
+                        <p class="text-lg font-bold text-yellow-800 dark:text-yellow-300">PENDING</p>
+                    </div>
+                    <div class="p-3 border rounded-lg bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700">
+                        <p class="text-sm font-medium text-red-700 dark:text-red-400">eCourts Judicial Order</p>
+                        <p class="text-lg font-bold text-red-800 dark:text-red-300">MISMATCH</p>
+                    </div>
+                    <div class="p-3 border rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border-indigo-300 dark:border-indigo-700">
+                        <p class="text-sm font-medium text-indigo-700 dark:text-indigo-400">DigiLocker Document</p>
+                        <p class="text-lg font-bold text-indigo-800 dark:text-indigo-300">SUCCESS</p>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-500 dark:text-gray-400 mt-4">Required action: Manually verify the eCourts Order mismatch and send a query to the Police for CCTNS update.</p>
+                <div class="mt-4 flex space-x-3">
+                     <button class="bg-gray-200 dark:bg-gray-700 text-slate-800 dark:text-gray-200 py-2 px-4 rounded-lg text-sm font-semibold hover:bg-gray-300 dark:hover:bg-gray-600">
+                        Download Digital Case File
+                    </button>
+                    <button class="bg-red-600 text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-red-700">
+                        Send Verification Query
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: PERFORMANCE & POLICY (Analytics and Heatmap) -->
+        <div id="analytics" class="tab-content">
+            <h3 class="text-xl font-semibold text-slate-800 dark:text-gray-100 mb-6">District Performance Analysis and Policy Insights</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- KPI 1: Average Disbursal Time -->
+                <div class="card p-5 border-b-4 border-indigo-500">
+                    <p class="text-sm text-slate-500 dark:text-gray-400 font-medium">Avg. Disbursal Time (Mandate: 7 Days)</p>
+                    <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">8.2 Days</p>
+                    <p class="text-sm text-red-600 dark:text-red-400 mt-1">Slightly exceeding statutory limit.</p>
+                </div>
+                <!-- KPI 2: Verification Success Rate -->
+                <div class="card p-5 border-b-4 border-green-500">
+                    <p class="text-sm text-slate-500 dark:text-gray-400 font-medium">One-Click Verification Success Rate</p>
+                    <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">94%</p>
+                    <p class="text-sm text-green-600 dark:text-green-400 mt-1">High data quality via APIs.</p>
+                </div>
+                 <!-- KPI 3: Funds Utilization Rate -->
+                <div class="card p-5 border-b-4 border-yellow-500">
+                    <p class="text-sm text-slate-500 dark:text-gray-400 font-medium">Funds Utilization</p>
+                    <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">75%</p>
+                    <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">₹1.18 Cr. remaining balance.</p>
+                </div>
+                <!-- Geo-Tagged Heatmap Placeholder -->
+                <div class="card p-5 border-b-4 border-red-500">
+                    <p class="text-sm text-slate-500 dark:text-gray-400 font-medium">Atrocity-Prone Area Alert</p>
+                    <p class="text-4xl font-bold text-red-600 dark:text-red-400 mt-2">Mohanpur Block</p>
+                    <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">3 new cases this month (Geo-Tagged)</p>
+                </div>
+            </div>
+            
+            <!-- Geo-Tagged Heatmap Placeholder (Expanded view) -->
+            <div class="card mt-6 p-5">
+                <h4 class="font-bold text-lg text-slate-800 dark:text-gray-100 mb-4 flex items-center">
+                    <i data-lucide="map" class="w-5 h-5 mr-2 text-indigo-600"></i>
+                    Geo-Tagged Victim Heatmap (Mock Map Placeholder)
+                </h4>
+                <div class="h-64 bg-slate-100 dark:bg-gray-800 rounded-lg flex items-center justify-center text-slate-500 dark:text-gray-400">
+                    Interactive Map showing cluster of atrocity cases based on geo-tagged FIR/application data.
+                </div>
+            </div>
+        </div>
+        
+        <!-- NEW TAB CONTENT: INTER-CASTE MARRIAGE TRACKER -->
+        <div id="marriage_tracker" class="tab-content">
+            <h3 class="text-xl font-semibold text-slate-800 dark:text-gray-100 mb-6">Inter-Caste Marriage Incentive Tracker</h3>
+            <div class="card p-5">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100 mb-4">Pending Approval Queue</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-gray-800 rounded-lg border-l-4 border-indigo-500">
+                        <div>
+                            <p class="font-medium text-slate-900 dark:text-gray-100">Applicant: Rahul & Anjali</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Status: **Pending DM Approval** | Days Pending: **5**</p>
+                        </div>
+                        <button class="bg-indigo-500 text-white text-xs px-3 py-1 rounded-full hover:bg-indigo-600">Approve</button>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-gray-800 rounded-lg border-l-4 border-blue-500">
+                        <div>
+                            <p class="font-medium text-slate-900 dark:text-gray-100">Applicant: Farhan & Simran</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Status: **Police Verification Pending** | Days Pending: **12**</p>
+                        </div>
+                        <button class="bg-yellow-500 text-white text-xs px-3 py-1 rounded-full hover:bg-yellow-600">Follow-up</button>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-gray-800 rounded-lg border-l-4 border-green-500">
+                        <div>
+                            <p class="font-medium text-slate-900 dark:text-gray-100">Applicant: John & Mary</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Status: **DBT Disbursed** | Date: **10/10/2025**</p>
+                        </div>
+                        <span class="text-green-600 dark:text-green-400 text-xs font-medium">Completed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT: GRIEVANCE SLA MONITOR -->
+        <div id="grievance_monitor" class="tab-content">
+             <h3 class="text-xl font-semibold text-slate-800 dark:text-gray-100 mb-6">SLA-Driven Grievance Redressal (Direct Action)</h3>
+            <div class="card p-5">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100 mb-4">Grievance Work Queue: Breaches and Alerts</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-gray-800 rounded-lg border-l-4 border-red-500">
+                        <div>
+                            <p class="font-medium text-slate-900 dark:text-gray-100">G-2024-001: Delay in 1st Installment</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Assigned to: **Finance Dept.** | SLA: **BREACHED (9 Days)**</p>
+                        </div>
+                        <button class="bg-red-500 text-white text-xs px-3 py-1 rounded-full hover:bg-red-600">Force Escalation</button>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-gray-800 rounded-lg border-l-4 border-orange-500">
+                        <div>
+                            <p class="font-medium text-slate-900 dark:text-gray-100">G-2024-005: Incorrect Relief Amount</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Assigned to: **Social Welfare Officer** | SLA: **2 Days Left**</p>
+                        </div>
+                        <button class="bg-indigo-500 text-white text-xs px-3 py-1 rounded-full hover:bg-indigo-600">View Details</button>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-gray-800 rounded-lg border-l-4 border-green-500">
+                        <div>
+                            <p class="font-medium text-slate-900 dark:text-gray-100">G-2024-007: Case Status Not Updating</p>
+                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">Assigned to: **IT Nodal Officer** | SLA: **Resolution in Progress**</p>
+                        </div>
+                        <span class="text-green-600 dark:text-green-400 text-xs font-medium">On Track</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Function to handle tab switching
+            window.switchTab = function(tabName) {
+                // Update Sidebar Links
+                document.querySelectorAll('.tab-link').forEach(link => {
+                    link.classList.remove('bg-indigo-50', 'dark:bg-white', 'dark:text-slate-900', 'text-slate-700', 'font-semibold');
+                    link.classList.add('text-slate-600', 'dark:text-gray-400', 'hover:bg-slate-100', 'dark:hover:bg-gray-700', 'font-medium');
+                    if (link.dataset.tab === tabName) {
+                        link.classList.add('bg-indigo-50', 'dark:bg-white', 'dark:text-slate-900', 'text-slate-700', 'font-semibold');
+                        link.classList.remove('text-slate-600', 'dark:text-gray-400', 'hover:bg-slate-100', 'dark:hover:bg-gray-700', 'font-medium');
+                    }
+                });
+
+                // Update Tab Content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+
+                // Update Header
+                const titles = {
+                    dashboard: 'Work Queue & Sanction Overview',
+                    verification: 'Integrated Verification Workflow',
+                    analytics: 'Performance & Policy Insights',
+                    grievance_monitor: 'Grievance SLA Monitor',
+                    marriage_tracker: 'Inter-Caste Marriage Incentive Tracker'
+                };
+                const subtitles = {
+                    dashboard: 'Real-time DBT monitoring for PCR/PoA Act relief',
+                    verification: 'One-Click verification for CCTNS, eCourts, and Aadhaar data.',
+                    analytics: 'Key performance indicators for efficiency, compliance, and policy monitoring.',
+                    grievance_monitor: 'Track and escalate grievances based on statutory deadlines.',
+                    marriage_tracker: 'Manage verification and approval of incentive applications.'
+                };
+                document.getElementById('main-title').textContent = titles[tabName];
+                document.getElementById('main-subtitle').textContent = subtitles[tabName];
+            }
+
+
+            lucide.createIcons();
+
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            let charts = {};
+
+            const getChartOptions = (isDark) => {
+                const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0';
+                const textColor = isDark ? '#9ca3af' : '#64748b'; /* gray-400 : slate-500 */
+                return {
+                    bar: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y', 
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: gridColor },
+                                ticks: { color: textColor }
+                            },
+                            x: {
+                                min: 0,
+                                max: 160, 
+                                grid: { color: gridColor },
+                                ticks: { color: textColor }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { 
+                                enabled: true,
+                                bodyColor: isDark ? '#1f2937' : '#ffffff', 
+                                titleColor: isDark ? '#1f2937' : '#000000', 
+                                backgroundColor: isDark ? '#e5e7eb' : '#374151', 
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index',
+                        },
+                    }
+                };
+            };
+
+            function createCharts(isDark) {
+                const options = getChartOptions(isDark);
+                
+                // Case Workflow Funnel Bar Chart
+                const funnelCtx = document.getElementById('caseFunnelChart');
+                if (funnelCtx) {
+                    charts.caseFunnel = new Chart(funnelCtx.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            // Funnel labels
+                            labels: ['Application Filed', 'Verification Complete', 'Sanctioned', 'DBT Disbursed'],
+                            datasets: [
+                                {
+                                    label: 'Cases in Stage',
+                                    data: [154, 108, 90, 85],
+                                    backgroundColor: ['#4f46e5', '#f59e0b', '#34d399', '#10b981'],
+                                    borderRadius: 4,
+                                    barThickness: 20
+                                }
+                            ]
+                        },
+                        options: {
+                            ...options.bar,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: options.bar.plugins.tooltip
+                            }
+                        }
+                    });
+                }
+            }
+
+            function updateAllChartsTheme(isDark) {
+                if (charts.caseFunnel) charts.caseFunnel.destroy();
+                createCharts(isDark);
+            }
+
+            // Function to set theme
+            const setTheme = (isDark) => {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    lightIcon.classList.add('hidden');
+                    darkIcon.classList.remove('hidden');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    lightIcon.classList.remove('hidden');
+                    darkIcon.classList.add('hidden');
+                    localStorage.setItem('theme', 'light');
+                }
+                updateAllChartsTheme(isDark);
+            };
+
+            // Initial theme setup
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            const isDarkMode = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+            
+            setTheme(isDarkMode);
+
+            themeToggleBtn.addEventListener('click', () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                setTheme(!isDark);
+            });
+
+            // Initial tab load
+            switchTab('dashboard');
+            
+            // Add click listeners for sidebar links
+            document.querySelectorAll('.tab-link').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    switchTab(this.dataset.tab);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
