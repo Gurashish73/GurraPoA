@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DARPAN Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color-light: #f3f4f6;
+            --text-color-light: #1f2937;
+            --card-bg-light: #ffffff66;
+            /* Increased transparency for glass effect */
+            --border-color-light: #e5e7eb;
+            --input-bg-light: #f9fafb;
+            --muted-text-light: #374151;
+            /* Darkened for better contrast */
+
+            --bg-color-dark: #111827;
+            --text-color-dark: #f9fafb;
+            --card-bg-dark: #1f293766;
+            /* Further increased transparency */
+            --border-color-dark: #374151;
+            --input-bg-dark: #374151;
+            --muted-text-dark: #d1d5db;
+            /* Lightened for better contrast */
+        }
+
+        .light {
+            --bg-color: var(--bg-color-light);
+            --text-color: var(--text-color-light);
+            --card-bg: var(--card-bg-light);
+            --border-color: var(--border-color-light);
+            --input-bg: var(--input-bg-light);
+            --muted-text: var(--muted-text-light);
+        }
+
+        .dark {
+            --bg-color: var(--bg-color-dark);
+            --text-color: var(--text-color-dark);
+            --card-bg: var(--card-bg-dark);
+            --border-color: var(--border-color-dark);
+            --input-bg: var(--input-bg-dark);
+            --muted-text: var(--muted-text-dark);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Dynamic Background Carousel Styles */
+        #background-carousel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            filter: brightness(0.3);
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .form-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .form-input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            --tw-ring-color: rgba(59, 130, 246, 0.5);
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 2px var(--tw-ring-color);
+        }
+
+        .form-input::placeholder {
+            color: var(--muted-text);
+        }
+
+        .submit-btn {
+            background: #2563EB;
+            box-shadow: 0px 4px 15px -5px rgba(37, 99, 235, 0.4);
+        }
+
+        .submit-btn:hover {
+            background: #1D4ED8;
+        }
+
+        .theme-switcher-bg {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="background-carousel">
+        <div class="carousel-slide active" style="background-image: url('login-bg1.jpg');"></div>
+        <div class="carousel-slide" style="background-image: url('login-2.png');"></div>
+        <div class="carousel-slide" style="background-image: url('login-3.png');"></div>
+    </div>
+    <div class="absolute top-6 right-6 z-10">
+        <div class="theme-switcher-bg p-1 rounded-full flex items-center">
+            <button id="theme-toggle"
+                class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-transform transform duration-300">
+                <svg id="theme-icon-sun" class="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                    </path>
+                </svg>
+                <svg id="theme-icon-moon" class="h-5 w-5 text-gray-400 hidden" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                    </path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="min-h-screen flex items-center justify-center w-full">
+        <div class="w-full max-w-md form-container rounded-xl shadow-lg p-8 space-y-6 m-4">
+            <div class="text-center">
+                <img src="emblem.png" alt="" class="h-16 mx-auto bg-white rounded-full p-1 shadow-md">
+                <h1 class="text-3xl font-bold mt-4 tracking-tight">DARPAN Portal</h1>
+                <p style="color: var(--muted-text);">Securely sign in to your dashboard</p>
+            </div>
+
+            <form id="login-form" class="space-y-5">
+                <div class="relative">
+                    <input type="text" id="email" name="email"
+                        class="w-full pl-4 pr-4 py-3 form-input rounded-md focus:outline-none"
+                        placeholder="Email or Username">
+                </div>
+
+                <div class="relative">
+                    <input type="text" id="password" name="password"
+                        class="w-full pl-4 pr-4 py-3 form-input rounded-md focus:outline-none" placeholder="Password">
+                </div>
+
+                <div class="relative">
+                    <select id="role-select" name="role"
+                        class="w-full pl-4 pr-10 py-3 form-input rounded-md appearance-none focus:outline-none">
+                        <option value="" disabled selected class="text-gray-500">Select Your Dashboard</option>
+                        <option value="victim">Victim/Survivor Dashboard</option>
+                        <option value="intercaste">Inter-Caste Marriage Couple</option>
+                        <option value="district">District Officer</option>
+                        <option value="state">State Coordinator</option>
+                        <option value="national">National Administrator</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5" style="color: var(--muted-text);" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="w-full submit-btn text-white font-bold py-3 px-5 rounded-md text-md hover:opacity-90 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        style="--ring-offset-color: var(--card-bg);">
+                        Secure Sign In
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const themeToggle = document.getElementById('theme-toggle');
+            const sunIcon = document.getElementById('theme-icon-sun');
+            const moonIcon = document.getElementById('theme-icon-moon');
+            const htmlEl = document.documentElement;
+
+            // Function to set theme
+            const setTheme = (theme) => {
+                if (theme === 'dark') {
+                    htmlEl.classList.add('dark');
+                    htmlEl.classList.remove('light');
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    htmlEl.classList.add('light');
+                    htmlEl.classList.remove('dark');
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+
+            // Check for saved theme in localStorage
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            setTheme(savedTheme);
+
+            // Theme toggle event listener
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = htmlEl.classList.contains('dark') ? 'light' : 'dark';
+                setTheme(currentTheme);
+            });
+
+            // Image Carousel Logic
+            const slides = document.querySelectorAll('.carousel-slide');
+            let currentSlide = 0;
+            if (slides.length > 0) {
+                const showNextSlide = () => {
+                    slides[currentSlide].classList.remove('active');
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    slides[currentSlide].classList.add('active');
+                }
+                setInterval(showNextSlide, 7000); // Change image every 7 seconds
+            }
+            // Form submission logic
+            document.getElementById('login-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const selectedRole = document.getElementById('role-select').value;
+                let redirectUrl = '';
+
+                switch (selectedRole) {
+                    case 'victim':
+                        redirectUrl = 'victim.html';
+                        break;
+                    case 'intercaste':
+                        redirectUrl = 'marriage.html'; // Assumes this is the target file
+                        break;
+                    case 'district':
+                        redirectUrl = 'District.html';
+                        break;
+                    case 'state':
+                        redirectUrl = 'state.html';
+                        break;
+                    case 'national':
+                        redirectUrl = 'central.html'; // Changed from Central.html for consistency
+                        break;
+                    default:
+                        // If no role is selected, show an alert.
+                        alert('Please select a dashboard to continue.');
+                        return;
+                }
+
+                if (redirectUrl) {
+                    console.log(`Redirecting to ${redirectUrl} for role: ${selectedRole}`);
+                    window.location.href = redirectUrl;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
