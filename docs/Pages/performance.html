@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance | CSS Governance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configure Tailwind to use the 'dark' class for dark mode
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar {
+            background-color: #ffffff;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .actionable-card {
+            cursor: pointer;
+        }
+        /* Dark mode specific card styles */
+        .dark .card {
+            background-color: #1c1b1a;
+            border: 1px solid #374151; /* gray-700 */
+            box-shadow: none;
+        }
+        .dark .card:hover {
+            background-color: #2c2b2a;
+        }
+        /* Styles for sortable table headers */
+        .sortable-header {
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+        }
+        .sort-icon {
+            display: none;
+            color: #9ca3af; /* gray-400 */
+        }
+        .sortable-header.sorted .sort-icon {
+            display: inline-block;
+        }
+        .dark .sort-icon {
+            color: #6b7280; /* gray-500 */
+        }
+        
+        /* Custom Scrollbar Styles */
+        .chart-scroll-container::-webkit-scrollbar,
+        .data-table-container::-webkit-scrollbar,
+        .modal-body::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .chart-scroll-container::-webkit-scrollbar-track,
+        .data-table-container::-webkit-scrollbar-track,
+        .modal-body::-webkit-scrollbar-track {
+            background: #f1f5f9; /* slate-100 */
+            border-radius: 10px;
+        }
+        .chart-scroll-container::-webkit-scrollbar-thumb,
+        .data-table-container::-webkit-scrollbar-thumb,
+        .modal-body::-webkit-scrollbar-thumb {
+            background: #cbd5e1; /* slate-300 */
+            border-radius: 10px;
+        }
+        .chart-scroll-container::-webkit-scrollbar-thumb:hover,
+        .data-table-container::-webkit-scrollbar-thumb:hover,
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; /* slate-400 */
+        }
+        .dark .chart-scroll-container::-webkit-scrollbar-track,
+        .dark .data-table-container::-webkit-scrollbar-track,
+        .dark .modal-body::-webkit-scrollbar-track {
+            background: #374151; /* gray-700 */
+        }
+        .dark .chart-scroll-container::-webkit-scrollbar-thumb,
+        .dark .data-table-container::-webkit-scrollbar-thumb,
+        .dark .modal-body::-webkit-scrollbar-thumb {
+            background: #4b5563; /* gray-600 */
+        }
+        .dark .chart-scroll-container::-webkit-scrollbar-thumb:hover,
+        .dark .data-table-container::-webkit-scrollbar-thumb:hover,
+        .dark .modal-body::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; /* gray-500 */
+        }
+    </style>
+</head>
+<body class="flex min-h-screen bg-[#fdfaf6] dark:bg-black">
+    <aside class="sidebar w-64 flex-shrink-0 border-r border-slate-200 dark:border-gray-700 flex flex-col dark:bg-[#1c1b1a]">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold text-slate-800 dark:text-gray-100 flex items-center">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7 mr-2 text-indigo-600"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path><path d="M12 3v2"></path><path d="M12 19v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M3 12h2"></path><path d="M19 12h2"></path><path d="m4.93 19.07 1.41-1.41"></path><path d="m17.66 6.34 1.41-1.41"></path></svg>
+                CSS Governance
+            </h1>
+        </div>
+        <nav class="flex-1 px-4 py-2">
+            <a href="state.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg font-medium">
+                <i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>
+                Dashboard
+            </a>
+            <a href="financials.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="landmark" class="w-5 h-5 mr-3"></i>
+                Financials
+            </a>
+            <a href="performance.html" class="flex items-center px-4 py-2.5 text-slate-700 bg-indigo-50 dark:bg-white dark:text-slate-900 rounded-lg mt-1 font-semibold">
+                <i data-lucide="bar-chart-3" class="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-600"></i>
+                Performance
+            </a>
+            <a href="compliance.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="shield-check" class="w-5 h-5 mr-3"></i>
+                Compliance
+            </a>
+             <a href="reports.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium">
+                <i data-lucide="file-spreadsheet" class="w-5 h-5 mr-3"></i>
+                Reports
+            </a>
+        </nav>
+        <div class="p-4 mt-auto">
+            <a href="#" class="flex items-center px-4 py-4 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-4 font-medium">
+                <i data-lucide="log-out" class="w-5 h-5 mr-3"></i>
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 lg:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-800 dark:text-gray-100">Performance Dashboard</h2>
+                <p class="text-slate-500 dark:text-gray-400 mt-1">Comparative analysis of district performance and service delivery metrics.</p>
+            </div>
+            <div class="flex items-center mt-4 sm:mt-0">
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700">
+                        <i data-lucide="bell" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i>
+                    </button>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700">
+                        <i data-lucide="sun" id="theme-toggle-light-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i>
+                        <i data-lucide="moon" id="theme-toggle-dark-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400 hidden"></i>
+                    </button>
+                </div>
+                <div class="flex items-center ml-6">
+                    <img src="https://placehold.co/40x40/E2E8F0/475569?text=PS" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="ml-3">
+                        <p class="font-semibold text-slate-800 dark:text-gray-100">Ms. Priya Singh</p>
+                        <p class="text-sm text-slate-500 dark:text-gray-400">Secretary, Social Welfare</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="card p-5">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Disbursement Speed Index</h3>
+                    <div class="p-2 bg-green-100 dark:bg-green-500/10 rounded-md"><i data-lucide="trending-up" class="w-5 h-5 text-green-600 dark:text-green-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">91.5%</p>
+                <p class="text-sm text-green-600 flex items-center mt-1"><i data-lucide="arrow-up" class="w-4 h-4 mr-1"></i><span>1.2%</span> <span class="text-slate-500 dark:text-gray-400 ml-1">vs last quarter</span></p>
+            </div>
+            <div id="compliance-card" class="card p-5 actionable-card">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Deadline Compliance</h3>
+                    <div class="p-2 bg-red-100 dark:bg-red-500/10 rounded-md"><i data-lucide="shield-alert" class="w-5 h-5 text-red-600 dark:text-red-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-red-600 dark:text-red-500 mt-2">88.2%</p>
+                <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">1,245 cases violated 7-day TAT</p>
+            </div>
+            <div id="grievance-card" class="card p-5 actionable-card">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Avg. Grievance Resolution</h3>
+                    <div class="p-2 bg-yellow-100 dark:bg-yellow-500/10 rounded-md"><i data-lucide="clock" class="w-5 h-5 text-yellow-600 dark:text-yellow-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">4.1 Days</p>
+                <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">State-wide average time</p>
+            </div>
+            <div id="pending-cases-card" class="card p-5 actionable-card">
+                <div class="flex justify-between items-start">
+                    <h3 class="text-slate-500 dark:text-gray-400 font-medium">Pending Cases (>7 Days)</h3>
+                    <div class="p-2 bg-orange-100 dark:bg-orange-500/10 rounded-md"><i data-lucide="hourglass" class="w-5 h-5 text-orange-600 dark:text-orange-400"></i></div>
+                </div>
+                <p class="text-4xl font-bold text-slate-800 dark:text-gray-100 mt-2">891</p>
+                <p class="text-sm text-slate-500 dark:text-gray-400 mt-1">Require immediate attention</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="card p-5 flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="dsi-chart-title" class="text-lg font-semibold text-slate-800 dark:text-gray-100">State DSI Leaderboard</h3>
+                    <button id="back-to-states-btn" class="hidden flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
+                        <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Back to States
+                    </button>
+                </div>
+                <div id="dsi-chart-container" class="chart-scroll-container flex-grow" style="position: relative; height: 350px; overflow-y: auto;">
+                    <div id="dsi-chart-wrapper" style="height: 750px; position: relative;">
+                        <canvas id="dsiLeaderboardChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-5">
+                 <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100 mb-4">Grievance Trend Analysis</h3>
+                <div style="height: 350px;">
+                    <canvas id="grievanceTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card p-5">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">Comprehensive District Performance Data</h3>
+                <button id="export-btn" class="flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
+                    Export All Data <i data-lucide="download" class="w-4 h-4 ml-2"></i>
+                </button>
+            </div>
+            <div class="data-table-container overflow-x-auto overflow-y-auto max-h-[500px]">
+                <table id="performance-table" class="w-full text-left text-sm">
+                    <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800 sticky top-0">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-column-index="0">District <span class="sort-icon"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></span></th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-column-index="1">Disbursement Speed (Avg Days) <span class="sort-icon"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></span></th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-column-index="2">Deadline Violations <span class="sort-icon"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></span></th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-column-index="3">Grievances Received <span class="sort-icon"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></span></th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-column-index="4">Resolution Rate <span class="sort-icon"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></span></th>
+                            <th scope="col" class="px-6 py-3 sortable-header" data-column-index="5">Overall Score <span class="sort-icon"><i data-lucide="arrow-up-down" class="w-3 h-3"></i></span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="performance-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modals -->
+    <div id="compliance-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 justify-center items-center p-4">
+        <div class="bg-white dark:bg-[#1c1b1a] rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b border-slate-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">Deadline Compliance Violations</h3>
+                <button id="close-compliance-modal-btn" class="text-slate-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="modal-body p-4 overflow-y-auto">
+                <table id="compliance-table" class="w-full text-left text-sm">
+                    <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800 sticky top-0">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Case ID</th>
+                            <th scope="col" class="px-4 py-3">District</th>
+                            <th scope="col" class="px-4 py-3">Scheme</th>
+                            <th scope="col" class="px-4 py-3">Assigned Officer</th>
+                            <th scope="col" class="px-4 py-3">Due Date</th>
+                            <th scope="col" class="px-4 py-3">Days Overdue</th>
+                        </tr>
+                    </thead>
+                    <tbody id="compliance-table-body"></tbody>
+                </table>
+            </div>
+            <div class="p-4 mt-auto border-t border-slate-200 dark:border-gray-700 text-right">
+                <button id="download-compliance-csv" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center ml-auto">
+                    <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                    Download Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="grievance-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 justify-center items-center p-4">
+        <div class="bg-white dark:bg-[#1c1b1a] rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b border-slate-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">State-wise Grievance Resolution Data</h3>
+                <button id="close-grievance-modal-btn" class="text-slate-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="modal-body p-4 overflow-y-auto">
+                <table id="grievance-table" class="w-full text-left text-sm">
+                    <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800 sticky top-0">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">State</th>
+                            <th scope="col" class="px-4 py-3">Grievances Received</th>
+                            <th scope="col" class="px-4 py-3">Grievances Resolved</th>
+                            <th scope="col" class="px-4 py-3">Avg. Resolution Time (Days)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="grievance-table-body"></tbody>
+                </table>
+            </div>
+            <div class="p-4 mt-auto border-t border-slate-200 dark:border-gray-700 text-right">
+                <button id="download-grievance-csv" class="bg-indigo-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center ml-auto">
+                    <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                    Download Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pending-cases-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 justify-center items-center p-4">
+        <div class="bg-white dark:bg-[#1c1b1a] rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b border-slate-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-slate-800 dark:text-gray-100">Pending Cases Requiring Investigation</h3>
+                <button id="close-pending-modal-btn" class="text-slate-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="modal-body p-4 overflow-y-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800 sticky top-0">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Case ID</th>
+                            <th scope="col" class="px-4 py-3">District</th>
+                            <th scope="col" class="px-4 py-3">Scheme</th>
+                            <th scope="col" class="px-4 py-3">Days Pending</th>
+                            <th scope="col" class="px-4 py-3">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pending-cases-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initial Setup
+            lucide.createIcons();
+            let charts = {};
+
+            // DOM Element References
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+
+            const complianceCard = document.getElementById('compliance-card');
+            const complianceModal = document.getElementById('compliance-modal');
+            const closeComplianceModalBtn = document.getElementById('close-compliance-modal-btn');
+            const complianceTableBody = document.getElementById('compliance-table-body');
+            const downloadComplianceBtn = document.getElementById('download-compliance-csv');
+            
+            const grievanceCard = document.getElementById('grievance-card');
+            const grievanceModal = document.getElementById('grievance-modal');
+            const closeGrievanceModalBtn = document.getElementById('close-grievance-modal-btn');
+            const grievanceTableBody = document.getElementById('grievance-table-body');
+            const downloadGrievanceBtn = document.getElementById('download-grievance-csv');
+
+            const pendingCasesCard = document.getElementById('pending-cases-card');
+            const pendingCasesModal = document.getElementById('pending-cases-modal');
+            const closePendingModalBtn = document.getElementById('close-pending-modal-btn');
+            const pendingCasesTableBody = document.getElementById('pending-cases-table-body');
+
+            const dsiChartTitle = document.getElementById('dsi-chart-title');
+            const backToStatesBtn = document.getElementById('back-to-states-btn');
+            const dsiChartWrapper = document.getElementById('dsi-chart-wrapper');
+            const performanceTableBody = document.getElementById('performance-table-body');
+            const mainPerformanceTable = document.getElementById('performance-table');
+            const exportMainTableBtn = document.getElementById('export-btn');
+
+            // Data Objects
+            const deadlineViolationsData = [
+                { caseId: 'DC-58234', district: 'East Delhi', scheme: 'Senior Citizen Pension', officer: 'R. Sharma', dueDate: '2025-09-28', overdue: 15 },
+                { caseId: 'DC-58235', district: 'South West Delhi', scheme: 'Widow Support Scheme', officer: 'A. Gupta', dueDate: '2025-09-25', overdue: 18 },
+                { caseId: 'DC-58236', district: 'Yamuna Vihar', scheme: 'Disability Aid', officer: 'S. Singh', dueDate: '2025-10-01', overdue: 12 },
+                { caseId: 'DC-58237', district: 'Shahdara', scheme: 'Educational Grant', officer: 'M. Verma', dueDate: '2025-09-18', overdue: 25 },
+                { caseId: 'DC-58238', district: 'Narela', scheme: 'Housing Grant', officer: 'P. Kumar', dueDate: '2025-09-22', overdue: 21 },
+                { caseId: 'DC-58239', district: 'South Delhi', scheme: 'Senior Citizen Pension', officer: 'R. Sharma', dueDate: '2025-10-05', overdue: 8 },
+                { caseId: 'DC-58240', district: 'West Delhi', scheme: 'Widow Support Scheme', officer: 'A. Gupta', dueDate: '2025-09-30', overdue: 13 },
+                { caseId: 'DC-58241', district: 'North East Delhi', scheme: 'Disability Aid', officer: 'S. Singh', dueDate: '2025-09-29', overdue: 14 },
+                { caseId: 'DC-58242', district: 'Seelampur', scheme: 'Educational Grant', officer: 'M. Verma', dueDate: '2025-09-15', overdue: 28 },
+                { caseId: 'DC-58243', district: 'Central Delhi', scheme: 'Housing Grant', officer: 'P. Kumar', dueDate: '2025-10-02', overdue: 11 },
+                { caseId: 'DC-58244', district: 'East Delhi', scheme: 'Senior Citizen Pension', officer: 'R. Sharma', dueDate: '2025-09-26', overdue: 17 },
+                { caseId: 'DC-58245', district: 'Mayur Vihar', scheme: 'Widow Support Scheme', officer: 'A. Gupta', dueDate: '2025-09-19', overdue: 24 },
+                { caseId: 'DC-58246', district: 'South East Delhi', scheme: 'Disability Aid', officer: 'S. Singh', dueDate: '2025-10-04', overdue: 9 },
+                { caseId: 'DC-58247', district: 'North West Delhi', scheme: 'Educational Grant', officer: 'M. Verma', dueDate: '2025-10-06', overdue: 7 },
+                { caseId: 'DC-58248', district: 'Kalkaji', scheme: 'Housing Grant', officer: 'P. Kumar', dueDate: '2025-09-21', overdue: 22 },
+                { caseId: 'DC-58249', district: 'Dwarka', scheme: 'Senior Citizen Pension', officer: 'R. Sharma', dueDate: '2025-09-24', overdue: 19 },
+                { caseId: 'DC-58250', district: 'Najafgarh', scheme: 'Widow Support Scheme', officer: 'A. Gupta', dueDate: '2025-09-17', overdue: 26 },
+                { caseId: 'DC-58251', district: 'Mehrauli', scheme: 'Disability Aid', officer: 'S. Singh', dueDate: '2025-09-23', overdue: 20 },
+                { caseId: 'DC-58252', district: 'Paschim Vihar', scheme: 'Educational Grant', officer: 'M. Verma', dueDate: '2025-10-03', overdue: 10 },
+                { caseId: 'DC-58253', district: 'Rohini', scheme: 'Housing Grant', officer: 'P. Kumar', dueDate: '2025-09-16', overdue: 27 },
+                { caseId: 'DC-58254', district: 'Vasant Vihar', scheme: 'Senior Citizen Pension', officer: 'R. Sharma', dueDate: '2025-10-08', overdue: 5 },
+                { caseId: 'DC-58255', district: 'Janakpuri', scheme: 'Widow Support Scheme', officer: 'A. Gupta', dueDate: '2025-10-07', overdue: 6 },
+                { caseId: 'DC-58256', district: 'Hauz Khas', scheme: 'Disability Aid', officer: 'S. Singh', dueDate: '2025-09-14', overdue: 29 },
+                { caseId: 'DC-58257', district: 'Pitampura', scheme: 'Educational Grant', officer: 'M. Verma', dueDate: '2025-09-13', overdue: 30 },
+                { caseId: 'DC-58258', district: 'Tilak Nagar', scheme: 'Housing Grant', officer: 'P. Kumar', dueDate: '2025-09-27', overdue: 16 },
+                { caseId: 'DC-58259', district: 'Lajpat Nagar', scheme: 'Senior Citizen Pension', officer: 'R. Sharma', dueDate: '2025-10-09', overdue: 4 },
+                { caseId: 'DC-58260', district: 'Karol Bagh', scheme: 'Widow Support Scheme', officer: 'A. Gupta', dueDate: '2025-10-11', overdue: 2 },
+                { caseId: 'DC-58261', district: 'Patel Nagar', scheme: 'Disability Aid', officer: 'S. Singh', dueDate: '2025-10-12', overdue: 1 },
+                { caseId: 'DC-58262', district: 'Saket', scheme: 'Educational Grant', officer: 'M. Verma', dueDate: '2025-10-10', overdue: 3 },
+                { caseId: 'DC-58263', district: 'New Delhi', scheme: 'Housing Grant', officer: 'P. Kumar', dueDate: '2025-09-20', overdue: 23 },
+            ];
+            const stateData = {
+                'Kerala': { score: 99.2, districts: [{ name: 'Thiruvananthapuram', score: 99.5 }, { name: 'Ernakulam', score: 99.3 }, { name: 'Kozhikode', score: 99.1 }, { name: 'Thrissur', score: 98.9 }] },
+                'Goa': { score: 98.8, districts: [{ name: 'North Goa', score: 99.0 }, { name: 'South Goa', score: 98.6 }] },
+                'Delhi': { score: 98.5, districts: [{ name: 'New Delhi', score: 99.8 }, { name: 'South Delhi', score: 98.2 }, { name: 'West Delhi', score: 97.9 }, { name: 'North Delhi', score: 97.5 }] },
+                'Chandigarh': { score: 98.1, districts: [{ name: 'Chandigarh', score: 98.1 }] },
+                'Tamil Nadu': { score: 97.5, districts: [{ name: 'Chennai', score: 98.5 }, { name: 'Coimbatore', score: 98.1 }, { name: 'Madurai', score: 97.8 }, { name: 'Tiruchirappalli', score: 97.2 }] },
+                'Karnataka': { score: 96.9, districts: [{ name: 'Bengaluru Urban', score: 98.0 }, { name: 'Dakshina Kannada', score: 97.5 }, { name: 'Mysuru', score: 96.8 }, { name: 'Udupi', score: 96.5 }] },
+                'Andhra Pradesh': { score: 96.2, districts: [{ name: 'Krishna', score: 97.8 }, { name: 'Visakhapatnam', score: 97.2 }, { name: 'Guntur', score: 96.5 }, { name: 'East Godavari', score: 95.9 }] },
+                'Maharashtra': { score: 95.8, districts: [{ name: 'Mumbai', score: 97.9 }, { name: 'Pune', score: 97.1 }, { name: 'Nagpur', score: 96.2 }, { name: 'Thane', score: 95.5 }] },
+                'Gujarat': { score: 95.1, districts: [{ name: 'Ahmedabad', score: 96.8 }, { name: 'Surat', score: 96.2 }, { name: 'Vadodara', score: 95.5 }, { name: 'Rajkot', score: 94.8 }] },
+                'Punjab': { score: 94.5, districts: [{ name: 'Ludhiana', score: 95.8 }, { name: 'Amritsar', score: 95.1 }, { name: 'Jalandhar', score: 94.5 }, { name: 'Patiala', score: 93.9 }] },
+                'Haryana': { score: 93.8, districts: [{ name: 'Gurugram', score: 95.2 }, { name: 'Faridabad', score: 94.6 }, { name: 'Panchkula', score: 93.9 }, { name: 'Ambala', score: 93.1 }] },
+                'Telangana': { score: 92.9, districts: [{ name: 'Hyderabad', score: 94.8 }, { name: 'Ranga Reddy', score: 93.5 }, { name: 'Medchal-Malkajgiri', score: 92.8 }, { name: 'Warangal Urban', score: 92.1 }] },
+                'Himachal Pradesh': { score: 92.1, districts: [{ name: 'Shimla', score: 94.2 }, { name: 'Kangra', score: 93.1 }, { name: 'Solan', score: 92.5 }, { name: 'Mandi', score: 91.8 }] },
+                'Sikkim': { score: 91.5, districts: [{ name: 'East Sikkim', score: 93.5 }, { name: 'South Sikkim', score: 92.1 }, { name: 'West Sikkim', score: 90.8 }, { name: 'North Sikkim', score: 89.5 }] },
+                'Mizoram': { score: 90.8, districts: [{ name: 'Aizawl', score: 92.5 }, { name: 'Lunglei', score: 91.2 }, { name: 'Champhai', score: 90.1 }, { name: 'Serchhip', score: 89.8 }] },
+                'Uttarakhand': { score: 89.9, districts: [{ name: 'Dehradun', score: 92.1 }, { name: 'Nainital', score: 90.8 }, { name: 'Haridwar', score: 89.5 }, { name: 'Udham Singh Nagar', score: 88.7 }] },
+                'West Bengal': { score: 88.7, districts: [{ name: 'Kolkata', score: 91.5 }, { name: 'North 24 Parganas', score: 89.8 }, { name: 'Howrah', score: 88.2 }, { name: 'South 24 Parganas', score: 87.1 }] },
+                'Rajasthan': { score: 88.1, districts: [{ name: 'Jaipur', score: 90.5 }, { name: 'Jodhpur', score: 89.2 }, { name: 'Udaipur', score: 88.1 }, { name: 'Kota', score: 87.5 }] },
+                'Odisha': { score: 87.4, districts: [{ name: 'Khordha', score: 89.8 }, { name: 'Cuttack', score: 88.5 }, { name: 'Puri', score: 87.2 }, { name: 'Ganjam', score: 86.1 }] },
+                'Madhya Pradesh': { score: 86.5, districts: [{ name: 'Indore', score: 89.1 }, { name: 'Bhopal', score: 88.2 }, { name: 'Gwalior', score: 86.9 }, { name: 'Jabalpur', score: 85.8 }] },
+                'Chhattisgarh': { score: 85.3, districts: [{ name: 'Raipur', score: 87.9 }, { name: 'Durg', score: 86.5 }, { name: 'Bilaspur', score: 85.1 }, { name: 'Korba', score: 84.2 }] },
+                'Assam': { score: 84.1, districts: [{ name: 'Kamrup Metropolitan', score: 87.2 }, { name: 'Dibrugarh', score: 85.1 }, { name: 'Jorhat', score: 83.8 }, { name: 'Nagaon', score: 82.5 }] },
+                'Jharkhand': { score: 83.2, districts: [{ name: 'Ranchi', score: 86.1 }, { name: 'East Singhbhum', score: 84.5 }, { name: 'Dhanbad', score: 82.8 }, { name: 'Bokaro', score: 81.9 }] },
+                'Uttar Pradesh': { score: 82.0, districts: [{ name: 'Gautam Buddh Nagar', score: 88.5 }, { name: 'Lucknow', score: 85.2 }, { name: 'Ghaziabad', score: 83.1 }, { name: 'Kanpur Nagar', score: 81.5 }] },
+                'Bihar': { score: 80.9, districts: [{ name: 'Patna', score: 84.2 }, { name: 'Gaya', score: 81.8 }, { name: 'Muzaffarpur', score: 80.1 }, { name: 'Bhagalpur', score: 79.5 }] },
+                'Nagaland': { score: 79.5, districts: [{ name: 'Dimapur', score: 82.1 }, { name: 'Kohima', score: 80.5 }, { name: 'Mokokchung', score: 78.9 }, { name: 'Wokha', score: 77.2 }] },
+                'Meghalaya': { score: 78.3, districts: [{ name: 'East Khasi Hills', score: 81.2 }, { name: 'West Garo Hills', score: 79.1 }, { name: 'Ri-Bhoi', score: 77.5 }, { name: 'Jaintia Hills', score: 76.8 }] },
+                'Arunachal Pradesh': { score: 77.1, districts: [{ name: 'Itanagar Capital Complex', score: 80.5 }, { name: 'Papum Pare', score: 78.2 }, { name: 'West Siang', score: 76.8 }, { name: 'Lohit', score: 75.1 }] },
+                'Manipur': { score: 76.2, districts: [{ name: 'Imphal West', score: 79.8 }, { name: 'Imphal East', score: 78.1 }, { name: 'Thoubal', score: 75.9 }, { name: 'Bishnupur', score: 74.5 }] },
+                'Tripura': { score: 75.0, districts: [{ name: 'West Tripura', score: 78.5 }, { name: 'Gomati', score: 76.2 }, { name: 'South Tripura', score: 74.8 }, { name: 'Dhalai', score: 73.1 }] },
+            };
+            const grievanceData = [ { state: "Andhra Pradesh", received: 1250, resolved: 1210, avgTime: 4.8 }, { state: "Arunachal Pradesh", received: 320, resolved: 290, avgTime: 7.2 }, { state: "Assam", received: 980, resolved: 950, avgTime: 5.1 }, { state: "Bihar", received: 2500, resolved: 2350, avgTime: 8.5 }, { state: "Chhattisgarh", received: 850, resolved: 810, avgTime: 4.9 }, { state: "Goa", received: 250, resolved: 245, avgTime: 2.5 }, { state: "Gujarat", received: 1500, resolved: 1480, avgTime: 3.1 }, { state: "Haryana", received: 1100, resolved: 1050, avgTime: 4.2 }, { state: "Himachal Pradesh", received: 450, resolved: 440, avgTime: 3.8 }, { state: "Jharkhand", received: 1300, resolved: 1200, avgTime: 6.9 }, { state: "Karnataka", received: 1800, resolved: 1750, avgTime: 3.5 }, { state: "Kerala", received: 950, resolved: 945, avgTime: 2.8 }, { state: "Madhya Pradesh", received: 2200, resolved: 2100, avgTime: 5.8 }, { state: "Maharashtra", received: 3200, resolved: 3100, avgTime: 4.5 }, { state: "Manipur", received: 410, resolved: 380, avgTime: 7.1 }, { state: "Meghalaya", received: 380, resolved: 360, avgTime: 6.5 }, { state: "Mizoram", received: 310, resolved: 305, avgTime: 5.2 }, { state: "Nagaland", received: 400, resolved: 370, avgTime: 7.5 }, { state: "Odisha", received: 1400, resolved: 1350, avgTime: 5.4 }, { state: "Punjab", received: 1350, resolved: 1320, avgTime: 4.1 }, { state: "Rajasthan", received: 1900, resolved: 1820, avgTime: 5.9 }, { state: "Sikkim", received: 280, resolved: 275, avgTime: 3.2 }, { state: "Tamil Nadu", received: 2100, resolved: 2050, avgTime: 3.9 }, { state: "Telangana", received: 1600, resolved: 1570, avgTime: 3.6 }, { state: "Tripura", received: 550, resolved: 520, avgTime: 6.8 }, { state: "Uttar Pradesh", received: 4500, resolved: 4200, avgTime: 9.2 }, { state: "Uttarakhand", received: 650, resolved: 630, avgTime: 4.7 }, { state: "West Bengal", received: 2800, resolved: 2650, avgTime: 6.2 }, ];
+            const pendingCasesData = [ { caseId: 'PN-82345', district: 'East Delhi', scheme: 'Senior Citizen Pension', daysPending: 22 }, { caseId: 'WD-51236', district: 'South West Delhi', scheme: 'Widow Support Scheme', daysPending: 19 }, { caseId: 'DA-78932', district: 'Shahdara', scheme: 'Disability Aid', daysPending: 18 }, { caseId: 'PN-82346', district: 'North West Delhi', scheme: 'Senior Citizen Pension', daysPending: 17 }, { caseId: 'ED-19874', district: 'South Delhi', scheme: 'Educational Grant', daysPending: 16 }, { caseId: 'WD-51237', district: 'East Delhi', scheme: 'Widow Support Scheme', daysPending: 15 }, { caseId: 'PN-82347', district: 'Central Delhi', scheme: 'Senior Citizen Pension', daysPending: 15 }, { caseId: 'DA-78933', district: 'Yamuna Vihar', scheme: 'Disability Aid', daysPending: 14 }, { caseId: 'HG-45612', district: 'West Delhi', scheme: 'Housing Grant', daysPending: 14 }, { caseId: 'PN-82348', district: 'South East Delhi', scheme: 'Senior Citizen Pension', daysPending: 13 }, { caseId: 'WD-51238', district: 'North Delhi', scheme: 'Widow Support Scheme', daysPending: 12 }, { caseId: 'DA-78934', district: 'New Delhi', scheme: 'Disability Aid', daysPending: 12 }, { caseId: 'PN-82349', district: 'Shahdara', scheme: 'Senior Citizen Pension', daysPending: 11 }, { caseId: 'ED-19875', district: 'North East Delhi', scheme: 'Educational Grant', daysPending: 11 }, { caseId: 'PN-82350', district: 'South Delhi', scheme: 'Senior Citizen Pension', daysPending: 10 }, { caseId: 'HG-45613', district: 'Narela', scheme: 'Housing Grant', daysPending: 10 }, { caseId: 'DA-78935', district: 'West Delhi', scheme: 'Disability Aid', daysPending: 9 }, { caseId: 'PN-82351', district: 'East Delhi', scheme: 'Senior Citizen Pension', daysPending: 9 }, { caseId: 'WD-51239', district: 'Central Delhi', scheme: 'Widow Support Scheme', daysPending: 9 }, { caseId: 'PN-82352', district: 'South West Delhi', scheme: 'Senior Citizen Pension', daysPending: 8 }, { caseId: 'ED-19876', district: 'Mehrauli', scheme: 'Educational Grant', daysPending: 8 }, { caseId: 'DA-78936', district: 'North Delhi', scheme: 'Disability Aid', daysPending: 8 }, { caseId: 'PN-82353', district: 'Kalkaji', scheme: 'Senior Citizen Pension', daysPending: 8 }, { caseId: 'HG-45614', district: 'Dwarka', scheme: 'Housing Grant', daysPending: 8 }, { caseId: 'WD-51240', district: 'Seelampur', scheme: 'Widow Support Scheme', daysPending: 8 }, ];
+            const performanceData = [ { district: "North Delhi", speed: "4.8 Days", violations: 18, grievances: 155, rate: "99.5%", score: "Excellent" }, { district: "West Delhi", speed: "6.1 Days", violations: 45, grievances: 98, rate: "98.0%", score: "Excellent" }, { district: "South Delhi", speed: "7.9 Days", violations: 158, grievances: 250, rate: "91.5%", score: "Average" }, { district: "East Delhi", speed: "11.2 Days", violations: 312, grievances: 188, rate: "85.1%", score: "Poor" }, { district: "Central Delhi", speed: "5.5 Days", violations: 33, grievances: 121, rate: "98.7%", score: "Excellent" }, { district: "New Delhi", speed: "4.1 Days", violations: 12, grievances: 85, rate: "99.8%", score: "Excellent" }, { district: "Shahdara", speed: "12.5 Days", violations: 350, grievances: 210, rate: "82.3%", score: "Poor" }, { district: "North East Delhi", speed: "8.8 Days", violations: 210, grievances: 280, rate: "90.1%", score: "Average" }, { district: "North West Delhi", speed: "7.2 Days", violations: 130, grievances: 190, rate: "95.5%", score: "Average" }, { district: "South West Delhi", speed: "6.9 Days", violations: 89, grievances: 140, rate: "96.8%", score: "Excellent" }, { district: "South East Delhi", speed: "10.1 Days", violations: 288, grievances: 235, rate: "88.2%", score: "Poor" }, { district: "Rohini", speed: "6.3 Days", violations: 65, grievances: 110, rate: "97.1%", score: "Excellent" }, { district: "Dwarka", speed: "8.1 Days", violations: 145, grievances: 165, rate: "92.4%", score: "Average" }, { district: "Saket", speed: "5.9 Days", violations: 52, grievances: 105, rate: "98.2%", score: "Excellent" }, { district: "Mayur Vihar", speed: "11.8 Days", violations: 320, grievances: 195, rate: "84.5%", score: "Poor" }, { district: "Najafgarh", speed: "9.3 Days", violations: 240, grievances: 220, rate: "89.9%", score: "Average" }, { district: "Karol Bagh", speed: "5.1 Days", violations: 25, grievances: 95, rate: "99.1%", score: "Excellent" }, { district: "Vasant Vihar", speed: "4.5 Days", violations: 15, grievances: 70, rate: "99.9%", score: "Excellent" }, { district: "Hauz Khas", speed: "7.5 Days", violations: 115, grievances: 130, rate: "93.8%", score: "Average" }, { district: "Yamuna Vihar", speed: "13.1 Days", violations: 380, grievances: 260, rate: "80.5%", score: "Poor" }, { district: "Pitampura", speed: "6.6 Days", violations: 75, grievances: 115, rate: "97.5%", score: "Excellent" }, { district: "Janakpuri", speed: "8.4 Days", violations: 160, grievances: 180, rate: "91.8%", score: "Average" }, { district: "Lajpat Nagar", speed: "5.3 Days", violations: 40, grievances: 125, rate: "98.5%", score: "Excellent" }, { district: "Kalkaji", speed: "10.5 Days", violations: 295, grievances: 240, rate: "87.6%", score: "Poor" }, { district: "Paschim Vihar", speed: "7.8 Days", violations: 135, grievances: 175, rate: "94.1%", score: "Average" }, { district: "Tilak Nagar", speed: "6.8 Days", violations: 82, grievances: 135, rate: "96.2%", score: "Excellent" }, { district: "Seelampur", speed: "14.2 Days", violations: 410, grievances: 290, rate: "78.9%", score: "Poor" }, { district: "Mehrauli", speed: "9.9 Days", violations: 260, grievances: 210, rate: "89.1%", score: "Average" }, { district: "Patel Nagar", speed: "6.2 Days", violations: 68, grievances: 120, rate: "97.8%", score: "Excellent" }, { district: "Narela", speed: "12.1 Days", violations: 330, grievances: 255, rate: "83.2%", score: "Poor" }, ];
+
+            // --- All Functions ---
+
+            // Theme Management
+            const getChartOptions = (isDark) => ({ bar: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { y: { grid: { display: false }, ticks: { color: isDark ? '#9ca3af' : '#64748b', font: { size: 10 } } }, x: { grid: { color: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0' }, ticks: { color: isDark ? '#9ca3af' : '#64748b', callback: value => `${value}%` } } } }, line: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: isDark ? 'rgba(255, 255, 255, 0.1)' : '#e2e8f0' }, ticks: { color: isDark ? '#9ca3af' : '#64748b' } }, x: { grid: { display: false }, ticks: { color: isDark ? '#9ca3af' : '#64748b' } } }, plugins: { legend: { position: 'top', align: 'end', labels: { color: isDark ? '#9ca3af' : '#64748b' } } }, interaction: { intersect: false, mode: 'index' } } });
+            function updateAllChartsTheme(isDark) { if(charts.grievance) charts.grievance.destroy(); createGrievanceChart(isDark); if (backToStatesBtn.classList.contains('hidden')) { resetToStatesView(isDark, false); } else { const currentState = dsiChartTitle.textContent.replace('DSI Leaderboard: Districts of ', ''); updateChartForDistricts(currentState, isDark, false); } }
+            function setTheme(isDark) { document.documentElement.classList.toggle('dark', isDark); lightIcon.classList.toggle('hidden', isDark); darkIcon.classList.toggle('hidden', !isDark); localStorage.setItem('theme', isDark ? 'dark' : 'light'); updateAllChartsTheme(isDark); }
+
+            // Charting Functions
+            function createDsiChart(labels, data, isDark) { if (charts.dsi) { charts.dsi.destroy(); } const options = getChartOptions(isDark); const dsiCtx = document.getElementById('dsiLeaderboardChart').getContext('2d'); charts.dsi = new Chart(dsiCtx, { type: 'bar', data: { labels, datasets: [{ label: 'DSI Score', data, backgroundColor: (c) => { const v = c.raw; if (v > 95) return isDark ? '#22c55e' : '#16a34a'; if (v > 85) return isDark ? '#f59e0b' : '#d97706'; return isDark ? '#ef4444' : '#dc2626'; }, borderRadius: 3, barThickness: 12, }] }, options: options.bar }); }
+            function createGrievanceChart(isDark) { const options = getChartOptions(isDark); const grievanceCtx = document.getElementById('grievanceTrendChart').getContext('2d'); charts.grievance = new Chart(grievanceCtx, { type: 'line', data: { labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'], datasets: [ { label: 'Incoming', data: [112, 121, 150, 135, 128, 119], borderColor: isDark ? '#60a5fa' : '#3b82f6', tension: 0.3, pointBackgroundColor: isDark ? '#60a5fa' : '#3b82f6' }, { label: 'Resolved', data: [110, 118, 145, 132, 129, 115], borderColor: isDark ? '#4ade80' : '#22c55e', tension: 0.3, pointBackgroundColor: isDark ? '#4ade80' : '#22c55e' }, { label: 'Pending', data: [5, 8, 13, 16, 15, 19], borderColor: isDark ? '#f87171' : '#ef4444', tension: 0.3, pointBackgroundColor: isDark ? '#f87171' : '#ef4444' } ] }, options: options.line }); }
+            function updateChartForDistricts(stateName, isDark, animate = true) { const districts = stateData[stateName].districts; const districtLabels = districts.map(d => d.name); const districtScores = districts.map(d => d.score); dsiChartWrapper.style.height = `${Math.max(350, districtLabels.length * 40)}px`; createDsiChart(districtLabels, districtScores, isDark); dsiChartTitle.textContent = `DSI Leaderboard: Districts of ${stateName}`; backToStatesBtn.classList.remove('hidden'); }
+            function resetToStatesView(isDark, animate = true) { const stateLabels = Object.keys(stateData); const stateScores = stateLabels.map(state => stateData[state].score); dsiChartWrapper.style.height = '750px'; createDsiChart(stateLabels, stateScores, isDark); dsiChartTitle.textContent = 'State DSI Leaderboard'; backToStatesBtn.classList.add('hidden'); }
+
+            // Modal & Table Functions
+            function populateComplianceTable() { complianceTableBody.innerHTML = ''; deadlineViolationsData.forEach(data => { const row = `<tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700"><td class="px-4 py-3 font-medium text-slate-900 dark:text-gray-100">${data.caseId}</td><td class="px-4 py-3 dark:text-gray-300">${data.district}</td><td class="px-4 py-3 dark:text-gray-300">${data.scheme}</td><td class="px-4 py-3 dark:text-gray-300">${data.officer}</td><td class="px-4 py-3 dark:text-gray-300">${data.dueDate}</td><td class="px-4 py-3 font-medium text-red-600 dark:text-red-500">${data.overdue}</td></tr>`; complianceTableBody.insertAdjacentHTML('beforeend', row); }); }
+            function populateGrievanceTable() { grievanceTableBody.innerHTML = ''; grievanceData.forEach(data => { let timeColor = data.avgTime < 4 ? 'text-green-600 dark:text-green-500' : data.avgTime < 7 ? 'text-yellow-600 dark:text-yellow-500' : 'text-red-600 dark:text-red-500'; const row = `<tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700"><td class="px-4 py-3 font-medium text-slate-900 dark:text-gray-100">${data.state}</td><td class="px-4 py-3 dark:text-gray-300">${data.received.toLocaleString()}</td><td class="px-4 py-3 dark:text-gray-300">${data.resolved.toLocaleString()}</td><td class="px-4 py-3 font-medium ${timeColor}">${data.avgTime}</td></tr>`; grievanceTableBody.insertAdjacentHTML('beforeend', row); }); }
+            function populatePendingCases() { pendingCasesTableBody.innerHTML = ''; pendingCasesData.forEach(caseData => { const row = `<tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700"><td class="px-4 py-3 font-medium text-slate-900 dark:text-gray-100">${caseData.caseId}</td><td class="px-4 py-3 dark:text-gray-300">${caseData.district}</td><td class="px-4 py-3 dark:text-gray-300">${caseData.scheme}</td><td class="px-4 py-3 font-medium text-red-600 dark:text-red-500">${caseData.daysPending}</td><td class="px-4 py-3"><button class="investigate-btn text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">Investigate</button></td></tr>`; pendingCasesTableBody.insertAdjacentHTML('beforeend', row); }); document.querySelectorAll('.investigate-btn').forEach(button => { button.addEventListener('click', (e) => { e.target.textContent = 'Investigating...'; e.target.disabled = true; e.target.classList.add('opacity-50', 'cursor-not-allowed'); }); }); }
+            function populatePerformanceTable() { performanceTableBody.innerHTML = ''; performanceData.forEach(data => { let scoreColor = data.score === 'Excellent' ? 'green' : data.score === 'Average' ? 'yellow' : 'red'; let speedColor = parseFloat(data.speed) < 7 ? 'green' : parseFloat(data.speed) < 9 ? 'yellow' : 'red'; let rateColor = parseFloat(data.rate) > 95 ? 'green' : parseFloat(data.rate) > 90 ? 'yellow' : 'red'; const row = `<tr class="bg-white dark:bg-[#1c1b1a] border-b dark:border-gray-700"><td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">${data.district}</td><td class="px-6 py-4 font-medium text-${speedColor}-600 dark:text-${speedColor}-500">${data.speed}</td><td class="px-6 py-4 text-${speedColor}-600 dark:text-${speedColor}-500">${data.violations}</td><td class="px-6 py-4 dark:text-gray-300">${data.grievances}</td><td class="px-6 py-4 text-${rateColor}-600 dark:text-${rateColor}-500">${data.rate}</td><td class="px-6 py-4"><span class="bg-${scoreColor}-100 text-${scoreColor}-800 dark:bg-${scoreColor}-500/10 dark:text-${scoreColor}-400 text-xs font-semibold px-2.5 py-1 rounded-full">${data.score}</span></td></tr>`; performanceTableBody.insertAdjacentHTML('beforeend', row); }); }
+            function exportToCSV(filename, tableElement) { const csv = []; const rows = tableElement.querySelectorAll("tr"); for (const row of rows) { const cols = row.querySelectorAll("td, th"); const rowData = []; for (const col of cols) { let data = col.innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/(\s\s)/gm, " "); data = data.replace(/"/g, '""'); rowData.push(`"${data}"`); } csv.push(rowData.join(",")); } const csvContent = "data:text/csv;charset=utf-8," + csv.join("\n"); const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", filename); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+
+            // Event Listeners Setup
+            themeToggleBtn.addEventListener('click', () => setTheme(!document.documentElement.classList.contains('dark')));
+
+            complianceCard.addEventListener('click', () => complianceModal.classList.replace('hidden', 'flex'));
+            closeComplianceModalBtn.addEventListener('click', () => complianceModal.classList.replace('flex', 'hidden'));
+            complianceModal.addEventListener('click', (e) => { if (e.target === complianceModal) complianceModal.classList.replace('flex', 'hidden'); });
+            downloadComplianceBtn.addEventListener('click', () => exportToCSV('deadline-violations-data.csv', document.getElementById('compliance-table')));
+
+            grievanceCard.addEventListener('click', () => grievanceModal.classList.replace('hidden', 'flex'));
+            closeGrievanceModalBtn.addEventListener('click', () => grievanceModal.classList.replace('flex', 'hidden'));
+            grievanceModal.addEventListener('click', (e) => { if (e.target === grievanceModal) grievanceModal.classList.replace('flex', 'hidden'); });
+            downloadGrievanceBtn.addEventListener('click', () => exportToCSV('statewise-grievance-data.csv', document.getElementById('grievance-table')));
+            
+            pendingCasesCard.addEventListener('click', () => pendingCasesModal.classList.replace('hidden', 'flex'));
+            closePendingModalBtn.addEventListener('click', () => pendingCasesModal.classList.replace('flex', 'hidden'));
+            pendingCasesModal.addEventListener('click', (e) => { if (e.target === pendingCasesModal) pendingCasesModal.classList.replace('flex', 'hidden'); });
+            
+            document.getElementById('dsiLeaderboardChart').onclick = (event) => { const points = charts.dsi.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true); if (points.length && backToStatesBtn.classList.contains('hidden')) { const label = charts.dsi.data.labels[points[0].index]; updateChartForDistricts(label, document.documentElement.classList.contains('dark')); } };
+            backToStatesBtn.addEventListener('click', () => resetToStatesView(document.documentElement.classList.contains('dark')));
+            exportMainTableBtn.addEventListener('click', () => exportToCSV('district-performance-data.csv', mainPerformanceTable));
+            
+            mainPerformanceTable.querySelectorAll('.sortable-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const colIndex = parseInt(header.dataset.columnIndex, 10);
+                    const currentDir = header.dataset.sortDir || 'desc';
+                    const newDir = currentDir === 'asc' ? 'desc' : 'asc';
+                    const getCellValue = (row, idx) => { const cell = row.children[idx], val = cell.innerText.trim(); switch(idx) { case 1: return parseFloat(val); case 2: case 3: return parseInt(val.replace(/,/g,''), 10); case 4: return parseFloat(val.replace('%','')); case 5: const map = {'Excellent':3,'Average':2,'Poor':1}; return map[val]||0; default: return val; } };
+                    const rows = Array.from(performanceTableBody.querySelectorAll('tr'));
+                    rows.sort((a, b) => { const valA = getCellValue(a, colIndex), valB = getCellValue(b, colIndex); if (valA < valB) return newDir === 'asc' ? -1 : 1; if (valA > valB) return newDir === 'asc' ? 1 : -1; return 0; });
+                    rows.forEach(row => performanceTableBody.appendChild(row));
+                    mainPerformanceTable.querySelectorAll('.sortable-header').forEach(h => { h.classList.remove('sorted'); h.removeAttribute('data-sort-dir'); h.querySelector('.sort-icon').innerHTML = '<i data-lucide="arrow-up-down" class="w-3 h-3"></i>'; });
+                    header.classList.add('sorted');
+                    header.dataset.sortDir = newDir;
+                    header.querySelector('.sort-icon').innerHTML = newDir === 'asc' ? '<i data-lucide="arrow-up" class="w-3 h-3"></i>' : '<i data-lucide="arrow-down" class="w-3 h-3"></i>';
+                    lucide.createIcons();
+                });
+            });
+
+            // Initial Page Load
+            const initialIsDark = localStorage.getItem('theme') === 'dark' || (localStorage.getItem('theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            setTheme(initialIsDark);
+            
+            populateComplianceTable();
+            populateGrievanceTable();
+            populatePendingCases();
+            populatePerformanceTable();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | CSS Governance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar { background-color: #ffffff; }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+        .dark .card {
+            background-color: #1c1b1a;
+            border: 1px solid #374151;
+            box-shadow: none;
+        }
+        .dark .card:hover { background-color: #2c2b2a; }
+        .report-table tbody tr { transition: background-color 0.15s ease-in-out; }
+        .state-row { cursor: pointer; }
+        .chevron-icon { transition: transform 0.2s ease-in-out; }
+        .state-row.expanded .chevron-icon { transform: rotate(90deg); }
+    </style>
+</head>
+<body class="flex min-h-screen bg-[#fdfaf6] dark:bg-black">
+    <aside class="sidebar w-64 flex-shrink-0 border-r border-slate-200 dark:border-gray-700 flex flex-col dark:bg-[#1c1b1a]">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold text-slate-800 dark:text-gray-100 flex items-center">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-7 w-7 mr-2 text-indigo-600"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path><path d="M12 3v2"></path><path d="M12 19v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M3 12h2"></path><path d="M19 12h2"></path><path d="m4.93 19.07 1.41-1.41"></path><path d="m17.66 6.34 1.41-1.41"></path></svg>
+                CSS Governance
+            </h1>
+        </div>
+        <nav class="flex-1 px-4 py-2">
+            <a href="state.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg font-medium"><i data-lucide="layout-dashboard" class="w-5 h-5 mr-3"></i>Dashboard</a>
+            <a href="financials.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium"><i data-lucide="landmark" class="w-5 h-5 mr-3"></i>Financials</a>
+            <a href="performance.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium"><i data-lucide="bar-chart-3" class="w-5 h-5 mr-3"></i>Performance</a>
+            <a href="compliance.html" class="flex items-center px-4 py-2.5 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-1 font-medium"><i data-lucide="shield-check" class="w-5 h-5 mr-3"></i>Compliance</a>
+            <a href="reports.html" class="flex items-center px-4 py-2.5 text-slate-700 bg-indigo-50 dark:bg-white dark:text-slate-900 rounded-lg mt-1 font-semibold"><i data-lucide="file-spreadsheet" class="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-600"></i>Reports</a>
+        </nav>
+        <div class="p-4 mt-auto">
+            <a href="#" class="flex items-center px-4 py-4 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-700 rounded-lg mt-4 font-medium"><i data-lucide="log-out" class="w-5 h-5 mr-3"></i>Sign Out</a>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 lg:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-slate-800 dark:text-gray-100">Reports & Exports</h2>
+                <p class="text-slate-500 dark:text-gray-400 mt-1">Generate and download state-wise and district-wise reports.</p>
+            </div>
+            <div class="flex items-center mt-4 sm:mt-0">
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700"><i data-lucide="bell" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i></button>
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-gray-700">
+                        <i data-lucide="sun" id="theme-toggle-light-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400"></i>
+                        <i data-lucide="moon" id="theme-toggle-dark-icon" class="w-5 h-5 text-slate-600 dark:text-gray-400 hidden"></i>
+                    </button>
+                </div>
+                <div class="flex items-center ml-6">
+                    <img src="https://placehold.co/40x40/E2E8F0/475569?text=PS" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="ml-3">
+                        <p class="font-semibold text-slate-800 dark:text-gray-100">Ms. Priya Singh</p>
+                        <p class="text-sm text-slate-500 dark:text-gray-400">Secretary, Social Welfare</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-5 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="lg:col-span-2">
+                    <label for="search-input" class="text-sm font-medium text-slate-700 dark:text-gray-300">Search by State or District</label>
+                    <div class="relative mt-1">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                        <input type="search" id="search-input" placeholder="e.g., Maharashtra, Mumbai, Guntur..." class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label for="filter-category" class="text-sm font-medium text-slate-700 dark:text-gray-300">Report Category</label>
+                    <select id="filter-category" class="w-full mt-1 border-slate-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">All Categories</option>
+                        <option value="Financial">Financial Utilization</option>
+                        <option value="Performance">Performance Scorecard</option>
+                        <option value="Compliance">Compliance Audit</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="filter-period" class="text-sm font-medium text-slate-700 dark:text-gray-300">Reporting Period</label>
+                    <select id="filter-period" class="w-full mt-1 border-slate-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">All Periods</option>
+                        <option value="Q3 2025">Q3 2025</option>
+                        <option value="Q2 2025">Q2 2025</option>
+                        <option value="FY 2024-25">FY 2024-25</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm report-table">
+                    <thead class="text-xs text-slate-500 dark:text-gray-400 uppercase bg-slate-50 dark:bg-gray-800">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 w-1/3">State / District</th>
+                            <th scope="col" class="px-6 py-3">Report Title</th>
+                            <th scope="col" class="px-6 py-3">Period</th>
+                            <th scope="col" class="px-6 py-3">Generated On</th>
+                            <th scope="col" class="px-6 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-table-body" class="dark:text-gray-300"></tbody>
+                </table>
+            </div>
+            <div id="no-results" class="text-center py-10 text-slate-500 dark:text-gray-400 hidden">
+                <i data-lucide="search-x" class="w-16 h-16 mx-auto mb-4"></i>
+                <h3 class="text-lg font-semibold">No Reports Found</h3>
+                <p>Your search and filter criteria did not match any reports.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+
+        // --- Global Data Holders ---
+        let allReports = [];
+        let currentlyDisplayedReports = [];
+
+        // --- Download Functions ---
+        function downloadAsPDF(reportId) {
+            const report = allReports.find(r => r.id === reportId);
+            if (!report) return;
+
+            const doc = new jsPDF();
+            const filename = `${report.state.replace(/\s+/g, '_')}-${report.district.replace(/\s+/g, '_')}-${report.category}-${report.period.replace(/\s+/g, '_')}.pdf`;
+            
+            doc.setFontSize(18);
+            doc.text(report.title, 14, 22);
+            doc.setFontSize(11);
+            doc.setTextColor(100);
+            doc.text(`State: ${report.state} | District: ${report.district}`, 14, 30);
+            doc.text(`Period: ${report.period} | Generated: ${report.generated}`, 14, 36);
+
+            doc.autoTable({
+                head: [report.content.headers],
+                body: report.content.rows,
+                startY: 50,
+                theme: 'striped',
+                headStyles: { fillColor: [45, 55, 72] }, // Dark Slate
+            });
+            doc.save(filename);
+        }
+
+        function downloadAsExcel(reportId) {
+            const report = allReports.find(r => r.id === reportId);
+            if (!report) return;
+
+            const filename = `${report.state.replace(/\s+/g, '_')}-${report.district.replace(/\s+/g, '_')}-${report.category}-${report.period.replace(/\s+/g, '_')}.xlsx`;
+            
+            const workbook = XLSX.utils.book_new();
+            
+            // Create a worksheet with headers and data
+            const worksheet_data = [
+                [report.title],
+                [`State: ${report.state}`, `District: ${report.district}`],
+                [`Period: ${report.period}`, `Generated: ${report.generated}`],
+                [], // Blank row
+                report.content.headers,
+                ...report.content.rows
+            ];
+            
+            const worksheet = XLSX.utils.aoa_to_sheet(worksheet_data);
+
+            // Merge cells for the main title
+            worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }];
+
+            // Set column widths based on content
+            const colWidths = report.content.headers.map(header => ({ wch: header.length + 5 }));
+            colWidths[0].wch = Math.max(colWidths[0].wch, 30); // Ensure first column is wide enough for schemes
+            worksheet['!cols'] = colWidths;
+            
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Report Data");
+            XLSX.writeFile(workbook, filename);
+        }
+
+        // --- Accordion Toggle ---
+        function toggleDistricts(stateName, stateRow) {
+            const isExpanded = stateRow.classList.contains('expanded');
+            const tableBody = document.getElementById('report-table-body');
+            
+            const existingRows = tableBody.querySelectorAll(`.district-row-${stateName.replace(/\s+/g, '-')}`);
+            existingRows.forEach(row => row.remove());
+
+            if (isExpanded) {
+                stateRow.classList.remove('expanded');
+            } else {
+                stateRow.classList.add('expanded');
+                const districtReports = currentlyDisplayedReports.filter(report => report.state === stateName);
+                
+                const fragment = document.createDocumentFragment();
+                districtReports.forEach(report => {
+                    const row = document.createElement('tr');
+                    row.className = `district-row-${stateName.replace(/\s+/g, '-')} bg-slate-50 dark:bg-gray-800/50`;
+                    row.innerHTML = `
+                        <td class="pl-12 pr-6 py-4 text-slate-700 dark:text-gray-300">${report.district}</td>
+                        <td class="px-6 py-4">${report.title}</td>
+                        <td class="px-6 py-4">${report.period}</td>
+                        <td class="px-6 py-4">${report.generated}</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex justify-center items-center space-x-3">
+                                <a href="#" onclick="event.preventDefault(); downloadAsPDF('${report.id}');" class="text-red-500 hover:text-red-700" title="Download PDF"><i data-lucide="file-type-2" class="w-5 h-5"></i></a>
+                                <a href="#" onclick="event.preventDefault(); downloadAsExcel('${report.id}');" class="text-green-600 hover:text-green-800" title="Download Excel"><i data-lucide="file-spreadsheet" class="w-5 h-5"></i></a>
+                            </div>
+                        </td>`;
+                    fragment.appendChild(row);
+                });
+                stateRow.after(fragment);
+                lucide.createIcons();
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Theme Toggle Logic (unchanged) ---
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+
+            const setTheme = (isDark) => {
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    lightIcon.classList.add('hidden');
+                    darkIcon.classList.remove('hidden');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    lightIcon.classList.remove('hidden');
+                    darkIcon.classList.add('hidden');
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedTheme = localStorage.getItem('theme');
+            setTheme(savedTheme === 'dark' || (savedTheme === null && prefersDark));
+            themeToggleBtn.addEventListener('click', () => setTheme(!document.documentElement.classList.contains('dark')));
+
+            // --- Data Generation ---
+            // NEW: Function to generate detailed report content
+            function generateDemoReportData(report) {
+                const schemes = ["PM-KISAN", "MGNREGA", "National Health Mission", "Swachh Bharat Mission", "Jal Jeevan Mission"];
+                let headers = [];
+                let rows = [];
+
+                const random = (min, max) => Math.random() * (max - min) + min;
+
+                switch (report.category) {
+                    case 'Financial':
+                        headers = ['Scheme', 'Funds Allocated (Cr)', 'Funds Utilized (Cr)', 'Utilization %'];
+                        schemes.forEach(scheme => {
+                            const allocated = random(50, 200);
+                            const utilized = allocated * random(0.65, 0.98);
+                            const utilization = (utilized / allocated) * 100;
+                            rows.push([scheme, allocated.toFixed(2), utilized.toFixed(2), `${utilization.toFixed(2)}%`]);
+                        });
+                        break;
+                    
+                    case 'Performance':
+                        headers = ['Scheme', 'Targeted Beneficiaries', 'Beneficiaries Reached', 'Achievement %'];
+                        schemes.forEach(scheme => {
+                            const targeted = Math.floor(random(25000, 100000));
+                            const reached = Math.floor(targeted * random(0.75, 0.99));
+                            const achievement = (reached / targeted) * 100;
+                            rows.push([scheme, targeted.toLocaleString('en-IN'), reached.toLocaleString('en-IN'), `${achievement.toFixed(2)}%`]);
+                        });
+                        break;
+
+                    case 'Compliance':
+                        headers = ['Scheme', 'Audit Status', 'Issues Found', 'Resolution Status'];
+                        const auditStatus = ['Completed', 'In Progress', 'Pending'];
+                        const resolutionStatus = ['Resolved', 'Pending Action', 'Under Review'];
+                        schemes.forEach(scheme => {
+                            const currentAuditStatus = auditStatus[Math.floor(random(0, 3))];
+                            const issues = currentAuditStatus === 'Completed' ? Math.floor(random(0, 5)) : 0;
+                            const currentResolution = issues > 0 ? resolutionStatus[Math.floor(random(0, 3))] : 'N/A';
+                            rows.push([scheme, currentAuditStatus, issues, currentResolution]);
+                        });
+                        break;
+                }
+                return { headers, rows };
+            }
+            
+            const locations = [
+                { name: "Andhra Pradesh", districts: ["Visakhapatnam", "Guntur", "Krishna", "Chittoor", "Nellore"] },
+                { name: "Arunachal Pradesh", districts: ["Tawang", "West Kameng", "Itanagar Capital Complex", "Papum Pare"] },
+                { name: "Assam", districts: ["Kamrup Metropolitan", "Dibrugarh", "Cachar", "Sonitpur", "Jorhat"] },
+                { name: "Bihar", districts: ["Patna", "Gaya", "Muzaffarpur", "Bhagalpur", "Darbhanga"] },
+                { name: "Chhattisgarh", districts: ["Raipur", "Durg", "Bilaspur", "Bastar", "Korba"] },
+                { name: "Goa", districts: ["North Goa", "South Goa"] },
+                { name: "Gujarat", districts: ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Kutch"] },
+                { name: "Haryana", districts: ["Gurugram", "Faridabad", "Hisar", "Ambala", "Panipat"] },
+                { name: "Himachal Pradesh", districts: ["Shimla", "Kangra", "Mandi", "Kullu", "Solan"] },
+                { name: "Jharkhand", districts: ["Ranchi", "East Singhbhum", "Dhanbad", "Bokaro Steel City"] },
+                { name: "Karnataka", districts: ["Bengaluru Urban", "Mysuru", "Dakshina Kannada", "Belagavi", "Hubballi-Dharwad"] },
+                { name: "Kerala", districts: ["Thiruvananthapuram", "Ernakulam", "Kozhikode", "Thrissur", "Malappuram"] },
+                { name: "Madhya Pradesh", districts: ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain"] },
+                { name: "Maharashtra", districts: ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik"] },
+                { name: "Manipur", districts: ["Imphal West", "Imphal East", "Thoubal", "Bishnupur"] },
+                { name: "Meghalaya", districts: ["East Khasi Hills", "West Garo Hills", "Ri-Bhoi"] },
+                { name: "Mizoram", districts: ["Aizawl", "Lunglei", "Saiha", "Champhai"] },
+                { name: "Nagaland", districts: ["Kohima", "Dimapur", "Mokokchung", "Wokha"] },
+                { name: "Odisha", districts: ["Khordha", "Cuttack", "Puri", "Ganjam", "Sundargarh"] },
+                { name: "Punjab", districts: ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Mohali"] },
+                { name: "Rajasthan", districts: ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer"] },
+                { name: "Sikkim", districts: ["Gangtok", "Namchi", "Pakyong", "Gyalshing"] },
+                { name: "Tamil Nadu", districts: ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem"] },
+                { name: "Telangana", districts: ["Hyderabad", "Ranga Reddy", "Medchal-Malkajgiri", "Warangal", "Nizamabad"] },
+                { name: "Tripura", districts: ["West Tripura", "North Tripura", "South Tripura", "Dhalai"] },
+                { name: "Uttar Pradesh", districts: ["Lucknow", "Kanpur Nagar", "Ghaziabad", "Varanasi", "Agra"] },
+                { name: "Uttarakhand", districts: ["Dehradun", "Haridwar", "Nainital", "Udham Singh Nagar"] },
+                { name: "West Bengal", districts: ["Kolkata", "North 24 Parganas", "South 24 Parganas", "Howrah", "Hooghly"] },
+                { name: "Andaman and Nicobar Islands", districts: ["South Andaman", "North and Middle Andaman", "Nicobar"] },
+                { name: "Chandigarh", districts: ["Chandigarh"] },
+                { name: "Dadra and Nagar Haveli and Daman and Diu", districts: ["Daman", "Diu", "Dadra and Nagar Haveli"] },
+                { name: "Delhi", districts: ["New Delhi", "Central Delhi", "South Delhi", "North Delhi"] },
+                { name: "Jammu and Kashmir", districts: ["Srinagar", "Jammu", "Anantnag", "Baramulla"] },
+                { name: "Ladakh", districts: ["Leh", "Kargil"] },
+                { name: "Lakshadweep", districts: ["Agatti", "Kavaratti", "Minicoy"] },
+                { name: "Puducherry", districts: ["Puducherry", "Karaikal", "Mahe", "Yanam"] }
+            ];
+
+            const reportTypes = [
+                { title: 'Financial Utilization Report', category: 'Financial' },
+                { title: 'Performance Scorecard', category: 'Performance' },
+                { title: 'Compliance Audit', category: 'Compliance' }
+            ];
+            const periods = ['Q3 2025', 'Q2 2025', 'FY 2024-25'];
+            
+            let reportIdCounter = 0;
+            locations.forEach(loc => {
+                loc.districts.forEach(district => {
+                    reportTypes.forEach(type => {
+                        periods.forEach(period => {
+                            const reportMetadata = {
+                                id: `rep-${reportIdCounter++}`,
+                                state: loc.name,
+                                district: district,
+                                title: type.title,
+                                category: type.category,
+                                period: period,
+                                generated: (period === 'Q3 2025') ? '08-Oct-2025' : (period === 'Q2 2025' ? '10-Jul-2025' : '15-Apr-2025')
+                            };
+                            // Add the detailed content to the report object
+                            reportMetadata.content = generateDemoReportData(reportMetadata);
+                            allReports.push(reportMetadata);
+                        });
+                    });
+                });
+            });
+
+            const tableBody = document.getElementById('report-table-body');
+            
+            function renderTable(statesToRender, autoExpandState = null) {
+                tableBody.innerHTML = '';
+                if (statesToRender.length === 0) return;
+                
+                const fragment = document.createDocumentFragment();
+                statesToRender.forEach(stateName => {
+                    const row = document.createElement('tr');
+                    row.className = 'state-row border-b dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-800/50';
+                    row.setAttribute('onclick', `toggleDistricts('${stateName}', this)`);
+                    row.innerHTML = `
+                        <td class="px-6 py-4 font-medium text-slate-900 dark:text-gray-100">
+                            <div class="flex items-center">
+                                <i data-lucide="chevron-right" class="w-4 h-4 mr-2 chevron-icon"></i>
+                                ${stateName}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-slate-400 dark:text-gray-500 italic" colspan="4">Click to view district reports</td>`;
+                    fragment.appendChild(row);
+                });
+                tableBody.appendChild(fragment);
+
+                if (autoExpandState) {
+                    const stateRowToExpand = Array.from(tableBody.querySelectorAll('.state-row')).find(row => row.innerText.trim().includes(autoExpandState));
+                    if (stateRowToExpand) {
+                        toggleDistricts(autoExpandState, stateRowToExpand);
+                    }
+                }
+                lucide.createIcons();
+            }
+            
+            const searchInput = document.getElementById('search-input');
+            const categoryFilter = document.getElementById('filter-category');
+            const periodFilter = document.getElementById('filter-period');
+            const noResultsDiv = document.getElementById('no-results');
+
+            function filterAndRender() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const category = categoryFilter.value;
+                const period = periodFilter.value;
+
+                currentlyDisplayedReports = allReports.filter(report => {
+                    const matchesCategory = category ? report.category === category : true;
+                    const matchesPeriod = period ? report.period === period : true;
+                    return matchesCategory && matchesPeriod;
+                });
+
+                let matchingStates = new Set();
+                let autoExpandState = null;
+
+                if (searchTerm) {
+                    let isDistrictMatch = false;
+                    currentlyDisplayedReports.forEach(report => {
+                        if (report.district.toLowerCase().includes(searchTerm)) {
+                            matchingStates.add(report.state);
+                            isDistrictMatch = true;
+                        }
+                    });
+                    
+                    if (isDistrictMatch) {
+                        autoExpandState = Array.from(matchingStates)[0] || null;
+                    } else {
+                         currentlyDisplayedReports.forEach(report => {
+                            if (report.state.toLowerCase().includes(searchTerm)) {
+                                matchingStates.add(report.state);
+                            }
+                        });
+                    }
+                } else {
+                    currentlyDisplayedReports.forEach(report => matchingStates.add(report.state));
+                }
+                
+                const uniqueStates = Array.from(matchingStates).sort();
+                renderTable(uniqueStates, autoExpandState);
+                
+                noResultsDiv.classList.toggle('hidden', uniqueStates.length > 0);
+            }
+
+            // Initial render
+            filterAndRender();
+
+            searchInput.addEventListener('input', filterAndRender);
+            categoryFilter.addEventListener('change', filterAndRender);
+            periodFilter.addEventListener('change', filterAndRender);
+        });
+    </script>
+</body>
+</html>
