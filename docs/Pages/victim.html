@@ -3252,10 +3252,21 @@
                 if (user) {
                     // User is signed in.
                     appState.userId = user.uid;
-
+ const userDocRef = doc(db, 'apps', appId, 'users', user.uid);
+        try {
+            await setDoc(userDocRef, {
+                uid: user.uid,
+                createdAt: serverTimestamp(), // Records when the user was first created
+            }, { merge: true }); // {merge: true} prevents overwriting data if the user returns
+            console.log(`[SUCCESS] User document created/verified for UID: ${user.uid}`);
+        } catch (error) {
+            console.error("CRITICAL: Failed to create user document:", error);
+        }
                     initializeAppLogic(); // Run the main app logic
                     setupFirestoreListeners(); // Set up Firestore listeners
 
+
+                    
                     // // Set up Firestore listener for DigiLocker evidence
                     // const digilockerCol = collection(db, 'users', appState.userId, 'digilockerEvidence');
                     // onSnapshot(digilockerCol, (snapshot) => {
