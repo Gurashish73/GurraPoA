@@ -1,11 +1,613 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>DBT Portal - Government of India</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-bg {
+            background-color: #f0f4f8;
+            background-image: linear-gradient(135deg, #e6f7ff 0%, #d9e2ec 100%);
+        }
+        html.dark .hero-bg {
+             background-image: linear-gradient(135deg, #0d1a26 0%, #1a2a38 100%);
+        }
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 1.75rem;
+            left: -50%;
+            width: 100%;
+            height: 2px;
+            border-top: 2px dashed #9ca3af;
+            z-index: 0;
+        }
+        html.dark .step-card::before {
+            border-top-color: #4b5563;
+        }
+        .step-card:first-child::before {
+            content: none;
+        }
+        /* Custom styles for loader and modals */
+        .loader {
+            border-top-color: #3498db;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+        }
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body>
-    Welcome TO DBT RELIEF PORTAL
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800/80 dark:backdrop-blur-sm shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 lg:px-6 py-3 flex justify-between items-center">
+            <a href="#" class="flex items-center gap-3" data-page="home-page">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/120px-Emblem_of_India.svg.png" alt="Emblem of India" class="h-10 w-auto">
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 dark:text-white" data-translate="portalTitle">DBT Portal</h1>
+                    <p class="text-xs text-gray-500 dark:text-gray-400" data-translate="govOfIndia">Government of India</p>
+                </div>
+            </a>
+            <div class="hidden lg:flex items-center space-x-6">
+                <a href="#" class="nav-link text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors" data-page="home-page" data-translate="navHome">Home</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors" data-page="schemes-page" data-translate="navSchemes">Schemes</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors" data-page="eligibility-page" data-translate="navEligibility">Check Eligibility</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors" data-page="track-page" data-translate="navTrack">Track Payment</a>
+                <a href="#" class="nav-link text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors" data-page="contact-page" data-translate="navContact">Contact Us</a>
+            </div>
+            <div class="flex items-center">
+                 <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-2">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                </button>
+                 <!-- Language Dropdown -->
+                <div class="relative" id="language-switcher">
+                    <button type="button" class="flex items-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-2" id="language-toggle-btn">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502" />
+                        </svg>
+                        <span class="ml-2" id="current-lang-text">EN</span>
+                    </button>
+                    <div id="language-dropdown" class="hidden absolute right-0 mt-2 w-40 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1 z-50">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" data-lang="en">English</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" data-lang="hi">हिन्दी (Hindi)</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" data-lang="mr">मराठी (Marathi)</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" data-lang="ta">தமிழ் (Tamil)</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" data-lang="te">తెలుగు (Telugu)</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600" data-lang="bn">বাংলা (Bengali)</a>
+                    </div>
+                </div>
+
+                 <a href="#" id="login-register-btn" class="bg-blue-600 text-yellow-300 dark:text-yellow-200 px-4 py-2 rounded-lg hover:bg-blue-700 transition-all text-sm font-medium shadow" data-translate="loginRegister">Login / Register</a>
+                 <button id="mobile-menu-button" class="lg:hidden ml-4 p-2 rounded-md text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                 </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden px-4 pt-2 pb-4 space-y-2 bg-white border-t dark:bg-gray-800 dark:border-gray-700">
+            <a href="#" class="nav-link block text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors py-1" data-page="home-page" data-translate="navHomeMobile">Home</a>
+            <a href="#" class="nav-link block text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors py-1" data-page="schemes-page" data-translate="navSchemesMobile">Schemes</a>
+            <a href="#" class="nav-link block text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors py-1" data-page="eligibility-page" data-translate="navEligibilityMobile">Check Eligibility</a>
+            <a href="#" class="nav-link block text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors py-1" data-page="track-page" data-translate="navTrackMobile">Track Payment</a>
+            <a href="#" class="nav-link block text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors py-1" data-page="contact-page" data-translate="navContactMobile">Contact Us</a>
+        </div>
+    </header>
+
+    <div id="app-content">
+        <!-- Home Page (Landing Page) -->
+        <main id="home-page" class="page-content">
+            <!-- Hero Section -->
+            <section class="hero-bg">
+                <div class="container mx-auto px-4 lg:px-6 py-20 lg:py-32 text-center">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight" data-translate="heroTitle">Direct Benefits, Delivered to You.</h1>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600 dark:text-gray-300" data-translate="heroSubtitle">
+                        A transparent and efficient platform for citizens to receive benefits and subsidies of social welfare schemes directly in their bank accounts.
+                    </p>
+                    <div class="mt-8 flex justify-center items-center flex-col sm:flex-row gap-4">
+                        <a href="#" class="w-full sm:w-auto bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all shadow-md transform hover:-translate-y-1 nav-link" data-page="schemes-page" data-translate="exploreBenefitsBtn">
+                            Explore Benefits
+                        </a>
+                        <a href="#" class="w-full sm:w-auto bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-all border border-gray-300 shadow-md transform hover:-translate-y-1 nav-link dark:bg-gray-700 dark:text-blue-300 dark:border-gray-600 dark:hover:bg-gray-600" data-page="track-page" data-translate="trackPaymentBtn">
+                            Track Your Payment
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How it Works Section -->
+            <section class="py-16 lg:py-24 bg-white dark:bg-gray-800">
+                <div class="container mx-auto px-4 lg:px-6">
+                    <div class="text-center mb-12">
+                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white" data-translate="howItWorksTitle">Get Your Benefits in 4 Simple Steps</h2>
+                        <p class="mt-2 text-gray-500 dark:text-gray-400 max-w-2xl mx-auto" data-translate="howItWorksSubtitle">Our streamlined process ensures you receive your entitlements without any hassle.</p>
+                    </div>
+                    <div class="relative max-w-5xl mx-auto">
+                        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0">
+                            <!-- Steps -->
+                            <div class="step-card relative flex flex-col items-center text-center px-4">
+                                <div class="relative z-10 flex items-center justify-center w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-full border-2 border-blue-500 dark:border-blue-400"><span class="text-2xl font-bold text-blue-600 dark:text-blue-300">1</span></div>
+                                <h3 class="mt-4 text-lg font-semibold dark:text-white" data-translate="step1Title">Check Eligibility</h3><p class="mt-1 text-gray-500 dark:text-gray-400 text-sm" data-translate="step1Desc">Find out which government welfare schemes you are eligible for.</p>
+                            </div>
+                            <div class="step-card relative flex flex-col items-center text-center px-4">
+                                <div class="relative z-10 flex items-center justify-center w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-full border-2 border-blue-500 dark:border-blue-400"><span class="text-2xl font-bold text-blue-600 dark:text-blue-300">2</span></div>
+                                <h3 class="mt-4 text-lg font-semibold dark:text-white" data-translate="step2Title">Link Bank Account</h3><p class="mt-1 text-gray-500 dark:text-gray-400 text-sm" data-translate="step2Desc">Securely link your Aadhaar-seeded bank account to receive payments.</p>
+                            </div>
+                            <div class="step-card relative flex flex-col items-center text-center px-4">
+                                <div class="relative z-10 flex items-center justify-center w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-full border-2 border-blue-500 dark:border-blue-400"><span class="text-2xl font-bold text-blue-600 dark:text-blue-300">3</span></div>
+                                <h3 class="mt-4 text-lg font-semibold dark:text-white" data-translate="step3Title">Apply for Scheme</h3><p class="mt-1 text-gray-500 dark:text-gray-400 text-sm" data-translate="step3Desc">Fill out a simple online application for the scheme you are interested in.</p>
+                            </div>
+                            <div class="step-card relative flex flex-col items-center text-center px-4">
+                                 <div class="relative z-10 flex items-center justify-center w-14 h-14 bg-blue-100 dark:bg-blue-900/50 rounded-full border-2 border-blue-500 dark:border-blue-400"><span class="text-2xl font-bold text-blue-600 dark:text-blue-300">4</span></div>
+                                <h3 class="mt-4 text-lg font-semibold dark:text-white" data-translate="step4Title">Receive Benefits</h3><p class="mt-1 text-gray-500 dark:text-gray-400 text-sm" data-translate="step4Desc">Get the benefit amount transferred directly to your bank account.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Schemes Page -->
+        <div id="schemes-page" class="page-content hidden container mx-auto px-4 lg:px-6 py-12">
+            <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center" data-translate="schemesPageTitle">Available Schemes & Benefits</h1>
+            <div id="schemes-list" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Scheme cards will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Eligibility Page -->
+        <div id="eligibility-page" class="page-content hidden container mx-auto px-4 lg:px-6 py-12">
+            <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center" data-translate="eligibilityPageTitle">Check Your Eligibility</h1>
+                <p class="text-center text-gray-600 dark:text-gray-300 mb-6" data-translate="eligibilityPageSubtitle">Answer a few questions to find schemes you might be eligible for.</p>
+                <form id="eligibility-form" class="space-y-6">
+                    <div>
+                        <label for="age" class="block text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="ageLabel">Your Age</label>
+                        <input type="number" id="age" name="age" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
+                    </div>
+                    <div>
+                        <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300" data-translate="categoryLabel">Category</label>
+                        <select id="category" name="category" class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
+                            <option value="student" data-translate="categoryStudent">Student</option>
+                            <option value="farmer" data-translate="categoryFarmer">Farmer</option>
+                            <option value="senior_citizen" data-translate="categorySenior">Senior Citizen</option>
+                            <option value="woman" data-translate="categoryWoman">Woman</option>
+                            <option value="general" data-translate="categoryGeneral">General</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700" data-translate="checkNowBtn">Check Now</button>
+                </form>
+                <div id="eligibility-results" class="mt-8 hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white" data-translate="eligibleForTitle">You may be eligible for:</h2>
+                    <ul id="eligible-schemes-list" class="mt-4 list-disc list-inside space-y-2 dark:text-gray-300"></ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Track Payment Page -->
+        <div id="track-page" class="page-content hidden container mx-auto px-4 lg:px-6 py-12">
+             <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center" data-translate="trackPageTitle">Track Your Payment Status</h1>
+                <p class="text-center text-gray-600 dark:text-gray-300 mb-6" data-translate="trackPageSubtitle">Enter your Application ID to see the current status.</p>
+                <form id="track-form" class="flex gap-4">
+                    <input type="text" id="application-id-input" placeholder="Enter Application ID" class="flex-grow block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required data-translate="appIdPlaceholder">
+                    <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700" data-translate="trackBtn">Track</button>
+                </form>
+                <div id="tracking-result" class="mt-8 hidden p-6 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <!-- Tracking result will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+         <div id="contact-page" class="page-content hidden container mx-auto px-4 lg:px-6 py-12">
+             <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4" data-translate="contactPageTitle">Contact Us</h1>
+                <p class="text-lg text-gray-600 dark:text-gray-300 mb-8" data-translate="contactPageSubtitle">For any queries, grievances, or feedback, please reach out to us.</p>
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-left">
+                    <p class="mb-4"><strong data-translate="helpdeskLabel">Helpdesk Number:</strong> <a href="tel:011-23345678" class="text-blue-600 dark:text-blue-400">011-23345678</a> (9:00 AM to 6:00 PM)</p>
+                    <p class="mb-4"><strong data-translate="emailLabel">Email:</strong> <a href="mailto:help.dbt@gov.in" class="text-blue-600 dark:text-blue-400">help.dbt@gov.in</a></p>
+                    <p><strong data-translate="addressLabel">Address:</strong> <span data-translate="addressValue">DBT Mission, Cabinet Secretariat, Rashtrapati Bhavan, New Delhi-110004</span></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-4 lg:px-6 py-12">
+             <!-- Footer content remains largely the same, but links are updated -->
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+                 <div class="col-span-2 lg:col-span-1">
+                     <a href="#" class="flex items-center gap-3" data-page="home-page">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Emblem_of_India.svg/120px-Emblem_of_India.svg.png" alt="Emblem of India" class="h-10 w-auto bg-white p-1 rounded-full">
+                        <div><h1 class="text-xl font-bold" data-translate="footerPortalTitle">DBT Portal</h1></div>
+                    </a>
+                    <p class="mt-4 text-gray-400 text-sm" data-translate="footerSubtitle">Direct transfer of benefits and subsidies to citizens.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold tracking-wider uppercase" data-translate="quickLinks">Quick Links</h4>
+                    <ul class="mt-4 space-y-2 text-sm">
+                        <li><a href="#" class="nav-link text-gray-300 hover:text-white" data-page="schemes-page" data-translate="footerAllSchemes">All Schemes</a></li>
+                        <li><a href="#" class="nav-link text-gray-300 hover:text-white" data-page="track-page" data-translate="footerTrackApp">Track Application</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white" data-translate="footerGrievance">Grievance</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white" data-translate="footerFAQ">FAQ</a></li>
+                    </ul>
+                </div>
+                <!-- Other footer columns... -->
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-400">
+                <p data-translate="copyright">&copy; 2023 Content Owned by DBT Mission, Cabinet Secretariat, Government of India. Designed, Developed and Hosted by National Informatics Centre (NIC)</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Universal Modal -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div id="modal-content" class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md m-4 p-6 relative">
+            <!-- Modal content will be injected here -->
+        </div>
+    </div>
+
+
+    <script type="module">
+        // Firebase Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, doc, getDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- TRANSLATIONS ---
+        const translations = {
+            en: {
+                portalTitle: "DBT Portal", govOfIndia: "Government of India", navHome: "Home", navSchemes: "Schemes", navEligibility: "Check Eligibility", navTrack: "Track Payment", navContact: "Contact Us", navHomeMobile: "Home", navSchemesMobile: "Schemes", navEligibilityMobile: "Check Eligibility", navTrackMobile: "Track Payment", navContactMobile: "Contact Us", loginRegister: "Login / Register", heroTitle: "Direct Benefits, Delivered to You.", heroSubtitle: "A transparent and efficient platform for citizens to receive benefits and subsidies of social welfare schemes directly in their bank accounts.", exploreBenefitsBtn: "Explore Benefits", trackPaymentBtn: "Track Your Payment", howItWorksTitle: "Get Your Benefits in 4 Simple Steps", howItWorksSubtitle: "Our streamlined process ensures you receive your entitlements without any hassle.", step1Title: "Check Eligibility", step1Desc: "Find out which government welfare schemes you are eligible for.", step2Title: "Link Bank Account", step2Desc: "Securely link your Aadhaar-seeded bank account to receive payments.", step3Title: "Apply for Scheme", step3Desc: "Fill out a simple online application for the scheme you are interested in.", step4Title: "Receive Benefits", step4Desc: "Get the benefit amount transferred directly to your bank account.", schemesPageTitle: "Available Schemes & Benefits", eligibilityPageTitle: "Check Your Eligibility", eligibilityPageSubtitle: "Answer a few questions to find schemes you might be eligible for.", ageLabel: "Your Age", categoryLabel: "Category", categoryStudent: "Student", categoryFarmer: "Farmer", categorySenior: "Senior Citizen", categoryWoman: "Woman", categoryGeneral: "General", checkNowBtn: "Check Now", eligibleForTitle: "You may be eligible for:", trackPageTitle: "Track Your Payment Status", trackPageSubtitle: "Enter your Application ID to see the current status.", appIdPlaceholder: "Enter Application ID", trackBtn: "Track", contactPageTitle: "Contact Us", contactPageSubtitle: "For any queries, grievances, or feedback, please reach out to us.", helpdeskLabel: "Helpdesk Number:", emailLabel: "Email:", addressLabel: "Address:", addressValue: "DBT Mission, Cabinet Secretariat, Rashtrapati Bhavan, New Delhi-110004", footerPortalTitle: "DBT Portal", footerSubtitle: "Direct transfer of benefits and subsidies to citizens.", quickLinks: "Quick Links", footerAllSchemes: "All Schemes", footerTrackApp: "Track Application", footerGrievance: "Grievance", footerFAQ: "FAQ", copyright: "© 2023 Content Owned by DBT Mission, Cabinet Secretariat, Government of India. Designed, Developed and Hosted by National Informatics Centre (NIC)", applyNow: "Apply Now"
+            },
+            hi: {
+                portalTitle: "डीबीटी पोर्टल", govOfIndia: "भारत सरकार", navHome: "होम", navSchemes: "योजनाएं", navEligibility: "पात्रता जांचें", navTrack: "भुगतान ट्रैक करें", navContact: "संपर्क करें", navHomeMobile: "होम", navSchemesMobile: "योजनाएं", navEligibilityMobile: "पात्रता जांचें", navTrackMobile: "भुगतान ट्रैक करें", navContactMobile: "संपर्क करें", loginRegister: "लॉगिन / रजिस्टर", heroTitle: "प्रत्यक्ष लाभ, आप तक पहुँचाया गया।", heroSubtitle: "नागरिकों को सामाजिक कल्याण योजनाओं के लाभ और सब्सिडी सीधे उनके बैंक खातों में प्राप्त करने के लिए एक पारदर्शी और कुशल मंच।", exploreBenefitsBtn: "लाभ खोजें", trackPaymentBtn: "अपना भुगतान ट्रैक करें", howItWorksTitle: "4 सरल चरणों में अपने लाभ प्राप्त करें", howItWorksSubtitle: "हमारी सुव्यवस्थित प्रक्रिया यह सुनिश्चित करती है कि आप बिना किसी परेशानी के अपने अधिकार प्राप्त करें।", step1Title: "पात्रता जांचें", step1Desc: "पता करें कि आप किन सरकारी कल्याण योजनाओं के लिए पात्र हैं।", step2Title: "बैंक खाता लिंक करें", step2Desc: "भुगतान प्राप्त करने के लिए अपने आधार-वरीय बैंक खाते को सुरक्षित रूप से लिंक करें।", step3Title: "योजना के लिए आवेदन करें", step3Desc: "जिस योजना में आपकी रुचि है, उसके लिए एक सरल ऑनलाइन आवेदन भरें।", step4Title: "लाभ प्राप्त करें", step4Desc: "लाभ की राशि सीधे अपने बैंक खाते में स्थानांतरित करें।", schemesPageTitle: "उपलब्ध योजनाएं और लाभ", eligibilityPageTitle: "अपनी पात्रता जांचें", eligibilityPageSubtitle: "आपके लिए पात्र योजनाओं को खोजने के लिए कुछ प्रश्नों के उत्तर दें।", ageLabel: "आपकी उम्र", categoryLabel: "श्रेणी", categoryStudent: "विद्यार्थी", categoryFarmer: "किसान", categorySenior: "वरिष्ठ नागरिक", categoryWoman: "महिला", categoryGeneral: "सामान्य", checkNowBtn: "अभी जांचें", eligibleForTitle: "आप इसके लिए पात्र हो सकते हैं:", trackPageTitle: "अपने भुगतान की स्थिति को ट्रैक करें", trackPageSubtitle: "वर्तमान स्थिति देखने के लिए अपनी आवेदन आईडी दर्ज करें।", appIdPlaceholder: "आवेदन आईडी दर्ज करें", trackBtn: "ट्रैक", contactPageTitle: "हमसे संपर्क करें", contactPageSubtitle: "किसी भी प्रश्न, शिकायत या प्रतिक्रिया के लिए, कृपया हमसे संपर्क करें।", helpdeskLabel: "हेल्पडेस्क नंबर:", emailLabel: "ईमेल:", addressLabel: "पता:", addressValue: "डीबीटी मिशन, कैबिनेट सचिवालय, राष्ट्रपति भवन, नई दिल्ली-110004", footerPortalTitle: "डीबीटी पोर्टल", footerSubtitle: "नागरिकों को लाभ और सब्सिडी का सीधा हस्तांतरण।", quickLinks: "त्वरित लिंक्स", footerAllSchemes: "सभी योजनाएं", footerTrackApp: "आवेदन ट्रैक करें", footerGrievance: "शिकायत", footerFAQ: "सामान्य प्रश्न", copyright: "© 2023 सामग्री का स्वामित्व डीबीटी मिशन, कैबिनेट सचिवालय, भारत सरकार के पास है। राष्ट्रीय सूचना विज्ञान केंद्र (एनआईसी) द्वारा डिजाइन, विकसित और होस्ट किया गया", applyNow: "अभी आवेदन करें"
+            },
+            mr: { 
+                portalTitle: "डीबीटी पोर्टल", govOfIndia: "भारत सरकार", navHome: "मुख्यपृष्ठ", navSchemes: "योजना", navEligibility: "पात्रता तपासा", navTrack: "पेमेंट ट्रॅक करा", navContact: "संपर्क साधा", loginRegister: "लॉगिन / नोंदणी करा", heroTitle: "थेट लाभ, तुमच्यापर्यंत पोहोचवले.", heroSubtitle: "नागरिकांना सामाजिक कल्याण योजनांचे लाभ आणि अनुदान थेट त्यांच्या बँक खात्यात मिळण्यासाठी एक पारदर्शक आणि कार्यक्षम मंच.", exploreBenefitsBtn: "लाभ एक्सप्लोर करा", trackPaymentBtn: "तुमचे पेमेंट ट्रॅक करा", applyNow: "आता अर्ज करा" 
+            },
+            ta: { 
+                portalTitle: "டிபிடி போர்டல்", govOfIndia: "இந்திய அரசு", navHome: "முகப்பு", navSchemes: "திட்டங்கள்", navEligibility: "தகுதியை சரிபார்க்கவும்", navTrack: "பணப்பரிமாற்றத்தைக் கண்காணிக்கவும்", navContact: "தொடர்பு கொள்ளவும்", loginRegister: "உள்நுழை / பதிவு செய்யவும்", heroTitle: "நேரடி நன்மைகள், உங்களிடம் வழங்கப்படுகின்றன.", heroSubtitle: "குடிமக்கள் சமூக நலத் திட்டங்களின் நன்மைகள் மற்றும் மானியங்களை நேரடியாக தங்கள் வங்கிக் கணக்குகளில் பெறுவதற்கான ஒரு வெளிப்படையான மற்றும் திறமையான தளம்.", exploreBenefitsBtn: "நன்மைகளை ஆராயுங்கள்", trackPaymentBtn: "உங்கள் கட்டணத்தைக் கண்காணிக்கவும்", applyNow: "இப்போது விண்ணப்பிக்கவும்" 
+            },
+            te: { 
+                portalTitle: "డిబిటి పోర్టల్", govOfIndia: "భారత ప్రభుత్వం", navHome: "హోమ్", navSchemes: "పథకాలు", navEligibility: "అర్హతను తనిఖీ చేయండి", navTrack: "చెల్లింపును ట్రాక్ చేయండి", navContact: "మమ్మల్ని సంప్రదించండి", loginRegister: "లాగిన్ / నమోదు చేసుకోండి", heroTitle: "ప్రత్యక్ష ప్రయోజనాలు, మీకు అందించబడతాయి.", heroSubtitle: "పౌరులు వారి బ్యాంకు ఖాతాలలో నేరుగా సామాజిక సంక్షేమ పథకాల ప్రయోజనాలు మరియు సబ్సిడీలను పొందడానికి ఒక పారదర్శక మరియు సమర్థవంతమైన వేదిక.", exploreBenefitsBtn: "ప్రయోజనాలను అన్వేషించండి", trackPaymentBtn: "మీ చెల్లింపును ట్రాక్ చేయండి", applyNow: "ఇప్పుడే దరఖాస్తు చేసుకోండి" 
+            },
+            bn: { 
+                portalTitle: "ডিবিটি পোর্টাল", govOfIndia: "ভারত সরকার", navHome: "হোম", navSchemes: "স্কিম", navEligibility: "যোগ্যতা পরীক্ষা করুন", navTrack: "পেমেন্ট ট্র্যাক করুন", navContact: "যোগাযোগ করুন", loginRegister: "লগইন / নিবন্ধন করুন", heroTitle: "সরাসরি সুবিধা, আপনার কাছে পৌঁছে দেওয়া হয়।", heroSubtitle: "নাগরিকদের জন্য সামাজিক কল্যাণ প্রকল্পের সুবিধা এবং ভর্তুকি সরাসরি তাদের ব্যাংক অ্যাকাউন্টে পাওয়ার জন্য একটি স্বচ্ছ এবং দক্ষ প্ল্যাটফর্ম।", exploreBenefitsBtn: "সুবিধাগুলি অন্বেষণ করুন", trackPaymentBtn: "আপনার পেমেন্ট ট্র্যাক করুন", applyNow: "এখন আবেদন করুন" 
+            }
+        };
+
+        // --- MOCK DATA ---
+        const schemes = [
+            { id: 1, name: "Pradhan Mantri Kisan Samman Nidhi", category: "farmer", description: "Financial support of ₹6,000 per year to all landholding farmer families.", eligibility: { minAge: 18 } },
+            { id: 2, name: "National Scholarship Portal", category: "student", description: "A single portal for various scholarships for students from different backgrounds.", eligibility: { minAge: 6 } },
+            { id: 3, name: "Indira Gandhi National Old Age Pension Scheme", category: "senior_citizen", description: "Provides social security for the elderly.", eligibility: { minAge: 60 } },
+            { id: 4, name: "Pradhan Mantri Matru Vandana Yojana", category: "woman", description: "A maternity benefit program for pregnant and lactating women.", eligibility: { minAge: 19 } },
+            { id: 5, name: "Atal Pension Yojana", category: "general", description: "A pension scheme for citizens, focused on the unorganized sector.", eligibility: { minAge: 18, maxAge: 40 } },
+            { id: 6, name: "PM SVANidhi Scheme", category: "general", description: "A micro-credit facility for street vendors.", eligibility: { minAge: 18 } }
+        ];
+
+        // --- APP STATE ---
+        let db, auth, userId, currentLanguage = 'en';
+
+        // --- FIREBASE INITIALIZATION ---
+        const initFirebase = async () => {
+            try {
+                if (typeof __firebase_config === 'undefined') {
+                    console.error("Firebase config is not defined.");
+                    showModal("Error", "<p>Application is not configured correctly. Please contact support.</p>");
+                    return;
+                }
+                const firebaseConfig = JSON.parse(__firebase_config);
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                setLogLevel('debug');
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        userId = user.uid;
+                        console.log("User signed in with UID:", userId);
+                    } else {
+                        console.log("User is signed out.");
+                    }
+                });
+
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                showModal("Initialization Error", `<p>Could not connect to services. Error: ${error.message}</p>`);
+            }
+        };
+        
+        // --- THEME SWITCHER LOGIC ---
+        const initThemeSwitcher = () => {
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+            const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+            const htmlElement = document.documentElement;
+
+            const setTheme = (theme) => {
+                if (theme === 'dark') {
+                    htmlElement.classList.add('dark');
+                    themeToggleLightIcon.classList.remove('hidden');
+                    themeToggleDarkIcon.classList.add('hidden');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    htmlElement.classList.remove('dark');
+                    themeToggleLightIcon.classList.add('hidden');
+                    themeToggleDarkIcon.classList.remove('hidden');
+                    localStorage.setItem('theme', 'light');
+                }
+            };
+
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else if (prefersDark) {
+                setTheme('dark');
+            } else {
+                setTheme('light');
+            }
+
+            themeToggleBtn.addEventListener('click', () => {
+                if (htmlElement.classList.contains('dark')) {
+                    setTheme('light');
+                } else {
+                    setTheme('dark');
+                }
+            });
+        };
+        
+        // --- LANGUAGE SWITCHER ---
+        const setLanguage = (lang) => {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            document.documentElement.lang = lang;
+            
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                // Fallback to English if a specific translation is missing for other languages
+                const translationText = (translations[lang] && translations[lang][key]) || (translations.en[key]);
+
+                if (translationText) {
+                     if(el.placeholder) {
+                        el.placeholder = translationText;
+                    } else {
+                        el.textContent = translationText;
+                    }
+                }
+            });
+             document.getElementById('current-lang-text').textContent = lang.toUpperCase();
+            // Re-render dynamic content that needs translation
+            renderSchemes();
+        };
+
+        const initLanguageSwitcher = () => {
+            const langToggleBtn = document.getElementById('language-toggle-btn');
+            const langDropdown = document.getElementById('language-dropdown');
+
+            langToggleBtn.addEventListener('click', () => {
+                langDropdown.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!document.getElementById('language-switcher').contains(e.target)) {
+                    langDropdown.classList.add('hidden');
+                }
+            });
+
+            langDropdown.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') {
+                    const lang = e.target.dataset.lang;
+                    setLanguage(lang);
+                    langDropdown.classList.add('hidden');
+                }
+            });
+
+            const savedLang = localStorage.getItem('language') || 'en';
+            setLanguage(savedLang);
+        };
+
+        // --- UI & NAVIGATION ---
+        const pages = document.querySelectorAll('.page-content');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        const showPage = (pageId) => {
+            pages.forEach(page => {
+                page.classList.toggle('hidden', page.id !== pageId);
+            });
+            window.scrollTo(0, 0);
+            mobileMenu.classList.add('hidden');
+        };
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = e.currentTarget.dataset.page;
+                if (pageId) {
+                    showPage(pageId);
+                }
+            });
+        });
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // --- MODAL LOGIC ---
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const modalContent = document.getElementById('modal-content');
+
+        const showModal = (title, contentHTML) => {
+            const closeButtonHTML = `<button id="modal-close-btn" class="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-white text-2xl font-bold">&times;</button>`;
+            modalContent.innerHTML = `
+                <h2 class="text-2xl font-bold mb-4">${title}</h2>
+                <div>${contentHTML}</div>
+                ${closeButtonHTML}
+            `;
+            modalBackdrop.classList.remove('hidden');
+        };
+
+        const hideModal = () => {
+            modalBackdrop.classList.add('hidden');
+        };
+
+        document.body.addEventListener('click', (e) => {
+            if (e.target === modalBackdrop || e.target.id === 'modal-close-btn' || e.target.parentElement.id === 'modal-close-btn') {
+                hideModal();
+            }
+        });
+
+        // --- SCHEMES PAGE LOGIC ---
+        const renderSchemes = () => {
+            const schemesListContainer = document.getElementById('schemes-list');
+            if (!schemesListContainer) return;
+            const applyNowText = (translations[currentLanguage] && translations[currentLanguage].applyNow) || translations.en.applyNow;
+
+            schemesListContainer.innerHTML = schemes.map(scheme => `
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md flex flex-col">
+                    <h3 class="text-xl font-bold mb-2 dark:text-white">${scheme.name}</h3>
+                    <p class="text-gray-600 dark:text-gray-300 mb-4 flex-grow">${scheme.description}</p>
+                    <button class="apply-btn mt-auto bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full" data-scheme-name="${scheme.name}">${applyNowText}</button>
+                </div>
+            `).join('');
+
+            document.querySelectorAll('.apply-btn').forEach(btn => {
+                btn.addEventListener('click', handleApply);
+            });
+        };
+
+        const handleApply = async (e) => {
+            if (!userId) {
+                showModal("Authentication Error", "<p>You must be signed in to apply. Please refresh the page.</p>");
+                return;
+            }
+
+            const schemeName = e.target.dataset.schemeName;
+            showModal("Applying...", `<div class="flex justify-center p-4"><div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div></div>`);
+            
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const docRef = await addDoc(collection(db, `/artifacts/${appId}/public/data/applications`), {
+                    userId: userId,
+                    schemeName: schemeName,
+                    status: "Submitted",
+                    submittedAt: serverTimestamp()
+                });
+                showModal("Application Submitted!", `
+                    <p>Your application for <strong>${schemeName}</strong> has been submitted successfully.</p>
+                    <p class="mt-4">Your Application ID is:</p>
+                    <div class="bg-gray-100 dark:bg-gray-700 dark:text-gray-200 p-2 rounded mt-1 font-mono text-center">${docRef.id}</div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Please save this ID to track your payment status.</p>
+                `);
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                showModal("Error", `<p>Could not submit application. Please try again. Error: ${error.message}</p>`);
+            }
+        };
+
+        // --- ELIGIBILITY PAGE LOGIC ---
+        const eligibilityForm = document.getElementById('eligibility-form');
+        eligibilityForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const age = parseInt(eligibilityForm.age.value);
+            const category = eligibilityForm.category.value;
+            
+            const resultsContainer = document.getElementById('eligibility-results');
+            const resultsList = document.getElementById('eligible-schemes-list');
+
+            const eligibleSchemes = schemes.filter(scheme => {
+                const categoryMatch = scheme.category === category || scheme.category === 'general';
+                const minAgeMatch = scheme.eligibility.minAge ? age >= scheme.eligibility.minAge : true;
+                const maxAgeMatch = scheme.eligibility.maxAge ? age <= scheme.eligibility.maxAge : true;
+                return categoryMatch && minAgeMatch && maxAgeMatch;
+            });
+
+            if(eligibleSchemes.length > 0) {
+                resultsList.innerHTML = eligibleSchemes.map(s => `<li>${s.name}</li>`).join('');
+            } else {
+                resultsList.innerHTML = `<li>No specific schemes found for your profile. Please check general schemes.</li>`;
+            }
+            resultsContainer.classList.remove('hidden');
+        });
+
+        // --- TRACKING PAGE LOGIC ---
+        const trackForm = document.getElementById('track-form');
+        const trackingResultDiv = document.getElementById('tracking-result');
+
+        trackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const appIdInput = document.getElementById('application-id-input').value.trim();
+            if (!appIdInput) return;
+
+            trackingResultDiv.classList.remove('hidden');
+            trackingResultDiv.innerHTML = `<div class="flex justify-center p-4"><div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div></div>`;
+            
+            try {
+                const currentAppId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const docRef = doc(db, `/artifacts/${currentAppId}/public/data/applications`, appIdInput);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    const submittedDate = data.submittedAt ? new Date(data.submittedAt.seconds * 1000).toLocaleDateString() : 'N/A';
+                    trackingResultDiv.innerHTML = `
+                        <h3 class="font-bold text-lg dark:text-white">Status for Application ID: ${docSnap.id}</h3>
+                        <p class="dark:text-gray-300"><strong>Scheme:</strong> ${data.schemeName}</p>
+                        <p class="dark:text-gray-300"><strong>Status:</strong> <span class="font-semibold text-blue-700 dark:text-blue-400">${data.status}</span></p>
+                        <p class="dark:text-gray-300"><strong>Submitted On:</strong> ${submittedDate}</p>
+                    `;
+                } else {
+                    trackingResultDiv.innerHTML = `<p class="text-red-600 dark:text-red-400">No application found with the ID: ${appIdInput}</p>`;
+                }
+            } catch (error) {
+                console.error("Error fetching document: ", error);
+                trackingResultDiv.innerHTML = `<p class="text-red-600 dark:text-red-400">Error fetching status. Please try again. Error: ${error.message}</p>`;
+            }
+        });
+        
+        // --- INITIALIZE APP ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebase();
+            initThemeSwitcher();
+            initLanguageSwitcher();
+            showPage('home-page');
+        });
+
+    </script>
 </body>
 </html>
+

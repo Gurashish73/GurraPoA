@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Springboard - Inter-Caste Marriage Incentive Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* A little custom style for smooth transitions on the accordion */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 200px; /* Adjust as needed */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <main id="app-root"></main>
+
+    <script>
+        // --- DATA ---
+        const eligibilityCriteria = [ "Is one spouse from a Scheduled Caste (SC)?", "Is this the first marriage for both of you?", "Is your combined annual income less than ₹5 Lakh?", "Is your marriage legally registered?", "Are you applying within one year of your marriage date?", ];
+        const documents = [ { name: "Marriage Certificate", uploaded: true }, { name: "Caste Certificates (Both)", uploaded: true }, { name: "Affidavit of First Marriage", uploaded: false }, { name: "Income Certificate", uploaded: false }, { name: "Aadhaar Cards (Both)", uploaded: true }, { name: "Joint Bank Account Details", uploaded: false }, { name: "Joint Photograph of Couple", uploaded: true }, ];
+        const incentiveStages = [ { name: "Application Submitted", completed: true }, { name: "Document Verification", completed: true }, { name: "Incentive Sanctioned", completed: false }, { name: "Amount Disbursed", completed: false }, ];
+        const toolkitItems = [
+            { title: "Update Aadhaar Card", content: "Required: Marriage Certificate, Spouse's Aadhaar. Fee: ₹50. Link: uidai.gov.in" },
+            { title: "Update PAN Card", content: "Required: Marriage Certificate, Gazette Notification (if name change). Fee: ~₹110. Link: onlineservices.nsdl.com" },
+            { title: "Update Bank Account", content: "Visit your branch with Marriage Certificate and KYC documents." },
+            { title: "Update Voter ID", content: "Submit Form 8 on the National Voters' Services Portal (nvsp.in)." },
+        ];
+
+        // --- STATE ---
+        let appState = {
+            eligibilityChecked: new Array(eligibilityCriteria.length).fill(false),
+            isPanicModalVisible: false
+        };
+
+        // --- SVG ICONS ---
+        const CheckCircleIcon = (isChecked) => `<svg class="w-6 h-6 ${isChecked ? 'text-white' : 'text-gray-300'}" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>`;
+        const UploadCloudIcon = () => `<svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-4-4V7a4 4 0 014-4h.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V16a4 4 0 01-4 4H7z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4a2 2 0 012 2v4a2 2 0 01-2 2h-1"></path></svg>`;
+        const DocumentCheckIcon = () => `<svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+        const ShieldCheckIcon = () => `<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 20.944a11.955 11.955 0 019-4.044 11.955 11.955 0 019 4.044 12.02 12.02 0 00-3.382-11.964z"></path></svg>`;
+        const ChatBubbleLeftRightIcon = () => `<svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193l-3.72 3.72a1.125 1.125 0 01-1.59 0l-3.72-3.72A2.122 2.122 0 016 19.193v-4.286c0-.97.616-1.813 1.5-2.097m6.75-3.686l-3.72-3.72a1.125 1.125 0 00-1.59 0l-3.72 3.72A2.122 2.122 0 006 5.193v4.286c0 .97-.616 1.813-1.5 2.097"></path></svg>`;
+        const ChevronDownIcon = () => `<svg class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path></svg>`;
+
+        // --- TEMPLATE COMPONENTS (FUNCTIONS RETURNING HTML STRINGS) ---
+        const PortalHeader = () => `
+            <header class="bg-white shadow-md sticky top-0 z-20">
+                <div class="max-w-4xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+                    <h1 class="text-2xl font-bold text-gray-800">The Springboard</h1>
+                    <p class="text-sm text-gray-500">Inter-Caste Marriage Incentive Portal & Support Ecosystem</p>
+                </div>
+            </header>
+        `;
+
+        const EligibilityCheckCard = () => {
+            const allChecked = appState.eligibilityChecked.every(Boolean);
+            return `
+                <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-yellow-400">
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">Congratulations on Your Union!</h2>
+                    <p class="text-gray-600 mb-4">Let's quickly check your eligibility for the incentive scheme. Please confirm the following:</p>
+                    <ul class="space-y-3 mb-4">
+                        ${eligibilityCriteria.map((criterion, index) => `
+                            <li>
+                                <label class="flex items-center cursor-pointer">
+                                    <input type="checkbox" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 eligibility-checkbox" data-index="${index}" ${appState.eligibilityChecked[index] ? 'checked' : ''} />
+                                    <span class="ml-3 text-gray-700">${criterion}</span>
+                                </label>
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <div id="eligibility-status" class="mt-4 ${allChecked ? '' : 'hidden'}">
+                         <div class="p-3 bg-green-100 text-green-800 rounded-md text-center">Great! You appear to be eligible. Proceed to the next step.</div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const DocumentVaultCard = () => `
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                 <h2 class="text-xl font-bold text-gray-800 mb-4">Joint Document Vault</h2>
+                 <p class="text-gray-600 mb-6">Please upload clear copies of the following documents. Our system will perform a quick check for clarity.</p>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    ${documents.map(doc => `
+                        <div class="p-4 rounded-lg border-2 flex items-center justify-between transition-all ${doc.uploaded ? 'border-green-500 bg-green-50' : 'border-dashed border-gray-300 bg-white'}">
+                            <div class="flex items-center">
+                                ${doc.uploaded ? DocumentCheckIcon() : UploadCloudIcon()}
+                                <span class="ml-3 font-medium ${doc.uploaded ? 'text-green-800' : 'text-gray-700'}">${doc.name}</span>
+                            </div>
+                            <button class="px-3 py-1 text-sm font-semibold rounded-full ${doc.uploaded ? 'bg-white text-gray-600 border' : 'bg-blue-600 text-white'}">${doc.uploaded ? 'View' : 'Upload'}</button>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        const IncentiveTrackerCard = () => `
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-6">Incentive Tracker</h2>
+                <div class="relative">
+                    <div class="absolute left-5 top-5 h-full border-l-2 border-dotted border-gray-300"></div>
+                    <ul class="space-y-8">
+                        ${incentiveStages.map(stage => `
+                            <li class="flex items-center">
+                                <div class="z-10 flex items-center justify-center w-10 h-10 rounded-full ${stage.completed ? 'bg-blue-600' : 'bg-gray-200'}">
+                                    ${CheckCircleIcon(stage.completed)}
+                                </div>
+                                <span class="ml-4 font-medium ${stage.completed ? 'text-gray-800' : 'text-gray-500'}">${stage.name}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+
+        const EnhancedFinancialsCard = () => `
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Your Incentive Details</h2>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <div class="flex justify-between items-baseline mb-2"><p class="text-gray-600">Total Incentive Amount:</p><p class="text-2xl font-bold text-gray-900">₹2,50,000</p></div><hr class="my-3"/>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center"><div><p class="font-semibold text-gray-800">Part 1: Direct Transfer</p><p class="text-sm text-gray-500">Credited to your joint bank account.</p></div><div class="text-right"><p class="font-bold text-lg text-gray-800">₹1,50,000</p><span class="text-xs font-semibold px-2 py-1 bg-yellow-200 text-yellow-800 rounded-full">PENDING</span></div></div>
+                        <div>
+                            <div class="flex justify-between items-center"><div><p class="font-semibold text-gray-800">Part 2: Fixed Deposit</p><p class="text-sm text-gray-500">Secured for 3 years, available after lock-in period.</p></div><div class="text-right"><p class="font-bold text-lg text-gray-800">₹1,00,000</p><span class="text-xs font-semibold px-2 py-1 bg-yellow-200 text-yellow-800 rounded-full">PENDING</span></div></div>
+                            <div class="mt-4 p-4 bg-white border rounded-lg">
+                                <p class="text-center text-sm text-gray-600 mb-2">FD Unlocks in:</p>
+                                <p id="countdown-timer" class="text-center font-bold text-xl text-blue-600 tracking-wider">Loading...</p>
+                                <div class="text-xs text-gray-500 mt-3 text-center">This amount is locked to ensure the marriage's longevity and can be redeemed with the FD certificate at the bank upon maturity.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const LegalShieldCard = () => `
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Legal Shield: Get Help</h2>
+                <p class="text-gray-600 mb-6">Connect with verified lawyers and NGOs specializing in protecting inter-caste couples.</p>
+                <div class="space-y-4">
+                    <div class="p-4 border rounded-lg flex items-center justify-between">
+                        <div>
+                            <p class="font-bold">Adv. Priya Sharma <span class="ml-2 text-xs font-semibold px-2 py-0.5 bg-green-100 text-green-800 rounded-full">Verified by Nyay Sahayak</span></p>
+                            <p class="text-sm text-gray-500">Human Rights Law, Delhi</p>
+                        </div>
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Contact</button>
+                    </div>
+                    <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
+                        <h3 class="font-bold text-blue-800">Need Free Legal Aid?</h3>
+                        <p class="text-sm text-blue-700 mt-1 mb-3">The District Legal Services Authority (DLSA) provides free legal help to eligible individuals.</p>
+                        <button class="bg-white text-blue-600 border border-blue-600 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-100">Connect with a Free Legal Aid Lawyer (DLSA)</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const SchemeNavigatorCard = () => `
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">${ChatBubbleLeftRightIcon()} Scheme Navigator AI</h2>
+                <div class="p-4 bg-gray-50 rounded-lg space-y-4">
+                    <div class="flex justify-start"><div class="bg-gray-200 p-3 rounded-lg max-w-sm"><p class="text-sm">Welcome! I can help you find the best incentive scheme. Which state is your permanent residence?</p></div></div>
+                    <div class="flex justify-end"><div class="bg-blue-600 text-white p-3 rounded-lg max-w-sm"><p class="text-sm">Rajasthan</p></div></div>
+                    <div class="flex justify-start"><div class="bg-green-100 p-3 rounded-lg border-l-4 border-green-500 max-w-md"><p class="font-semibold text-sm text-green-900">Recommendation:</p><p class="text-sm text-green-800">Based on your details, you are eligible for the Rajasthan state scheme which offers ₹5 lakh. This is more beneficial than the central scheme. I will now guide you through that application process.</p></div></div>
+                </div>
+            </div>
+        `;
+        
+        const CommunityConnectCard = () => `
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Community Connect</h2>
+                <p class="text-gray-600 mb-6">A safe, anonymous forum to share experiences and find support. You are <span class="font-bold text-blue-600">BraveLion7</span>.</p>
+                <div class="border rounded-lg p-4">
+                    <textarea class="w-full p-2 border rounded-md" rows="3" placeholder="Share your thoughts..."></textarea>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold mt-2">Post Anonymously</button>
+                    <hr class="my-4"/>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="font-bold text-sm">HopefulSparrow2</p>
+                            <p class="text-gray-700 text-sm mt-1">Has anyone dealt with unsupportive relatives after the first year? Looking for advice.</p>
+                            <button class="text-xs text-gray-500 hover:underline mt-1">Report Abuse</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const ProofOfCohabitationCard = () => `
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Action Required: 1-Year Update</h2>
+                <p class="text-gray-600 mb-6">To release your final incentive payment, please confirm you are still living together by submitting a geotagged photo and a digital affidavit.</p>
+                <div class="flex space-x-4">
+                     <button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-300 px-4 py-2 rounded-lg text-sm font-semibold">Upload Joint Photograph</button>
+                     <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">Digitally Sign Affidavit</button>
+                </div>
+            </div>
+        `;
+        
+        const OfficialRecordsChecklistCard = () => `
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Post-Marriage Toolkit</h2>
+                <p class="text-gray-600 mb-6">A handy checklist for updating your official records.</p>
+                <div class="space-y-2">
+                    ${toolkitItems.map((item, index) => `
+                        <div class="border rounded-lg">
+                            <button class="w-full flex justify-between items-center p-4 text-left font-semibold toolkit-toggle" data-index="${index}">
+                                <span>${item.title}</span>
+                                <span class="chevron-icon">${ChevronDownIcon()}</span>
+                            </button>
+                            <div class="accordion-content">
+                                <div class="p-4 border-t text-gray-600 bg-gray-50"><p>${item.content}</p></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        const PanicButtonAndModal = () => `
+            <button id="panic-button" class="fixed bottom-6 right-6 bg-red-600 hover:bg-red-700 text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center z-50">
+                ${ShieldCheckIcon()}
+            </button>
+            <div id="panic-modal" class="fixed inset-0 bg-black bg-opacity-75 flex-col items-center justify-center z-50 p-4 ${appState.isPanicModalVisible ? 'flex' : 'hidden'}">
+                <div class="bg-white rounded-lg p-6 max-w-lg w-full text-center">
+                    <h2 class="text-2xl font-bold text-red-600">URGENT SAFETY ALERT</h2>
+                    <p class="text-gray-700 my-4">This will send an immediate alert with your current location to the District Superintendent of Police. <span class="font-bold">Use only in case of a real threat.</span></p>
+                    <div class="bg-gray-100 p-4 rounded-lg my-4">
+                        <h3 class="font-bold">Nearest Safe House</h3>
+                        <p class="text-sm text-gray-600">Govt. Shelter Home, Sector 12, RK Puram, New Delhi</p>
+                        <button class="text-blue-600 font-semibold text-sm mt-2">Get Directions</button>
+                    </div>
+                    <div class="flex space-x-4 mt-6">
+                        <button id="cancel-panic" class="flex-1 bg-gray-200 text-gray-800 px-4 py-3 rounded-lg font-semibold">Cancel</button>
+                        <button id="confirm-panic" class="flex-1 bg-red-600 text-white px-4 py-3 rounded-lg font-semibold">CONFIRM & SEND ALERT</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // --- RENDER & EVENT HANDLING LOGIC ---
+        const root = document.getElementById('app-root');
+
+        function renderApp() {
+            root.innerHTML = `
+                ${PortalHeader()}
+                <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8 pb-24">
+                    ${EligibilityCheckCard()}
+                    ${DocumentVaultCard()}
+                    ${IncentiveTrackerCard()}
+                    ${EnhancedFinancialsCard()}
+                    ${LegalShieldCard()}
+                    ${SchemeNavigatorCard()}
+                    ${CommunityConnectCard()}
+                    ${ProofOfCohabitationCard()}
+                    ${OfficialRecordsChecklistCard()}
+                </div>
+                ${PanicButtonAndModal()}
+            `;
+            addEventListeners();
+            startCountdown();
+        }
+        
+        function addEventListeners() {
+            // Eligibility checkboxes
+            document.querySelectorAll('.eligibility-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const index = parseInt(e.target.dataset.index, 10);
+                    appState.eligibilityChecked[index] = e.target.checked;
+                    const allChecked = appState.eligibilityChecked.every(Boolean);
+                    document.getElementById('eligibility-status').classList.toggle('hidden', !allChecked);
+                });
+            });
+
+            // Toolkit accordion
+            document.querySelectorAll('.toolkit-toggle').forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const icon = button.querySelector('.chevron-icon svg');
+                    
+                    content.classList.toggle('open');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+
+            // Panic Button
+            document.getElementById('panic-button').addEventListener('click', () => {
+                document.getElementById('panic-modal').classList.remove('hidden');
+                document.getElementById('panic-modal').classList.add('flex');
+            });
+
+            document.getElementById('cancel-panic').addEventListener('click', () => {
+                document.getElementById('panic-modal').classList.add('hidden');
+                document.getElementById('panic-modal').classList.remove('flex');
+            });
+
+            document.getElementById('confirm-panic').addEventListener('click', () => {
+                alert('Alert Sent! The authorities have been notified.');
+                document.getElementById('panic-modal').classList.add('hidden');
+                document.getElementById('panic-modal').classList.remove('flex');
+            });
+        }
+
+        function startCountdown() {
+            const timerEl = document.getElementById('countdown-timer');
+            if (!timerEl) return;
+            
+            let years = 2, months = 8, days = 14, hours = 10, minutes = 2, seconds = 45;
+
+            const interval = setInterval(() => {
+                seconds--;
+                if (seconds < 0) { seconds = 59; minutes--; }
+                if (minutes < 0) { minutes = 59; hours--; }
+                if (hours < 0) { hours = 23; days--; }
+                if (days < 0) { days = 29; months--; } // Simplified month length
+                if (months < 0) { months = 11; years--; }
+                
+                if (years < 0) {
+                    clearInterval(interval);
+                    timerEl.textContent = "FD Unlocked!";
+                } else {
+                     timerEl.textContent = `${years}Y : ${months}M : ${days}D : ${hours}H`;
+                }
+            }, 1000);
+        }
+
+        // --- INITIALIZE APP ---
+        document.addEventListener('DOMContentLoaded', renderApp);
+
+    </script>
+</body>
+</html>
