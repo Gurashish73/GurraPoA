@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agency Portal</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styling to complement Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Simple transition for showing/hiding elements */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+        
+        .modal-enter {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        .modal-leave {
+            animation: modalFadeOut 0.3s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes modalFadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .tab-active {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
+        .tab-inactive {
+            background-color: #eef2ff;
+            color: #4338ca;
+        }
+        .dark .tab-inactive {
+             background-color: #3730a3;
+             color: #c7d2fe;
+        }
+        /* Chat bubble styling */
+        .chat-bubble-sent {
+            background-color: #4f46e5;
+            color: white;
+            align-self: flex-end;
+        }
+        .chat-bubble-received {
+            background-color: #e5e7eb;
+            color: #1f2937;
+            align-self: flex-start;
+        }
+        .dark .chat-bubble-received {
+            background-color: #374151;
+            color: #f3f4f6;
+        }
+        /* Chart bar animation */
+        .chart-bar-grow {
+            animation: grow 0.5s ease-out forwards;
+        }
+        @keyframes grow {
+            from { transform: scaleY(0); }
+            to { transform: scaleY(1); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen p-4 transition-colors duration-300">
+
+    <!-- Login View -->
+    <div id="login-view" class="w-full max-w-md p-8 space-y-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg fade-in">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Agency Portal</h1>
+            <p class="mt-2 text-gray-500 dark:text-gray-400">Please select your agency and log in.</p>
+        </div>
+        <form id="login-form" class="space-y-6">
+            <div>
+                <label for="agency-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Agency</label>
+                <select id="agency-select" name="agency" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    <option value="" disabled selected>-- Select your agency --</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+                <input type="text" id="username" name="username" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required autocomplete="username">
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                <input type="password" id="password" name="password" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required autocomplete="current-password">
+            </div>
+
+            <!-- Error Message Display -->
+            <div id="error-message" class="text-sm text-red-600 h-4"></div>
+
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Login
+                </button>
+            </div>
+        </form>
+         <p class="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
+            Don't have an account?
+            <a href="#" id="toggle-to-signup" class="font-medium text-indigo-600 hover:text-indigo-500">Sign up</a>
+        </p>
+    </div>
+    
+    <!-- Sign-up View (hidden by default) -->
+    <div id="signup-view" class="hidden w-full max-w-md p-8 space-y-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg fade-in">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Create Account</h1>
+            <p class="mt-2 text-gray-500 dark:text-gray-400">Join your agency's portal.</p>
+        </div>
+        <form id="signup-form" class="space-y-6">
+            <div>
+                <label for="signup-agency-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Agency</label>
+                <select id="signup-agency-select" name="agency" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                    <option value="" disabled selected>-- Select your agency --</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="signup-username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+                <input type="text" id="signup-username" name="username" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+            </div>
+
+            <div>
+                <label for="signup-password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                <input type="password" id="signup-password" name="password" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+            </div>
+
+            <!-- Error/Success Message Display -->
+            <div id="signup-message" class="text-sm h-4"></div>
+
+            <div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Sign Up
+                </button>
+            </div>
+        </form>
+        <p class="mt-4 text-sm text-center text-gray-600 dark:text-gray-400">
+            Already have an account?
+            <a href="#" id="toggle-to-login" class="font-medium text-indigo-600 hover:text-indigo-500">Log in</a>
+        </p>
+    </div>
+
+    <!-- Dashboard View (hidden by default) -->
+    <div id="dashboard-view" class="hidden w-full max-w-6xl p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg fade-in">
+        <header class="flex flex-col sm:flex-row justify-between sm:items-center pb-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="mb-4 sm:mb-0">
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">Agency Portal</h1>
+                <p id="welcome-message" class="mt-1 text-gray-500 dark:text-gray-400">Welcome back!</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="theme-toggle" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none">
+                    <svg id="theme-icon-light" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 5.05A1 1 0 003.636 6.464l.707.707a1 1 0 001.414-1.414l-.707-.707zM3 11a1 1 0 100-2H2a1 1 0 100 2h1z"></path></svg>
+                    <svg id="theme-icon-dark" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                </button>
+                <button id="logout-button" class="w-full sm:w-auto px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-100 dark:bg-indigo-500 dark:text-white rounded-md hover:bg-indigo-200 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <nav class="mt-6">
+            <div class="flex space-x-2 border-b-2 border-gray-200 dark:border-gray-700">
+                <button id="agency-tab" class="px-4 py-2 text-sm font-medium rounded-t-md tab-active">My Agency</button>
+                <button id="embedded-tab" class="px-4 py-2 text-sm font-medium rounded-t-md tab-inactive">Embedded Projects</button>
+            </div>
+        </nav>
+        
+        <main id="agency-content" class="mt-6 space-y-8">
+            <div>
+                <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Assigned Projects</h2>
+                <div id="assigned-projects-container" class="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <!-- Assigned projects will be dynamically injected here -->
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Completed Projects</h2>
+                <div id="completed-projects-container" class="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <!-- Completed projects will be dynamically injected here -->
+                </div>
+            </div>
+        </main>
+        
+        <main id="embedded-content" class="hidden mt-6 space-y-8">
+             <div>
+                <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Shared Inter-Agency Projects</h2>
+                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">These projects are shared across multiple agencies for collaboration.</p>
+                <div id="embedded-projects-container" class="mt-4 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <!-- Embedded projects will be dynamically injected here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Project Details Modal (hidden by default) -->
+    <div id="project-details-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 modal-enter">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-start">
+                <h2 id="modal-project-title" class="text-2xl font-bold text-gray-800 dark:text-gray-100">Project Title</h2>
+                <button id="modal-close-button" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div>
+                <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Client:</strong> <span id="modal-project-client">Client Name</span></p>
+                <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Status:</strong> <span id="modal-project-status" class="font-medium">Status</span></p>
+            </div>
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                <h3 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Project Description</h3>
+                <p id="modal-project-description" class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                    Project description details will go here.
+                </p>
+            </div>
+             <!-- Progress Tracking -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                <h3 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Progress</h3>
+                <div class="flex items-center">
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                        <div id="modal-progress-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <span id="modal-progress-text" class="text-sm font-medium text-gray-600 dark:text-gray-400 ml-3">0%</span>
+                </div>
+            </div>
+            <!-- Site Photos -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                <h3 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Site Photos</h3>
+                <div id="modal-image-gallery" class="grid grid-cols-2 gap-4">
+                     <img id="modal-image-1" src="https://placehold.co/600x400/e2e8f0/e2e8f0" alt="Site photo 1" class="w-full h-auto rounded-lg object-cover">
+                     <img id="modal-image-2" src="https://placehold.co/600x400/e2e8f0/e2e8f0" alt="Site photo 2" class="w-full h-auto rounded-lg object-cover">
+                </div>
+            </div>
+             <!-- Fund Flow -->
+            <div id="modal-fund-flow" class="hidden border-t border-gray-200 dark:border-gray-700 pt-4">
+                <h3 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Fund Flow</h3>
+                <div class="text-sm space-y-1 mb-4">
+                    <p class="text-gray-700 dark:text-gray-300"><strong>Total Budget:</strong> <span id="modal-fund-budget" class="font-medium text-gray-800 dark:text-gray-100"></span></p>
+                    <p class="text-gray-700 dark:text-gray-300"><strong>Funds Used:</strong> <span id="modal-fund-used" class="font-medium text-gray-800 dark:text-gray-100"></span></p>
+                </div>
+                <div>
+                     <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">Monthly Usage</h4>
+                     <div id="modal-fund-chart" class="w-full h-40 bg-gray-50 dark:bg-gray-700 rounded-lg p-4 flex items-end justify-around space-x-2 border border-gray-200 dark:border-gray-600">
+                        <!-- Graph bars will be injected here -->
+                     </div>
+                </div>
+            </div>
+            <!-- Embedded Project Details (Hidden by default) -->
+            <div id="modal-embedded-details" class="hidden space-y-4">
+                <!-- Project Members -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <h3 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Project Members</h3>
+                    <div id="modal-project-members" class="space-y-2">
+                        <!-- Member list will be dynamically injected here -->
+                    </div>
+                </div>
+                <!-- Live Chat -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <h3 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Live Chat</h3>
+                    <div id="modal-chat-display" class="w-full h-48 bg-gray-100 dark:bg-gray-900 rounded-lg p-3 overflow-y-auto flex flex-col space-y-2">
+                        <!-- Chat messages will be dynamically injected here -->
+                    </div>
+                    <form id="modal-chat-form" class="mt-3 flex space-x-2">
+                        <input type="text" id="modal-chat-input" placeholder="Type a message..." class="flex-grow block w-full px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                        <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- MOCK DATABASE ---
+            const agencies = [
+                { id: 1, name: "Starlight Solutions" },
+                { id: 2, name: "Nexus Innovations" },
+                { id: 3, name: "Apex Creatives" }
+            ];
+
+            const users = [
+                { username: "alex", password: "password123", agencyId: 1 },
+                { username: "maria", password: "password123", agencyId: 1 },
+                { username: "chen", password: "password123", agencyId: 2 },
+                { username: "david", password: "password123", agencyId: 3 }
+            ];
+
+            const agencyData = {
+                1: [ // Data for Starlight Solutions
+                    { id: 'p101', title: "Project Phoenix", status: "In Progress", client: "Global Tech Inc.", description: "A full-stack platform development for real-time data analytics and visualization.", progress: 75, images: ['https://placehold.co/600x400/93c5fd/3b82f6?text=Phoenix+Alpha', 'https://placehold.co/600x400/6ee7b7/10b981?text=Phoenix+Beta'], finances: { totalBudget: 75000, fundsUsed: 58000, monthlyUsage: [{ month: 'Jul', amount: 15000 }, { month: 'Aug', amount: 23000 }, { month: 'Sep', amount: 20000 }] } },
+                    { id: 'p102', title: "Website Redesign", status: "Completed", client: "Sunrise Foods", description: "Completed a full corporate website redesign, focusing on mobile-first principles and improved user experience.", progress: 100, images: ['https://placehold.co/600x400/fca5a5/dc2626?text=Old+Homepage', 'https://placehold.co/600x400/818cf8/4f46e5?text=New+Homepage'], finances: { totalBudget: 25000, fundsUsed: 24500, monthlyUsage: [{ month: 'May', amount: 10000 }, { month: 'Jun', amount: 14500 }] } },
+                    { id: 'p103', title: "Marketing Campaign", status: "Completed", client: "FastTrack Logistics", description: "Executed a multi-channel digital marketing campaign targeting Q4 goals.", progress: 100, images: ['https://placehold.co/600x400/fcd34d/f59e0b?text=Strategy+Board', 'https://placehold.co/600x400/a78bfa/7c3aed?text=Ad+Creative'], finances: { totalBudget: 40000, fundsUsed: 40000, monthlyUsage: [{ month: 'Jul', amount: 10000 }, { month: 'Aug', amount: 15000 }, { month: 'Sep', amount: 15000 }] } }
+                ],
+                2: [ // Data for Nexus Innovations
+                    { id: 'p201', title: "Mobile App Dev", status: "In Progress", client: "ConnectAll", description: "Building a native iOS and Android application for a social networking platform.", progress: 60, images: ['https://placehold.co/600x400/34d399/059669?text=iOS+Mockup', 'https://placehold.co/600x400/fbbf24/d97706?text=Android+Wireframe'], finances: { totalBudget: 120000, fundsUsed: 72000, monthlyUsage: [{ month: 'Jun', amount: 20000 }, { month: 'Jul', amount: 25000 }, { month: 'Aug', amount: 27000 }] } },
+                    { id: 'p202', title: "Cloud Migration", status: "In Progress", client: "HealthPlus", description: "Migrating legacy on-premise infrastructure to AWS.", progress: 85, images: ['https://placehold.co/600x400/f87171/b91c1c?text=Server+Room', 'https://placehold.co/600x400/60a5fa/2563eb?text=AWS+Dashboard'], finances: { totalBudget: 90000, fundsUsed: 76500, monthlyUsage: [{ month: 'Aug', amount: 40000 }, { month: 'Sep', amount: 36500 }] } }
+                ],
+                3: [ // Data for Apex Creatives
+                    { id: 'p301', title: "Brand Identity", status: "Completed", client: "Oceanview Resorts", description: "Developed a new brand identity, including logo, color palette, typography, and brand guidelines.", progress: 100, images: ['https://placehold.co/600x400/fdba74/f97316?text=Logo+Concepts', 'https://placehold.co/600x400/4ade80/16a34a?text=Final+Brand+Board'], finances: { totalBudget: 30000, fundsUsed: 30000, monthlyUsage: [{ month: 'Jul', amount: 30000 }] } },
+                    { id: 'p302', title: "Video Production", status: "Completed", client: "Artisan Crafts", description: "Produced a series of high-quality promotional videos showcasing craftsmanship.", progress: 100, images: ['https://placehold.co/600x400/7dd3fc/0ea5e9?text=On-Set+Photo', 'https://placehold.co/600x400/f9a8d4/db2777?text=Final+Cut+Screenshot'], finances: { totalBudget: 60000, fundsUsed: 55000, monthlyUsage: [{ month: 'Aug', amount: 25000 }, { month: 'Sep', amount: 30000 }] } },
+                    { id: 'p303', title: "Social Media Strategy", status: "In Progress", client: "NextGen Fitness", description: "Executing a comprehensive social media strategy to increase brand awareness and engagement.", progress: 45, images: ['https://placehold.co/600x400/c4b5fd/6d28d9?text=Content+Calendar', 'https://placehold.co/600x400/fca5a5/b91c1c?text=Engagement+Report'], finances: { totalBudget: 15000, fundsUsed: 6750, monthlyUsage: [{ month: 'Sep', amount: 6750 }] } }
+                ]
+            };
+
+            const embeddedProjects = [
+                 { 
+                    id: 'e101', title: "Joint Venture Initiative", status: "In Progress", client: "EcoCorp Alliance", 
+                    description: "A collaborative project to develop a sustainable technology platform.", 
+                    progress: 55, images: ['https://placehold.co/600x400/a5b4fc/4338ca?text=Joint+Meeting', 'https://placehold.co/600x400/facc15/ca8a04?text=Architecture+Diagram'],
+                    members: [{username: 'alex', agencyId: 1}, {username: 'chen', agencyId: 2}, {username: 'david', agencyId: 3}],
+                    chatLog: [
+                        {username: 'chen', text: 'Hey team, I\'ve pushed the latest wireframes to the repo.'},
+                        {username: 'david', text: 'Great, I\'ll take a look and provide feedback by EOD.'},
+                    ],
+                    finances: { totalBudget: 250000, fundsUsed: 137500, monthlyUsage: [{ month: 'Jul', amount: 45000 }, { month: 'Aug', amount: 50000 }, { month: 'Sep', amount: 42500 }] }
+                 },
+                 { 
+                    id: 'e102', title: "Community Outreach Program", status: "Planning", client: "City Council", 
+                    description: "A city-wide program managed jointly to promote local businesses.", 
+                    progress: 15, images: ['https://placehold.co/600x400/f9a8d4/be185d?text=Town+Hall+Event', 'https://placehold.co/600x400/5eead4/0d9488?text=Volunteer+Signup'],
+                    members: [{username: 'maria', agencyId: 1}, {username: 'chen', agencyId: 2}],
+                    chatLog: [
+                        {username: 'maria', text: 'Just finalized the schedule for the first community event.'},
+                    ],
+                    finances: { totalBudget: 50000, fundsUsed: 7500, monthlyUsage: [{ month: 'Sep', amount: 7500 }] }
+                 }
+            ];
+
+
+            // --- DOM ELEMENT REFERENCES ---
+            const loginView = document.getElementById('login-view');
+            const signupView = document.getElementById('signup-view');
+            const dashboardView = document.getElementById('dashboard-view');
+            
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+
+            const agencySelect = document.getElementById('agency-select');
+            const signupAgencySelect = document.getElementById('signup-agency-select');
+
+            const errorMessage = document.getElementById('error-message');
+            const signupMessage = document.getElementById('signup-message');
+            
+            const welcomeMessage = document.getElementById('welcome-message');
+            const logoutButton = document.getElementById('logout-button');
+            
+            const toggleToSignupLink = document.getElementById('toggle-to-signup');
+            const toggleToLoginLink = document.getElementById('toggle-to-login');
+            
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIconLight = document.getElementById('theme-icon-light');
+            const themeIconDark = document.getElementById('theme-icon-dark');
+
+            // Dashboard Content
+            const agencyTab = document.getElementById('agency-tab');
+            const embeddedTab = document.getElementById('embedded-tab');
+            const agencyContent = document.getElementById('agency-content');
+            const embeddedContent = document.getElementById('embedded-content');
+            const assignedProjectsContainer = document.getElementById('assigned-projects-container');
+            const completedProjectsContainer = document.getElementById('completed-projects-container');
+            const embeddedProjectsContainer = document.getElementById('embedded-projects-container');
+
+            // Modal elements
+            const projectDetailsModal = document.getElementById('project-details-modal');
+            const modalCloseButton = document.getElementById('modal-close-button');
+            const modalProjectTitle = document.getElementById('modal-project-title');
+            const modalProjectClient = document.getElementById('modal-project-client');
+            const modalProjectStatus = document.getElementById('modal-project-status');
+            const modalProjectDescription = document.getElementById('modal-project-description');
+            const modalProgressBar = document.getElementById('modal-progress-bar');
+            const modalProgressText = document.getElementById('modal-progress-text');
+            const modalImage1 = document.getElementById('modal-image-1');
+            const modalImage2 = document.getElementById('modal-image-2');
+            const modalFundFlow = document.getElementById('modal-fund-flow');
+            const modalFundBudget = document.getElementById('modal-fund-budget');
+            const modalFundUsed = document.getElementById('modal-fund-used');
+            const modalFundChart = document.getElementById('modal-fund-chart');
+            const modalEmbeddedDetails = document.getElementById('modal-embedded-details');
+            const modalProjectMembers = document.getElementById('modal-project-members');
+            const modalChatDisplay = document.getElementById('modal-chat-display');
+            const modalChatForm = document.getElementById('modal-chat-form');
+            const modalChatInput = document.getElementById('modal-chat-input');
+
+
+            // --- THEME MANAGEMENT ---
+            function applyTheme(theme) {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    themeIconLight.classList.remove('hidden');
+                    themeIconDark.classList.add('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    themeIconLight.classList.add('hidden');
+                    themeIconDark.classList.remove('hidden');
+                }
+            }
+
+            function toggleTheme() {
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            }
+            
+            // --- INITIALIZATION ---
+            function initialize() {
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                applyTheme(savedTheme || (systemPrefersDark ? 'dark' : 'light'));
+            
+                agencies.forEach(agency => {
+                    const option = document.createElement('option');
+                    option.value = agency.id;
+                    option.textContent = agency.name;
+                    agencySelect.appendChild(option.cloneNode(true));
+                    signupAgencySelect.appendChild(option);
+                });
+
+                const loggedInUser = sessionStorage.getItem('loggedInUser');
+                const loggedInAgencyId = sessionStorage.getItem('loggedInAgencyId');
+                if(loggedInUser && loggedInAgencyId){
+                    showView('dashboard', { username: loggedInUser, agencyId: loggedInAgencyId });
+                } else {
+                    showView('login');
+                }
+            }
+
+            // --- EVENT LISTENERS ---
+            loginForm.addEventListener('submit', handleLogin);
+            signupForm.addEventListener('submit', handleSignup);
+            logoutButton.addEventListener('click', handleLogout);
+            toggleToSignupLink.addEventListener('click', (e) => { e.preventDefault(); showView('signup'); });
+            toggleToLoginLink.addEventListener('click', (e) => { e.preventDefault(); showView('login'); });
+            themeToggle.addEventListener('click', toggleTheme);
+            
+            agencyTab.addEventListener('click', () => switchTab('agency'));
+            embeddedTab.addEventListener('click', () => switchTab('embedded'));
+            modalChatForm.addEventListener('submit', handleChatMessage);
+
+            dashboardView.addEventListener('click', (event) => {
+                const markCompleteButton = event.target.closest('.mark-complete-btn');
+                if (markCompleteButton) {
+                    const projectId = markCompleteButton.dataset.id;
+                    markProjectAsComplete(projectId);
+                    return; 
+                }
+
+                const projectCard = event.target.closest('.project-card');
+                if (projectCard) {
+                    const projectId = projectCard.dataset.projectId;
+                    showProjectDetails(projectId);
+                }
+            });
+
+            modalCloseButton.addEventListener('click', hideProjectDetails);
+            projectDetailsModal.addEventListener('click', (event) => {
+                if (event.target === projectDetailsModal) {
+                    hideProjectDetails();
+                }
+            });
+
+            // --- VIEW MANAGEMENT ---
+            function showView(viewName, data = {}) {
+                loginView.classList.add('hidden');
+                signupView.classList.add('hidden');
+                dashboardView.classList.add('hidden');
+
+                if (viewName === 'login') {
+                    loginView.classList.remove('hidden');
+                    loginForm.reset();
+                    errorMessage.textContent = '';
+                } else if (viewName === 'signup') {
+                    signupView.classList.remove('hidden');
+                    signupForm.reset();
+                    signupMessage.textContent = '';
+                } else if (viewName === 'dashboard') {
+                    setupDashboard(data.username, data.agencyId);
+                    dashboardView.classList.remove('hidden');
+                }
+            }
+
+            function switchTab(tabName) {
+                if (tabName === 'agency') {
+                    agencyContent.classList.remove('hidden');
+                    embeddedContent.classList.add('hidden');
+                    agencyTab.classList.add('tab-active');
+                    agencyTab.classList.remove('tab-inactive');
+                    embeddedTab.classList.add('tab-inactive');
+                    embeddedTab.classList.remove('tab-active');
+                } else if (tabName === 'embedded') {
+                    agencyContent.classList.add('hidden');
+                    embeddedContent.classList.remove('hidden');
+                    embeddedTab.classList.add('tab-active');
+                    embeddedTab.classList.remove('tab-inactive');
+                    agencyTab.classList.add('tab-inactive');
+                    agencyTab.classList.remove('tab-active');
+                }
+            }
+
+            // --- HANDLER FUNCTIONS ---
+            function handleLogin(event) {
+                event.preventDefault();
+                errorMessage.textContent = '';
+                const selectedAgencyId = agencySelect.value;
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                if (!selectedAgencyId) {
+                    errorMessage.textContent = 'Please select an agency.';
+                    return;
+                }
+                const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+                if (user && user.password === password && user.agencyId == selectedAgencyId) {
+                    sessionStorage.setItem('loggedInUser', user.username);
+                    sessionStorage.setItem('loggedInAgencyId', user.agencyId);
+                    showView('dashboard', { username: user.username, agencyId: user.agencyId });
+                } else {
+                    errorMessage.textContent = 'Invalid username, password, or agency.';
+                }
+            }
+
+            function handleSignup(event) {
+                event.preventDefault();
+                signupMessage.textContent = '';
+                const agencyId = signupAgencySelect.value;
+                const username = document.getElementById('signup-username').value.trim();
+                const password = document.getElementById('signup-password').value;
+
+                if(!agencyId || !username || !password) {
+                    signupMessage.textContent = 'All fields are required.';
+                    signupMessage.className = 'text-sm text-red-600 h-4';
+                    return;
+                }
+                if(users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                    signupMessage.textContent = 'Username already exists.';
+                    signupMessage.className = 'text-sm text-red-600 h-4';
+                    return;
+                }
+                const newUser = { username, password, agencyId: parseInt(agencyId) };
+                users.push(newUser);
+                signupMessage.textContent = 'Account created! You can now log in.';
+                signupMessage.className = 'text-sm text-green-600 h-4';
+                signupForm.reset();
+            }
+
+            function handleLogout() {
+                sessionStorage.removeItem('loggedInUser');
+                sessionStorage.removeItem('loggedInAgencyId');
+                showView('login');
+            }
+            
+            function markProjectAsComplete(projectId) {
+                const agencyId = sessionStorage.getItem('loggedInAgencyId');
+                if (!agencyId) return;
+
+                const project = agencyData[agencyId].find(p => p.id === projectId);
+                if (project) {
+                    project.status = 'Completed';
+                    project.progress = 100;
+                }
+                
+                const username = sessionStorage.getItem('loggedInUser');
+                setupDashboard(username, agencyId);
+            }
+
+            function handleChatMessage(event) {
+                event.preventDefault();
+                const messageText = modalChatInput.value.trim();
+                const projectId = projectDetailsModal.dataset.currentProjectId;
+                const project = embeddedProjects.find(p => p.id === projectId);
+                const currentUser = sessionStorage.getItem('loggedInUser');
+
+                if (messageText && project && currentUser) {
+                    project.chatLog.push({ username: currentUser, text: messageText });
+                    renderChat(project.chatLog);
+                    modalChatInput.value = '';
+                }
+            }
+            
+            function renderChat(chatLog) {
+                modalChatDisplay.innerHTML = '';
+                const currentUser = sessionStorage.getItem('loggedInUser');
+                chatLog.forEach(msg => {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = 'rounded-lg px-3 py-2 max-w-xs text-sm';
+                    
+                    const isSent = msg.username === currentUser;
+                    messageEl.classList.add(isSent ? 'chat-bubble-sent' : 'chat-bubble-received');
+                    
+                    const user = users.find(u => u.username === msg.username);
+                    const agency = agencies.find(a => a.id === user.agencyId);
+                    
+                    messageEl.innerHTML = `
+                        <p class="font-bold">${msg.username} <span class="text-xs font-light opacity-75">(${agency.name})</span></p>
+                        <p>${msg.text}</p>
+                    `;
+                    modalChatDisplay.appendChild(messageEl);
+                });
+                modalChatDisplay.scrollTop = modalChatDisplay.scrollHeight;
+            }
+
+            function showProjectDetails(projectId) {
+                const agencyId = sessionStorage.getItem('loggedInAgencyId');
+                let project = agencyData[agencyId]?.find(p => p.id === projectId);
+                let isEmbedded = false;
+                
+                if (!project) {
+                    project = embeddedProjects.find(p => p.id === projectId);
+                    isEmbedded = true;
+                }
+
+                if (!project) return;
+                
+                projectDetailsModal.dataset.currentProjectId = projectId;
+
+                modalProjectTitle.textContent = project.title;
+                modalProjectClient.textContent = project.client;
+                modalProjectDescription.textContent = project.description;
+                
+                modalProgressBar.style.width = `${project.progress}%`;
+                modalProgressText.textContent = `${project.progress}%`;
+                
+                modalImage1.src = project.images[0];
+                modalImage2.src = project.images[1];
+                
+                const statusSpan = modalProjectStatus;
+                statusSpan.textContent = project.status;
+                
+                statusSpan.className = 'font-medium'; 
+                if (project.status === 'Completed') statusSpan.classList.add('text-green-700');
+                else if (project.status === 'In Progress') statusSpan.classList.add('text-yellow-700');
+                else statusSpan.classList.add('text-blue-700');
+                
+                // Render Fund Flow and Chart
+                if (project.finances) {
+                    modalFundFlow.classList.remove('hidden');
+                    const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+                    modalFundBudget.textContent = formatter.format(project.finances.totalBudget);
+                    modalFundUsed.textContent = formatter.format(project.finances.fundsUsed);
+                    renderFundChart(project.finances.monthlyUsage);
+                } else {
+                    modalFundFlow.classList.add('hidden');
+                }
+
+                if (isEmbedded) {
+                    modalEmbeddedDetails.classList.remove('hidden');
+                    // Render members
+                    modalProjectMembers.innerHTML = '';
+                    project.members.forEach(member => {
+                         const agency = agencies.find(a => a.id === member.agencyId);
+                         const memberEl = document.createElement('div');
+                         memberEl.className = 'flex items-center justify-between text-sm';
+                         memberEl.innerHTML = `<span class="font-medium text-gray-800 dark:text-gray-200">${member.username}</span><span class="text-gray-500 dark:text-gray-400">${agency.name}</span>`;
+                         modalProjectMembers.appendChild(memberEl);
+                    });
+                    // Render chat
+                    renderChat(project.chatLog);
+                } else {
+                    modalEmbeddedDetails.classList.add('hidden');
+                }
+
+                projectDetailsModal.classList.remove('hidden');
+                projectDetailsModal.classList.add('modal-enter');
+            }
+
+            function renderFundChart(monthlyUsage) {
+                modalFundChart.innerHTML = '';
+                if (!monthlyUsage || monthlyUsage.length === 0) {
+                    modalFundChart.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-sm">No monthly data available.</p>`;
+                    return;
+                }
+
+                const maxAmount = Math.max(...monthlyUsage.map(item => item.amount));
+
+                monthlyUsage.forEach(item => {
+                    const barHeight = (item.amount / maxAmount) * 100;
+                    const barContainer = document.createElement('div');
+                    barContainer.className = 'h-full flex-1 flex flex-col justify-end items-center';
+                    
+                    const formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: 'compact' });
+
+                    barContainer.innerHTML = `
+                        <div class="text-xs text-gray-500 dark:text-gray-400 font-medium" title="${formatter.format(item.amount)}">${formatter.format(item.amount)}</div>
+                        <div class="w-full bg-indigo-500 rounded-t-sm chart-bar-grow" style="height: ${barHeight}%; transform-origin: bottom;"></div>
+                        <div class="text-xs font-bold text-gray-600 dark:text-gray-300 mt-1">${item.month}</div>
+                    `;
+                    modalFundChart.appendChild(barContainer);
+                });
+            }
+
+            function hideProjectDetails() {
+                 projectDetailsModal.classList.add('modal-leave');
+                 setTimeout(() => {
+                    projectDetailsModal.classList.add('hidden');
+                    projectDetailsModal.classList.remove('modal-leave');
+                 }, 300);
+            }
+
+            function setupDashboard(username, agencyId) {
+                welcomeMessage.textContent = `Welcome back, ${username.charAt(0).toUpperCase() + username.slice(1)}!`;
+                switchTab('agency');
+
+                const allProjects = agencyData[agencyId] || [];
+                const assignedProjects = allProjects.filter(p => p.status !== 'Completed');
+                const completedProjects = allProjects.filter(p => p.status === 'Completed');
+
+                renderProjects(assignedProjectsContainer, assignedProjects, "No assigned projects found.", 'agency-assigned');
+                renderProjects(completedProjectsContainer, completedProjects, "No completed projects found.", 'agency-completed');
+
+                renderProjects(embeddedProjectsContainer, embeddedProjects, "No shared projects found.", 'embedded');
+            }
+
+            function renderProjects(container, projectList, emptyMessage, type) {
+                container.innerHTML = ''; 
+                if (projectList.length > 0) {
+                    projectList.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'project-card p-4 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-700 rounded-lg flex flex-col justify-between hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-500 transition-all cursor-pointer';
+                        card.dataset.projectId = item.id;
+                        
+                        const statusColor = item.status === 'Completed' ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300' : 
+                                            item.status === 'In Progress' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300';
+                        
+                        let cardFooter = '';
+                        if (type === 'agency-assigned') {
+                            cardFooter = `
+                                <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
+                                    <button data-id="${item.id}" class="mark-complete-btn w-full text-sm font-medium text-green-700 bg-green-100 hover:bg-green-200 dark:bg-green-500/10 dark:text-green-400 dark:hover:bg-green-500/20 rounded-md py-2 transition-colors">
+                                        Mark as Complete
+                                    </button>
+                                </div>
+                            `;
+                        }
+
+                        card.innerHTML = `
+                            <div class="pointer-events-none">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="font-semibold text-gray-800 dark:text-gray-100">${item.title}</h3>
+                                    <span class="text-xs font-medium px-2.5 py-0.5 rounded-full ${statusColor}">${item.status}</span>
+                                </div>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Client: ${item.client}</p>
+                            </div>
+                            ${cardFooter}
+                        `;
+                        container.appendChild(card);
+                    });
+                } else {
+                    container.innerHTML = `<p class="text-gray-500 dark:text-gray-400 col-span-full">${emptyMessage}</p>`;
+                }
+            }
+
+            // --- START THE APP ---
+            initialize();
+        });
+    </script>
+</body>
+</html>
+
